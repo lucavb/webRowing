@@ -1,0 +1,25 @@
+<html>
+<head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script>
+	  var socket = io.connect('http://localhost:8000');
+	  socket.on('news', function (data) {
+	    console.log(data);
+	    socket.emit('my other event', { my: 'data' });
+	  });
+	  $(document).ready(function() {
+	  	$("#push_result").click(function() {
+	  		socket.emit('push', JSON.parse({"type" : "result"}));
+	  	});
+	  	$("#push_startlist").click(function() {
+	  		socket.emit('push', JSON.parse({"type" : "startlist"}));
+	  	});
+	  });
+	</script>
+</head>
+<body>
+	<button id="push_startlist">Push Startlist</button>
+	<button id="push_result">Push Result</button>
+</body>
+</html>

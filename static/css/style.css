@@ -1,0 +1,94 @@
+.krg_rot{
+    color:#c40505 !important;
+}
+
+body { 
+    padding-top: 70px;
+}
+
+#rennen_nummer{
+    width: 80px;
+    height: 40px;
+    background:#333333;
+    color:#fff;
+    line-height: 40px;
+    font-size: 40px;
+    text-align: center;
+    margin: 45px 0 0 0;
+}
+
+
+
+
+@media only screen and (max-device-width: 480px) and (orientation : landscape) {
+    /* iPhone Normal Landscape*/ 
+
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+    
+}
+
+@media only screen and (max-device-width: 480px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPhone Landscape Retina */
+
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+
+}
+
+@media only screen and (max-device-width: 480px) and (orientation : portrait) {
+    /* iPhone Normal Portrait*/ 
+
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+
+}
+
+@media only screen and (max-device-width: 480px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPhone Portrait Retina */
+
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) {
+    /* iPad Normal Landscape */
+    
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) {
+    /* iPad Normal Portrait */
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPad Normal Landscape Retina */
+    #page{
+    	width:1170px;
+    	margin: 25px;
+    }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPad Normal Portrait Retina */
+    #page{
+    	width:96%;
+    	margin: 2%;
+    }
+}
