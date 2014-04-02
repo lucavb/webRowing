@@ -1,0 +1,4 @@
+node_modules/
+static/bootstrap*/
+static/js/handlebars-v1.3.0.js
+static/js/jquery-1.11.0.min.js
