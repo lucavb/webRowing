@@ -1,19 +1,15 @@
 var mysql = require('mysql');
-
 var async = require("async");
 
 var connection = mysql.createConnection({
-	host : '-',
-	user : '-',
-	password : '-'
+	host : '',
+	user : '',
+	password : ''
 })
 
 connection.connect();
-
-connection.query("SET NAMES 'UTF8'");
 connection.query("USE perp");
-
-
+connection.query("SET NAMES 'UTF8'");
 
 
 function getCurrentRace(callback) {

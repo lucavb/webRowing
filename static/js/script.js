@@ -21,11 +21,11 @@ $(document).ready(function() {
 		}
 	});
 
-	socket.on("result", function(data)) {
+	socket.on("result", function(data) {
 		if (autoUpdate) {
 			handleResponse(data);
 		}
-	}
+	});
 
 	// requested response
 	socket.on("request", function(data) {
@@ -42,6 +42,7 @@ $(document).ready(function() {
 		else {
 			return;
 		}
+		console.log(data);
 		var template = Handlebars.compile(source);
 		var html = template(data);
 		$("#container").html(html);
