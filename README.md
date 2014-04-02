@@ -7,7 +7,7 @@ for further information on perp see perp.de
 
 PREPARATION
 
-please install socket.io, express, async and the mysql module in the main library
+please install socket.io, express, async and the mysql module in the main folder.
 also place bootstrap in to the static folder
 jquery and handlebars are also required for the html file
 the concrete paths can be seen from the index.html in the static folder
