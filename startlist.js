@@ -8,6 +8,7 @@ var connection = mysql.createConnection({
 	password : 'php'
 })
 
+// set up a connection
 connection.connect();
 
 connection.query("SET NAMES 'UTF8'");
@@ -86,8 +87,7 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 								LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = startlisten.Regatta_ID) \
 								WHERE startlisten.Rennen = ? AND startlisten.Lauf = ? AND startlisten.Regatta_ID = ?";
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
-					// i need to wait for this
-					
+					// fixing certain stuff
 					async.each(rows2,
 						function(row2, callback) {
 							if (row2.Abgemeldet == 0) {
@@ -114,6 +114,7 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 					console.log(err);
 				}
 				else {
+					// when the each is done this part will be executed
 					callback(ret);
 				}
 			});
