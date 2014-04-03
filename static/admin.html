@@ -1,5 +1,6 @@
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script>
@@ -9,17 +10,43 @@
 	    socket.emit('my other event', { my: 'data' });
 	  });
 	  $(document).ready(function() {
+	  	var timer = null;
 	  	$("#push_result").click(function() {
-	  		socket.emit('push', JSON.parse({"type" : "result"}));
+	  		socket.emit('push', JSON.parse('{"type" : "result"}'));
 	  	});
 	  	$("#push_startlist").click(function() {
-	  		socket.emit('push', JSON.parse({"type" : "startlist"}));
+	  		socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+	  	});
+	  	$("#auto").click(function() {
+	  		if (timer == null) {
+	  			timer = setInterval(function() {
+	  				socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+	  				socket.emit('push', JSON.parse('{"type" : "result"}'));
+	  			}, 15000);
+	  			$(this).removeClass("btn-danger");
+	  			$(this).addClass("btn-success");
+	  		}
+	  		else {
+	  			clearInterval(timer);
+	  			timer = null;
+	  			$(this).addClass("btn-danger");
+	  			$(this).removeClass("btn-success");
+	  		}
+	  		
 	  	});
 	  });
 	</script>
 </head>
 <body>
-	<button id="push_startlist">Push Startlist</button>
-	<button id="push_result">Push Result</button>
+	<div class="container">
+			<h3>Manuell</h3>
+		  	<button class="btn" id="push_startlist">Push Startlist</button>
+		 	<button class="btn" id="push_result">Push Result</button>
+
+		  	<h3>Auto Modus</h3>
+		  	<button id="auto" class="btn btn-danger">Auto Modus</button>
+	</div>
+
+	
 </body>
 </html>

@@ -3,9 +3,9 @@ var mysql = require('mysql');
 var async = require("async");
 
 var connection = mysql.createConnection({
-	host : '-',
-	user : '-',
-	password : '-'
+	host : 'localhost',
+	user : 'php',
+	password : 'php'
 })
 
 connection.connect();
@@ -17,6 +17,7 @@ connection.query("USE perp");
 
 
 function getCurrentRace(callback) {
+
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
@@ -53,10 +54,9 @@ function getRaceByID(id, callback) {
 			callback(retModel.start);
 		}
 		else {
-
+			
 			ret.general = rows[0];
 			ret.general.typ = "startliste";
-			console.log(ret.general);
 			getRace(34, id, null, function(value) {
 				ret.abteilungen = value;
 				callback(ret);
@@ -83,12 +83,28 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 				var query2 = "	SELECT startlisten.Bahn, meldungen.BugNr, teams.Teamname, meldungen.Abgemeldet, meldungen.Nachgemeldet \
 								FROM startlisten \
 								LEFT JOIN meldungen ON (startlisten.`TNr` = meldungen.`TNr` AND meldungen.Regatta_ID = startlisten.Regatta_ID AND meldungen.Rennen = startlisten.Rennen ) \
-								LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = "+regatta_id+") \
-								WHERE startlisten.Rennen = "+rennen_id+" AND startlisten.Lauf = '"+row.Lauf+"' AND startlisten.Regatta_ID = " + regatta_id;
-				connection.query(query2, function (err, rows2) {
+								LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = startlisten.Regatta_ID) \
+								WHERE startlisten.Rennen = ? AND startlisten.Lauf = ? AND startlisten.Regatta_ID = ?";
+				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
 					// i need to wait for this
-					ret[row.Lauf].boote = rows2;
+					
+					async.each(rows2,
+						function(row2, callback) {
+							if (row2.Abgemeldet == 0) {
+								delete row2.Abgemeldet;
+							}
+							if (row2.Nachgemeldet == 0) {
+								delete row2.Nachgemeldet;
+							}
+						}, function(err) {
+							if (err) {
 
+							}
+							else {
+
+							}
+						});
+					ret[row.Lauf].boote = rows2;
 					callback();
 				});
 				

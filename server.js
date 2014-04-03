@@ -6,6 +6,7 @@ var io = require('socket.io').listen(app.listen(8000), {
 });
 
 var startlist = require('./startlist.js');
+var result = require('./result.js');
  
 app.use('/', express.static(__dirname + '/static'));
  
@@ -35,7 +36,9 @@ io.sockets.on('connection', function(socket) {
 			
 		}
 		else if (data.type == "result") {
-			socket.broadcast.emit(data.type, result_example);
+			result.getCurrentRace(function(value) {
+				socket.broadcast.emit(data.type, value);
+			});
 		}
 	});
 
@@ -44,10 +47,14 @@ io.sockets.on('connection', function(socket) {
 	socket.on("request", function(data) {
 		if (data.type == "result") {
 			if (data.race_id == 0) {
-				socket.emit("request", result_example);
+				result.getCurrentRace(function(value) {
+					socket.emit("request", value);
+				});
 			}
 			else {
-				socket.emit("request", result_example);
+				result.getRaceByID(data.race_id, function(value) {
+					socket.emit("request", value);
+				})
 			}
 		}
 		else if (data.type == "startlist") {
@@ -58,7 +65,9 @@ io.sockets.on('connection', function(socket) {
 				
 			}
 			else {
-				socket.emit("request", startlist_example);
+				startlist.getRaceByID(data.race_id, function(value) {
+					socket.emit("request", value);
+				})
 			}
 		}
 	});

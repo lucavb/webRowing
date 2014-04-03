@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Titel</title>
+	<title>Kölner Regatta-Verband e.V.</title>
 	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script src="http://code.jquery.com/jquery-1.11.0.js"></script>
@@ -38,7 +38,7 @@
 	        </form>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
-	        <li><a href="./">Automatische Aktualisierung</a></li>
+	        <li><button id="toggleUpdate" class="btn btn-success navbar-btn">Automatische Aktualisierung</button></li>
 	      </ul>
 	    </div><!--/.nav-collapse -->
 	  </div>
@@ -71,8 +71,29 @@
 					<table class="table table-striped">
 						<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
 						{{#each boote}}
+							{{#if Abgemeldet}}
+								<tr class="danger">
+							{{else}}
+								{{#if Nachgemeldet}}
+									<tr class="success">
+								{{else}}
+									<tr>
+								{{/if}}
+							{{/if}}
 
-								<td>{{Bahn}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td><td>{{Zeit}}</td>
+								<td>
+								{{#if Ausgeschieden}}
+									-
+								{{else}}
+									{{Bahn}}
+								{{/if}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
+								<td>
+								{{#if Ausgeschieden}}
+									{{Kommentar}}
+								{{else}}
+									{{Zeit}}
+								{{/if}}
+								</td>
 								
 							</tr>
 						{{/each}}
@@ -105,9 +126,16 @@
 					<table class="table table-striped">
 						<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
 						{{#each boote}}
-
+							{{#if Abgemeldet}}
+								<tr class="danger">
+							{{else}}
+								{{#if Nachgemeldet}}
+									<tr class="success">
+								{{else}}
+									<tr>
+								{{/if}}
+							{{/if}}
 								<td>{{Bahn}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
-								
 							</tr>
 						{{/each}}
 					</table>

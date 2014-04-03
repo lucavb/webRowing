@@ -4,25 +4,72 @@ $(document).ready(function() {
 	var requested_id = 0;
 	var socket = io.connect();
 
+	function parseHash() {
+		var hash = window.location.hash.split("#")[1];
+
+		if(hash !== undefined){
+			if (hash == "startlist") {
+				currentType = false;
+			}
+			else {
+				currentType = true;
+			}
+		}
+	}
+
 	$(".switch_page").click(function() {
+		if ($(this).attr("data-page") == "startlist") {
+			currentType = false;
+		}
+		else {
+			currentType = true;
+		}
 		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
 	})
 
 	$("#request_race").submit(function() {
-		socket.emit("request", { "type" : startlist, "race_id" : requested_id});
+		var value = $("#request_race input").val();
+		
+		if (isInt(value)) {
+			requested_id = value;
+			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+		}
+		
 	})
 	// let's get some stuff
-	socket.emit('request', { "type" : "startlist", "race_id" : requested_id});
+	parseHash();
+	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
 
+	$("#toggleUpdate").click(function() {
+		autoUpdate = !autoUpdate;
+		if (autoUpdate == false) {
+			$(this).removeClass("btn-success");
+			$(this).addClass("btn-danger");
+		}
+		else {
+			$(this).removeClass("btn-danger");
+			$(this).addClass("btn-success");
+			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+		}
+	});
+
+	function startOrResult() {
+		if (currentType) {
+			return "result";
+		}
+		else {
+			return "startlist";
+		}
+	}
 
 	socket.on("startlist", function(data) {
-		if (autoUpdate) {
+		if (autoUpdate && startOrResult() == "startlist") {
 			handleResponse(data);
 		}
 	});
 
 	socket.on("result", function(data) {
-		if (autoUpdate) {
+		if (autoUpdate && startOrResult() == "result") {
 			handleResponse(data);
 		}
 	});
@@ -42,9 +89,13 @@ $(document).ready(function() {
 		else {
 			return;
 		}
-		console.log(data);
+		requested_id = data.general.Rennen;
 		var template = Handlebars.compile(source);
 		var html = template(data);
 		$("#container").html(html);
+	}
+
+	function isInt(n) {
+	   return (n % 1 == 0);
 	}
 });
