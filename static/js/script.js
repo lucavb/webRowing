@@ -53,15 +53,7 @@ $(document).ready(function() {
 		}
 	});
 
-	function startOrResult() {
-		if (currentType) {
-			return "result";
-		}
-		else {
-			return "startlist";
-		}
-	}
-
+	// auto updates
 	socket.on("startlist", function(data) {
 		if (autoUpdate && startOrResult() == "startlist") {
 			handleResponse(data);
@@ -89,6 +81,14 @@ $(document).ready(function() {
 		else {
 			return;
 		}
+		var counter = 0;
+		var boote = 0;
+		$.each(data.abteilungen, function(key, value ) {
+			counter++;
+			boote = boote + countElementObject(value.boote);
+		});
+		data.general.anzahl_abteilungen = counter;
+		data.general.anzahl_boote = boote;
 		requested_id = data.general.Rennen;
 		var template = Handlebars.compile(source);
 		var html = template(data);
@@ -97,5 +97,22 @@ $(document).ready(function() {
 
 	function isInt(n) {
 	   return (n % 1 == 0);
+	}
+
+	function countElementObject(obj) {
+		var counter = 0;
+		$.each(obj, function(key, value) {
+			counter++;
+		});
+		return counter;
+	}
+
+	function startOrResult() {
+		if (currentType) {
+			return "result";
+		}
+		else {
+			return "startlist";
+		}
 	}
 });

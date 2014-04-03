@@ -17,9 +17,6 @@ body {
     margin: 45px 0 0 0;
 }
 
-
-
-
 @media only screen and (max-device-width: 480px) and (orientation : landscape) {
     /* iPhone Normal Landscape*/ 
 

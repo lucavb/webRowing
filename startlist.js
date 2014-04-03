@@ -27,7 +27,9 @@ function getCurrentRace(callback) {
 					ORDER BY l.SollStartZeit ASC, l.Rennen ASC \
 					LIMIT 1";
 	connection.query(query, function(err, rows) {
-
+		if (err || rows.length == 0) {
+			callback(null);
+		}
 		getRaceByID(rows[0].Rennen, function(ret) {
 			callback(ret);
 		})
@@ -36,7 +38,7 @@ function getCurrentRace(callback) {
 
 
 function getRaceByID(id, callback) {
-	var ret = start = {
+	var ret = {
 		"general" : {
 		},
 		"abteilungen" : {
@@ -52,13 +54,18 @@ function getRaceByID(id, callback) {
 				 LIMIT 1";
 	connection.query(query, function (err, rows) {
 		if (err) {
-			callback(retModel.start);
+			console.log("    warning    - " + err);
+			callback(ret);
+		}
+		else if (rows.length == 0) {
+			console.log("    warning    - there was no race found for "+ id);
+			callback(ret);
 		}
 		else {
 			
 			ret.general = rows[0];
 			ret.general.typ = "startliste";
-			getRace(34, id, null, function(value) {
+			getRace(rows[0].Regatta_ID, id, null, function(value) {
 				ret.abteilungen = value;
 				callback(ret);
 			})
@@ -127,9 +134,6 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;
-
-
-
 
 
 
