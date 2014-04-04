@@ -1,13 +1,15 @@
 // import stuff
 var mysql = require('mysql');
 var async = require("async");
+var fs = require("fs");
 
 
 // setting up mysql connection
+var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
 var connection = mysql.createConnection({
-	host : 'localhost',
-	user : 'php',
-	password : 'php'
+	host : mysql_conf.host,
+	user : mysql_conf.username,
+	password : mysql_conf.password
 });
 connection.connect();
 connection.query("USE perp");
