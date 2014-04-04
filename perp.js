@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
 	password : mysql_conf.password
 });
 connection.connect();
-connection.query("USE perp");
+connection.query("USE " + mysql_conf.database);
 connection.query("SET NAMES 'UTF8'");
 
 function getCurrentRace(type, callback) {
