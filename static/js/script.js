@@ -78,17 +78,7 @@ $(document).ready(function() {
 	}
 
 	function toggleAutoMode() {
-		autoUpdate = !autoUpdate;
-		if (autoUpdate == false) {
-			$("#toggleUpdate").removeClass("btn-success");
-			$("#toggleUpdate").addClass("btn-danger");
-		}
-		else {
-			$("#toggleUpdate").removeClass("btn-danger");
-			$("#toggleUpdate").addClass("btn-success");
-			requested_id = 0;
-			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
-		}
+		setAutoMode(!autoUpdate);
 	}
 
 	function handleResponse(data) {
