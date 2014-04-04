@@ -5,11 +5,13 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Kölner Regatta-Verband e.V.</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script src="http://code.jquery.com/jquery-1.11.0.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/handlebars-v1.3.0.js"></script>
+	<script src="js/moment.min.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
 	<script src="js/script.js"></script>
 </head>
@@ -67,37 +69,42 @@
 		<div class="row">
 			{{#each abteilungen}}
 				<div class="col-md-6">
-					<h3>{{general.Lauf}}</h3>
-					<table class="table table-striped">
-						<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
-						{{#each boote}}
-							{{#if Abgemeldet}}
-								<tr class="danger">
-							{{else}}
-								{{#if Nachgemeldet}}
-									<tr class="success">
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
+						<div class="panel-body">
+							<p>{{general.SollStartZeit}}</p>
+						</div>
+						<table class="table table-striped">
+							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
+							{{#each boote}}
+								{{#if Abgemeldet}}
+									<tr class="danger">
 								{{else}}
-									<tr>
+									{{#if Nachgemeldet}}
+										<tr class="success">
+									{{else}}
+										<tr>
+									{{/if}}
 								{{/if}}
-							{{/if}}
 
-								<td>
-								{{#if Ausgeschieden}}
-									-
-								{{else}}
-									{{Bahn}}
-								{{/if}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
-								<td>
-								{{#if Ausgeschieden}}
-									{{Kommentar}}
-								{{else}}
-									{{Zeit}}
-								{{/if}}
-								</td>
-								
-							</tr>
-						{{/each}}
-					</table>
+									<td>
+									{{#if Ausgeschieden}}
+										-
+									{{else}}
+										{{Bahn}}
+									{{/if}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
+									<td>
+									{{#if Ausgeschieden}}
+										{{Kommentar}}
+									{{else}}
+										{{Zeit}}
+									{{/if}}
+									</td>
+									
+								</tr>
+							{{/each}}
+						</table>
+					</div>
 				</div>
 			{{/each}}
 		</div>
@@ -122,23 +129,28 @@
 		<div class="row">
 			{{#each abteilungen}}
 				<div class="col-md-6">
-					<h3>{{general.Lauf}}</h3>
-					<table class="table table-striped">
-						<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
-						{{#each boote}}
-							{{#if Abgemeldet}}
-								<tr class="danger">
-							{{else}}
-								{{#if Nachgemeldet}}
-									<tr class="success">
+					<div class="panel panel-default">
+						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
+						<div class="panel-body">
+							<p>{{general.SollStartZeit}}</p>
+						</div>
+						<table class="table table-striped">
+							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
+							{{#each boote}}
+								{{#if Abgemeldet}}
+									<tr class="danger">
 								{{else}}
-									<tr>
+									{{#if Nachgemeldet}}
+										<tr class="success">
+									{{else}}
+										<tr>
+									{{/if}}
 								{{/if}}
-							{{/if}}
-								<td>{{Bahn}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
-							</tr>
-						{{/each}}
-					</table>
+									<td>{{Bahn}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
+								</tr>
+							{{/each}}
+						</table>
+					</div>
 				</div>
 			{{/each}}
 		</div>

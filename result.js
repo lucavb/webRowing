@@ -2,9 +2,9 @@ var mysql = require('mysql');
 var async = require("async");
 
 var connection = mysql.createConnection({
-	host : 'localhost',
-	user : 'php',
-	password : 'php'
+	host : '-',
+	user : '-',
+	password : '-'
 })
 
 connection.connect();
@@ -82,6 +82,7 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 		var counter = rows.length;
 		async.each(rows,
 			function(row, callback) {
+				row.Lauf_Reframe = reframeSections(row.Lauf);
 				ret[row.Lauf] = { "general" : "", "boote" : {}};
 				ret[row.Lauf].general = row;
 
@@ -134,6 +135,38 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 	
 }
 
+function reframeSections(section) {
+	var regexVorlauf = new RegExp("V[0-9]+");
+	var regexHoffnung = new RegExp("H[0-9]+");
+	var regexSemi = new RegExp("S[0-9]+");
+	var regexAbteilung = new RegExp("A[0-9]+");
+	var regexFinale = new RegExp("F[A-Z]+");
+	var regexViertelFinale = new RegExp("Q[0-9]+");
+	var regexZwischen = new RegExp("Z[0-9]+");
+	var firstPart = "";
+	if (regexVorlauf.test(section)) {
+		firstPart = "Vorlauf";
+	}
+	else if (regexHoffnung.test(section)) {
+		firstPart = "Hoffnungslauf";
+	}
+	else if (regexSemi.test(section)) {
+		firstPart = "Semifinale";
+	}
+	else if (regexAbteilung.test(section)) {
+		firstPart = "Abteilung";
+	}
+	else if (regexFinale.test(section)) {
+		firstPart = "Finale";
+	}
+	else if (regexZwischen.test(section)) {
+		firstPart = "Zwischenlauf";
+	}
+	else {
+		return section + "";
+	}
+	return firstPart + " " + section.substring(1);
+}
 
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;

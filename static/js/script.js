@@ -27,11 +27,12 @@ $(document).ready(function() {
 		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
 	})
 
-	$("#request_race").submit(function() {
+	$("#request_race").submit(function(e) {
 		var value = $("#request_race input").val();
-		
+		e.preventDefault();
 		if (isInt(value)) {
 			requested_id = value;
+			setAutoMode(false);
 			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
 		}
 		
@@ -41,16 +42,7 @@ $(document).ready(function() {
 	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
 
 	$("#toggleUpdate").click(function() {
-		autoUpdate = !autoUpdate;
-		if (autoUpdate == false) {
-			$(this).removeClass("btn-success");
-			$(this).addClass("btn-danger");
-		}
-		else {
-			$(this).removeClass("btn-danger");
-			$(this).addClass("btn-success");
-			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
-		}
+		toggleAutoMode();
 	});
 
 	// auto updates
@@ -71,6 +63,34 @@ $(document).ready(function() {
 		handleResponse(data);
 	});
 
+	function setAutoMode(wish) {
+		autoUpdate = wish;
+		if (autoUpdate == false) {
+			$("#toggleUpdate").removeClass("btn-success");
+			$("#toggleUpdate").addClass("btn-danger");
+		}
+		else {
+			$("#toggleUpdate").removeClass("btn-danger");
+			$("#toggleUpdate").addClass("btn-success");
+			requested_id = 0;
+			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+		}
+	}
+
+	function toggleAutoMode() {
+		autoUpdate = !autoUpdate;
+		if (autoUpdate == false) {
+			$("#toggleUpdate").removeClass("btn-success");
+			$("#toggleUpdate").addClass("btn-danger");
+		}
+		else {
+			$("#toggleUpdate").removeClass("btn-danger");
+			$("#toggleUpdate").addClass("btn-success");
+			requested_id = 0;
+			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+		}
+	}
+
 	function handleResponse(data) {
 		if (data.general.typ == "ergebniss") {
 			var source = $("#content-template-result").html();
@@ -83,9 +103,10 @@ $(document).ready(function() {
 		}
 		var counter = 0;
 		var boote = 0;
-		$.each(data.abteilungen, function(key, value ) {
+		$.each(data.abteilungen, function(key, abteilung ) {
 			counter++;
-			boote = boote + countElementObject(value.boote);
+			abteilung.general.SollStartZeit = moment(abteilung.general.SollStartZeit).fromNow();
+			boote = boote + countElementObject(abteilung.boote);
 		});
 		data.general.anzahl_abteilungen = counter;
 		data.general.anzahl_boote = boote;
