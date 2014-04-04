@@ -1,23 +1,19 @@
+// import stuff
 var mysql = require('mysql');
 var async = require("async");
 
+
+// setting up mysql connection
 var connection = mysql.createConnection({
-	host : '-',
-	user : '-',
-	password : '-'
-})
-
-// set up a connection
+	host : 'localhost',
+	user : 'php',
+	password : 'php'
+});
 connection.connect();
-
-connection.query("SET NAMES 'UTF8'");
 connection.query("USE perp");
+connection.query("SET NAMES 'UTF8'");
 
-
-
-
-function getCurrentRace(callback) {
-
+function getCurrentRace(type, callback) {
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
@@ -27,18 +23,21 @@ function getCurrentRace(callback) {
 					LIMIT 1";
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
+			console.log("    warning    - there was no current race found");
 			callback(null);
 		}
 		else {
-			getRaceByID(rows[0].Rennen, function(ret) {
+			getRaceByID(type, rows[0].Rennen, function(ret) {
 				callback(ret);
 			});
 		}
 	});
 }
 
-
-function getRaceByID(id, callback) {
+// @param type startlist or result
+// @param id the race requested; if this function should not be able 
+// 	to find it it will return an empty result
+function getRaceByID(type, id, callback) {
 	var ret = {
 		"general" : {
 		},
@@ -62,11 +61,10 @@ function getRaceByID(id, callback) {
 			console.log("    warning    - there was no race found for "+ id);
 			callback(ret);
 		}
-		else {
-			
+		else {	
 			ret.general = rows[0];
-			ret.general.typ = "startliste";
-			getRace(rows[0].Regatta_ID, id, null, function(value) {
+			ret.general.typ = type;
+			getSections(type, rows[0].Regatta_ID, id, function(value) {
 				ret.abteilungen = value;
 				callback(ret);
 			})
@@ -75,29 +73,39 @@ function getRaceByID(id, callback) {
 	});
 }
 
-function getRace(regatta_id, rennen_id, lauf, callback) {
+function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
 	var query = "SELECT laeufe.Rennen, laeufe.Lauf, laeufe.SollStartZeit, rennen.NameD \
 				 FROM laeufe \
 				 LEFT JOIN rennen ON (laeufe.Regatta_ID = rennen.Regatta_ID AND laeufe.Rennen = rennen.Rennen) \
-				 WHERE laeufe.Rennen = " + rennen_id + "  AND laeufe.Regatta_ID = " + regatta_id + " \
+				 WHERE laeufe.Rennen = ? AND laeufe.Regatta_ID = ? \
 				 ORDER BY  laeufe.`SollStartZeit` ASC";
-	connection.query(query, function (err, rows) {
+	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
 		var counter = rows.length;
 		async.each(rows,
 			function(row, callback) {
 				row.Lauf_Reframe = reframeSections(row.Lauf);
 				ret[row.Lauf] = { "general" : "", "boote" : {}};
-
 				ret[row.Lauf].general = row;
-
-				var query2 = "	SELECT startlisten.Bahn, meldungen.BugNr, teams.Teamname, meldungen.Abgemeldet, meldungen.Nachgemeldet \
-								FROM startlisten \
-								LEFT JOIN meldungen ON (startlisten.`TNr` = meldungen.`TNr` AND meldungen.Regatta_ID = startlisten.Regatta_ID AND meldungen.Rennen = startlisten.Rennen ) \
-								LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = startlisten.Regatta_ID) \
-								WHERE startlisten.Rennen = ? AND startlisten.Lauf = ? AND startlisten.Regatta_ID = ?";
+				if (type == "startlist") {
+					var query2 = "	SELECT startlisten.Bahn, meldungen.BugNr, teams.Teamname, meldungen.Abgemeldet, meldungen.Nachgemeldet \
+									FROM startlisten \
+									LEFT JOIN meldungen ON (startlisten.`TNr` = meldungen.`TNr` AND meldungen.Regatta_ID = startlisten.Regatta_ID AND meldungen.Rennen = startlisten.Rennen ) \
+									LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = startlisten.Regatta_ID) \
+									WHERE startlisten.Rennen = ? AND startlisten.Lauf = ? AND startlisten.Regatta_ID = ?";
+				}
+				else if (type == "result") {
+					var query2 = "	SELECT e.Bahn, meldungen.BugNr, teams.Teamname, meldungen.Abgemeldet, meldungen.Nachgemeldet, z.`MesspunktNr`, z.Zeit, e.`Ausgeschieden`, e.`Kommentar` \
+									FROM ergebnisse e \
+									LEFT JOIN zeiten z ON (z.`Regatta_ID` = e.`Regatta_ID` AND z.Rennen = e.Rennen AND e.Lauf = z.Lauf AND e.`TNr` = z.`TNr`) \
+									INNER JOIN rennen r ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` OR r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND z.`MesspunktNr` IS NULL) \
+									LEFT JOIN meldungen ON (e.`TNr` = meldungen.`TNr` AND meldungen.Regatta_ID = e.Regatta_ID AND meldungen.Rennen = e.Rennen ) \
+									LEFT JOIN teams ON (meldungen.`Team_ID` = teams.`ID` AND teams.Regatta_ID = e.`Regatta_ID`) \
+									WHERE e.Rennen = ? AND e.Lauf = ? AND e.Regatta_ID = ? \
+									ORDER BY ISNULL(z.`Zeit`), z.`Zeit` ASC, teams.`Teamname`";
+				}
+				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
-					// fixing certain stuff
 					async.each(rows2,
 						function(row2, callback) {
 							if (row2.Abgemeldet == 0) {
@@ -106,14 +114,12 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 							if (row2.Nachgemeldet == 0) {
 								delete row2.Nachgemeldet;
 							}
-						}, function(err) {
-							if (err) {
-
-							}
-							else {
-
+							if (type == "result" && row2.Ausgeschieden == "") {
+								delete row2.Ausgeschieden;
+								delete row2.Kommentar;
 							}
 						});
+
 					ret[row.Lauf].boote = rows2;
 					callback();
 				});
@@ -124,17 +130,15 @@ function getRace(regatta_id, rennen_id, lauf, callback) {
 					console.log(err);
 				}
 				else {
-					// when the each is done this part will be executed
+					// let's return everything
 					callback(ret);
 				}
 			});
-		
-
 	});
-	
 }
 
 
+// rename function in order to rename A1 to Abteilung 1
 function reframeSections(section) {
 	var regexVorlauf = new RegExp("V[0-9]+");
 	var regexHoffnung = new RegExp("H[0-9]+");
@@ -168,12 +172,5 @@ function reframeSections(section) {
 	return firstPart + " " + section.substring(1);
 }
 
-
-
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;
-
-
-
-
-

@@ -92,10 +92,10 @@ $(document).ready(function() {
 	}
 
 	function handleResponse(data) {
-		if (data.general.typ == "ergebniss") {
+		if (data.general.typ == "result") {
 			var source = $("#content-template-result").html();
 		}
-		else if (data.general.typ == "startliste") {
+		else if (data.general.typ == "startlist") {
 			var source = $("#content-template-startlist").html();
 		}
 		else {
