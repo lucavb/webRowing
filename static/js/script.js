@@ -1,22 +1,31 @@
 $(document).ready(function() {
+
+	// some basic variables and objects
 	var currentType = false; // false = startlist; true = result
 	var autoUpdate = true;
 	var requested_id = 0;
 	var socket = io.connect();
 
-	function parseHash() {
-		var hash = window.location.hash.split("#")[1];
+	/*
+	 *
+	 * execute me stuff
+	 *
+	 */
 
-		if(hash !== undefined){
-			if (hash == "startlist") {
-				currentType = false;
-			}
-			else {
-				currentType = true;
-			}
-		}
-	}
+	// set the language for moment.js
+	moment.lang("de");
+	// gather information about the hashtag
+	parseHash();
+	// initial request so the site won't be empty
+	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
 
+	/*
+	`*
+	 * jQuery Stuff
+	 *
+	 */
+	
+	// those to a's for switching the page
 	$(".switch_page").click(function() {
 		if ($(this).attr("data-page") == "startlist") {
 			currentType = false;
@@ -29,6 +38,7 @@ $(document).ready(function() {
 		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
 	})
 
+	// that form to request a certain race
 	$("#request_race").submit(function(e) {
 		var value = $("#request_race input").val();
 		e.preventDefault();
@@ -39,16 +49,18 @@ $(document).ready(function() {
 		}
 		
 	})
-	// let's get some stuff
-	moment.lang("de");
-	parseHash();
-	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
-
+	
+	// that funny little button in the upper right
 	$("#toggleUpdate").click(function() {
 		toggleAutoMode();
 	});
 
-	// auto updates
+	/*
+	 *
+	 * SOCKET.IO
+	 *
+	 */
+
 	socket.on("startlist", function(data) {
 		if (autoUpdate && startOrResult() == "startlist") {
 			handleResponse(data);
@@ -66,6 +78,28 @@ $(document).ready(function() {
 		handleResponse(data);
 	});
 
+
+	/*
+	 *
+	 * FUNCTIONS
+	 *
+	 */
+
+	// sets the function pased on the hash
+	function parseHash() {
+		var hash = window.location.hash.split("#")[1];
+
+		if(hash !== undefined){
+			if (hash == "startlist") {
+				currentType = false;
+			}
+			else {
+				currentType = true;
+			}
+		}
+	}
+
+	// sets the mode for auto updates
 	function setAutoMode(wish) {
 		autoUpdate = wish;
 		if (autoUpdate == false) {
@@ -80,10 +114,13 @@ $(document).ready(function() {
 		}
 	}
 
+	// reverses the current status of the automode
 	function toggleAutoMode() {
 		setAutoMode(!autoUpdate);
 	}
 
+	// deals with a response from the server 
+	// and triggers the necessary handlebars template
 	function handleResponse(data) {
 		if (data.general.typ == "result") {
 			var source = $("#content-template-result").html();
@@ -109,10 +146,13 @@ $(document).ready(function() {
 		$("#container").html(html);
 	}
 
+	// checks whether a given variable is numeric 
+	// and an integer or not
 	function isInt(n) {
 	   return (n % 1 == 0);
 	}
 
+	// counts the attributes a given object has
 	function countElementObject(obj) {
 		var counter = 0;
 		$.each(obj, function(key, value) {
@@ -121,6 +161,7 @@ $(document).ready(function() {
 		return counter;
 	}
 
+	// returns the current type of site
 	function startOrResult() {
 		if (currentType) {
 			return "result";
