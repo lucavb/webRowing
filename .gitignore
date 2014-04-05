@@ -4,3 +4,4 @@ static/js/handlebars-v1.3.0.js
 static/js/jquery-1.11.0.min.js
 static/js/moment.min.js
 mysql_conf
+static/js/moment-with-langs.min.js

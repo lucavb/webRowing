@@ -24,6 +24,8 @@ $(document).ready(function() {
 		else {
 			currentType = true;
 		}
+		$(".switch_page").removeClass("active");
+		$(this).addClass("active");
 		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
 	})
 
@@ -38,6 +40,7 @@ $(document).ready(function() {
 		
 	})
 	// let's get some stuff
+	moment.lang("de");
 	parseHash();
 	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
 

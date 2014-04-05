@@ -11,7 +11,7 @@
 	<script src="js/jquery-1.11.0.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/handlebars-v1.3.0.js"></script>
-	<script src="js/moment.min.js"></script>
+	<script src="js/moment-with-langs.min.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
 	<script src="js/script.js"></script>
 </head>
@@ -30,13 +30,13 @@
 	    </div>
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
-	        <li class="active"><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
+	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
 	        <li><a class='switch_page' data-page='result' href="#result">Ergebnisse</a></li>
 	        <form class="navbar-form navbar-left" id='request_race' role="search">
 	            <div class="form-group">
 	                <input type="text" class="form-control" placeholder="Nummer des Rennens">
 	            </div>
-	            <button type="submit" class="btn btn-default">Submit</button>
+	            <button type="submit" class="btn btn-default">Anfordern</button>
 	        </form>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
@@ -51,12 +51,12 @@
 	</div>
 	<script id="content-template-result" type="text/x-handlebars-template">
 		<div class="row">
-			<div class="col-md-11">
+			<div class="col-md-10">
 				<div class="page-header">
-			  		<h1 id="rennen_de">{{general.NameD}}</h1>
+			  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
 			  	</div>
 			</div>
-			<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
+			<div class="col-md-2" id="rennen_nummer">{{general.Rennen}}</div>
 		</div>
 		<h2>Allgemein</h2>
 		<div class="row">
@@ -113,7 +113,7 @@
 		<div class="row">
 			<div class="col-md-11">
 				<div class="page-header">
-			  		<h1 id="rennen_de">{{general.NameD}}</h1>
+			  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
 			  	</div>
 			</div>
 			<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
