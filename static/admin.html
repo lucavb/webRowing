@@ -6,37 +6,34 @@
 	<script src="js/jquery-1.11.0.min.js"></script>
 	<script>
 		// this file is quick and dirty. but it works :P
-	  var socket = io.connect('http://localhost:8000');
-	  socket.on('news', function (data) {
-	    console.log(data);
-	    socket.emit('my other event', { my: 'data' });
-	  });
-	  $(document).ready(function() {
-	  	var timer = null;
-	  	$("#push_result").click(function() {
-	  		socket.emit('push', JSON.parse('{"type" : "result"}'));
-	  	});
-	  	$("#push_startlist").click(function() {
-	  		socket.emit('push', JSON.parse('{"type" : "startlist"}'));
-	  	});
-	  	$("#auto").click(function() {
-	  		if (timer == null) {
-	  			timer = setInterval(function() {
-	  				socket.emit('push', JSON.parse('{"type" : "startlist"}'));
-	  				socket.emit('push', JSON.parse('{"type" : "result"}'));
-	  			}, 15000);
-	  			$(this).removeClass("btn-danger");
-	  			$(this).addClass("btn-success");
-	  		}
-	  		else {
-	  			clearInterval(timer);
-	  			timer = null;
-	  			$(this).addClass("btn-danger");
-	  			$(this).removeClass("btn-success");
-	  		}
-	  		
-	  	});
-	  });
+		$(document).ready(function() {
+		  	var timer = null;
+		  	var socket = io.connect();
+
+		  	$("#push_result").click(function() {
+		  		socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  	});
+		  	$("#push_startlist").click(function() {
+		  		socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+		  	});
+		  	$("#auto").click(function() {
+		  		if (timer == null) {
+		  			timer = setInterval(function() {
+		  				socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+		  				socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  			}, 15000);
+		  			$(this).removeClass("btn-danger");
+		  			$(this).addClass("btn-success");
+		  		}
+		  		else {
+		  			clearInterval(timer);
+		  			timer = null;
+		  			$(this).addClass("btn-danger");
+		  			$(this).removeClass("btn-success");
+		  		}
+		  		
+		  	});
+		});
 	</script>
 </head>
 <body>
