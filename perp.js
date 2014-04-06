@@ -11,7 +11,11 @@ var connection = mysql.createConnection({
 	user : mysql_conf.username,
 	password : mysql_conf.password
 });
-connection.connect();
+connection.connect(function(err) {
+	if (err) {
+		console.log("    error   - couldn't connect to the server. that's bad");
+	}
+});
 connection.query("USE " + mysql_conf.database);
 connection.query("SET NAMES 'UTF8'");
 
@@ -51,7 +55,7 @@ function getRaceByID(type, id, callback) {
 				 FROM laeufe l \
 				 INNER JOIN rennen r ON (r.Rennen = l.Rennen AND r.Regatta_ID = l.Regatta_ID) \
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = l.Regatta_ID \
-				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.ZielMesspunktNr = m.MesspunktNr) \
+				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.StartMesspunktNr = m.MesspunktNr) \
 				 WHERE l.Rennen = " + id + " \
 				 LIMIT 1";
 	connection.query(query, function (err, rows) {
@@ -66,6 +70,7 @@ function getRaceByID(type, id, callback) {
 		else {	
 			ret.general = rows[0];
 			ret.general.typ = type;
+			ret.general.Position = 2000 - ret.general.Position;
 			getSections(type, rows[0].Regatta_ID, id, function(value) {
 				ret.abteilungen = value;
 				callback(ret);

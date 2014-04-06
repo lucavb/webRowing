@@ -14,6 +14,11 @@ $(document).ready(function() {
 
 	// set the language for moment.js
 	moment.lang("de");
+	// register a handlebars helper for moment js
+	Handlebars.registerHelper("prettifyDate", function(timestamp) {
+
+	    return moment(timestamp).fromNow();
+	});
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
@@ -135,7 +140,6 @@ $(document).ready(function() {
 		var boote = 0;
 		$.each(data.abteilungen, function(key, abteilung ) {
 			counter++;
-			abteilung.general.SollStartZeit = moment(abteilung.general.SollStartZeit).fromNow();
 			boote = boote + countElementObject(abteilung.boote);
 		});
 		data.general.anzahl_abteilungen = counter;

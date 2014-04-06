@@ -51,12 +51,12 @@
 	</div>
 	<script id="content-template-result" type="text/x-handlebars-template">
 		<div class="row">
-			<div class="col-md-10">
+			<div class="col-md-11">
 				<div class="page-header">
 			  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
 			  	</div>
 			</div>
-			<div class="col-md-2" id="rennen_nummer">{{general.Rennen}}</div>
+			<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
 		</div>
 		<h2>Allgemein</h2>
 		<div class="row">
@@ -72,7 +72,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
 						<div class="panel-body">
-							<p>{{general.SollStartZeit}}</p>
+							<p>{{prettifyDate general.SollStartZeit}}</p>
 						</div>
 						<table class="table table-striped">
 							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
@@ -132,7 +132,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
 						<div class="panel-body">
-							<p>{{general.SollStartZeit}}</p>
+							<p>{{prettifyDate general.SollStartZeit}}</p>
 						</div>
 						<table class="table table-striped">
 							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
