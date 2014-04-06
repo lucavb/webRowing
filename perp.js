@@ -82,11 +82,13 @@ function getRaceByID(type, id, callback) {
 
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
-	var query = "SELECT laeufe.Rennen, laeufe.Lauf, laeufe.SollStartZeit, rennen.NameD \
-				 FROM laeufe \
-				 LEFT JOIN rennen ON (laeufe.Regatta_ID = rennen.Regatta_ID AND laeufe.Rennen = rennen.Rennen) \
-				 WHERE laeufe.Rennen = ? AND laeufe.Regatta_ID = ? \
-				 ORDER BY  laeufe.`SollStartZeit` ASC";
+	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, rennen.NameD, CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
+				 FROM laeufe l \
+				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
+				 LEFT JOIN `addressen` aU ON (aU.`ID` = l.`Schiedsrichter_ID_Umpire` AND aU.`IstSchiedsrichter` = 1) \
+				 LEFT JOIN addressen aJ ON (aJ.ID = l.`Schiedsrichter_ID_Judge` AND aJ.`IstSchiedsrichter` = 1) \
+				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
+				 ORDER BY  l.`SollStartZeit` ASC";
 	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
 		var counter = rows.length;
 		async.each(rows,

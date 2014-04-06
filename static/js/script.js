@@ -15,9 +15,14 @@ $(document).ready(function() {
 	// set the language for moment.js
 	moment.lang("de");
 	// register a handlebars helper for moment js
-	Handlebars.registerHelper("prettifyDate", function(timestamp) {
-
+	Handlebars.registerHelper("momentFromNow", function(timestamp) {
 	    return moment(timestamp).fromNow();
+	});
+	Handlebars.registerHelper("momentFormat", function(timestamp) {
+	    return moment(timestamp).format('LLL');
+	});
+	Handlebars.registerHelper("momentCalendar", function(timestamp) {
+	    return moment(timestamp).calendar();
 	});
 	// gather information about the hashtag
 	parseHash();
