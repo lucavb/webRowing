@@ -27,7 +27,7 @@ also add a file called 'mysql_conf' with the following structure
 The concrete paths can be seen from the index.html in the static folder.</p>
 
 
-# Starting
+## Starting
 
 simple. either run:
 <pre>
