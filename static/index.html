@@ -75,36 +75,44 @@
 							<p>Soll-Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 							<p>Umpire: {{general.umpire}} / Judge: {{general.judge}} </p>
 						</div>
-						<table class="table table-striped">
-							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
-							{{#each boote}}
-								{{#if Abgemeldet}}
-									<tr class="danger">
-								{{else}}
-									{{#if Nachgemeldet}}
-										<tr class="success">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
+								{{#each boote}}
+									{{#if Abgemeldet}}
+										<tr class="danger">
 									{{else}}
-										<tr>
+										{{#if Nachgemeldet}}
+											<tr class="success">
+										{{else}}
+											<tr>
+										{{/if}}
 									{{/if}}
-								{{/if}}
 
-									<td>
-									{{#if Ausgeschieden}}
-										-
-									{{else}}
-										{{Bahn}}
-									{{/if}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
-									<td>
-									{{#if Ausgeschieden}}
-										{{Kommentar}}
-									{{else}}
-										{{Zeit}}
-									{{/if}}
-									</td>
-									
-								</tr>
-							{{/each}}
-						</table>
+										<td>
+										{{#if Ausgeschieden}}
+											-
+										{{else}}
+											{{Bahn}}
+										{{/if}}</td><td>{{BugNr}}</td>
+										<td>
+											<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+											data-content='{{ruderer this}}' >
+											{{Teamname}}
+											</a>
+										</td>
+										<td>
+										{{#if Ausgeschieden}}
+											{{Kommentar}}
+										{{else}}
+											{{Zeit}}
+										{{/if}}
+										</td>
+										
+									</tr>
+								{{/each}}
+							</table>
+						</div>
 					</div>
 				</div>
 			{{/each}}
@@ -136,22 +144,30 @@
 							<p>Soll-Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 							<p>Umpire: {{general.umpire}} / Judge: {{general.judge}} </p>
 						</div>
-						<table class="table table-striped">
-							<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
-							{{#each boote}}
-								{{#if Abgemeldet}}
-									<tr class="danger">
-								{{else}}
-									{{#if Nachgemeldet}}
-										<tr class="success">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
+								{{#each boote}}
+									{{#if Abgemeldet}}
+										<tr class="danger">
 									{{else}}
-										<tr>
+										{{#if Nachgemeldet}}
+											<tr class="success">
+										{{else}}
+											<tr>
+										{{/if}}
 									{{/if}}
-								{{/if}}
-									<td>{{Bahn}}</td><td>{{BugNr}}</td><td>{{Teamname}}</td>
-								</tr>
-							{{/each}}
-						</table>
+										<td>{{Bahn}}</td><td>{{BugNr}}</td>
+										<td>
+											<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+											data-content='{{ruderer this}}' >
+											{{Teamname}}
+											</a>
+										</td>
+									</tr>
+								{{/each}}
+							</table>
+						</div>
 					</div>
 				</div>
 			{{/each}}

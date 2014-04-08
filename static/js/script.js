@@ -24,6 +24,19 @@ $(document).ready(function() {
 	Handlebars.registerHelper("momentCalendar", function(timestamp) {
 	    return moment(timestamp).calendar();
 	});
+	Handlebars.registerHelper("ruderer", function(obj) {
+		var ret = "";
+		for (var i = 1; i <= 8; i++) {
+			if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
+				break;
+			}
+			ret += obj["r" + i + "_string"] + ", ";
+		}
+		if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
+			ret += "St. " + obj.rS_string;
+		}
+		return ret ;
+	});
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
@@ -58,7 +71,22 @@ $(document).ready(function() {
 			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
 		}
 		
-	})
+	});
+
+
+	$(document).on("click", "a.fake", function(e) {
+		e.preventDefault();
+		return false;
+	});
+
+	$(document).on("mouseover", "a.popoverRower", function() {
+		$(this).popover("show");
+	});
+
+	$(document).on("mouseleave", "a.popoverRower", function() {
+		$(this).popover("hide");
+	});
+
 	
 	// that funny little button in the upper right
 	$("#toggleUpdate").click(function() {
@@ -132,6 +160,7 @@ $(document).ready(function() {
 	// deals with a response from the server 
 	// and triggers the necessary handlebars template
 	function handleResponse(data) {
+		$("a.popoverRower").popover("destroy");
 		if (data.general.typ == "result") {
 			var source = $("#content-template-result").html();
 		}

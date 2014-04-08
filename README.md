@@ -2,7 +2,7 @@
 ### by Luca Becker
 
 
-<p>This project generates a web page containing results and startlist based on the database of the perp regatta software. For further information on perp see http://perp.de/ .</p>
+<p>This project generates a web page containing results and startlists based on the database of the perp regatta software. For further information on perp see http://perp.de/ .</p>
 <p>This project doesn't work with the perp database alone. You will need to either modify the getCurrentRace method (check some old versions, startlist.js or result.js might still have the query) or run the sortRaces project ( https://github.com/lucavb/sortRaces ). This project allows you to hide certain sections and sort them in case one section is squezzed in somewhere. The second solution is recommended.</p>
 
 
