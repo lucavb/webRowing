@@ -46,8 +46,11 @@
 	  </div>
 	</div>
 
-	<div id="container" class="container">
-
+	<div class="container">
+		<span id="pre-container">
+		</span>
+		<div id="container">
+		</div>
 	</div>
 	<script id="content-template-result" type="text/x-handlebars-template">
 		<div class="row">
@@ -72,7 +75,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
 						<div class="panel-body">
-							<p>Soll-Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 							<p>Umpire: {{general.umpire}} / Judge: {{general.judge}} </p>
 						</div>
 						<div class="table-responsive">
@@ -141,7 +144,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
 						<div class="panel-body">
-							<p>Soll-Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 							<p>Umpire: {{general.umpire}} / Judge: {{general.judge}} </p>
 						</div>
 						<div class="table-responsive">

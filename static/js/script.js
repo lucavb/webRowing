@@ -26,14 +26,15 @@ $(document).ready(function() {
 	});
 	Handlebars.registerHelper("ruderer", function(obj) {
 		var ret = "";
-		for (var i = 1; i <= 8; i++) {
+		ret += obj.r1_string;
+		for (var i = 2; i <= 8; i++) {
 			if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
 				break;
 			}
-			ret += obj["r" + i + "_string"] + ", ";
+			ret += ", " + obj["r" + i + "_string"];
 		}
 		if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
-			ret += "St. " + obj.rS_string;
+			ret += ", St. " + obj.rS_string;
 		}
 		return ret ;
 	});
@@ -70,7 +71,9 @@ $(document).ready(function() {
 			setAutoMode(false);
 			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
 		}
-		
+		else {
+			printErrMsg("Entschuldigung", "Bitte geben Sie eine Nummer an.")
+		}		
 	});
 
 
@@ -168,6 +171,8 @@ $(document).ready(function() {
 			var source = $("#content-template-startlist").html();
 		}
 		else {
+			// so this no race. let's print the error message
+			printErrMsg(data.general.header, data.general.msg);
 			return;
 		}
 		var counter = 0;
@@ -182,6 +187,14 @@ $(document).ready(function() {
 		var template = Handlebars.compile(source);
 		var html = template(data);
 		$("#container").html(html);
+	}
+
+	function printErrMsg(header, content) {
+		var ret = '<div class="alert alert-warning alert-dismissable"> \
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> \
+			<strong>';
+		ret += header + "</strong> " + content + "</div>";
+		$("#pre-container").html(ret);
 	}
 
 	// checks whether a given variable is numeric 

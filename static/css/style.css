@@ -7,7 +7,6 @@ body {
 }
 
 #rennen_nummer{
-    width: 80px;
     height: 40px;
     background:#333333;
     color:#fff;
@@ -19,6 +18,10 @@ body {
 
 #rennen_nummer_alternativ{
     display: none;
+}
+
+a.active{
+    font-weight: bold; 
 }
 
 @media only screen and (max-device-width: 480px) and (orientation : landscape) {

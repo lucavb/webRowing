@@ -29,7 +29,7 @@ function getCurrentRace(type, callback) {
 					LIMIT 1";
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
-			console.log("    warning    - there was no current race found");
+			console.log("    warning - there was no current race found");
 			callback(null);
 		}
 		else {
@@ -60,11 +60,13 @@ function getRaceByID(type, id, callback) {
 				 LIMIT 1";
 	connection.query(query, function (err, rows) {
 		if (err) {
-			console.log("    warning    - " + err);
+			console.log("  warning   - " + err);
 			callback(ret);
 		}
 		else if (rows.length == 0) {
-			console.log("    warning    - there was no race found for " + id);
+			console.log("  warning   - there was no race found for " + id);
+			ret.general.header = "Entschuldigung";
+			ret.general.msg = "Es wurde kein Rennen mit der Nummer " + id + " gefunden.";
 			callback(ret);
 		}
 		else {	
@@ -98,7 +100,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				ret[row.Lauf] = { "general" : "", "boote" : {}};
 				ret[row.Lauf].general = row;
 				if (type == "startlist") {
-					// i'd like to mention that the datastructure has not been done by me and has been made around 2000 i think.
+					// i'd like to mention that the datastructure has not been made by me and has been made around 2000 i think.
 					var query2 = "	SELECT startlisten.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, \
 									CONCAT(r1.`VName`, ' ', r1.`NName`, ' (', r1.`JahrG`, ')') as r1_string, \
 									CONCAT(r2.`VName`, ' ', r2.`NName`, ' (', r2.`JahrG`, ')') as r2_string, \
@@ -137,7 +139,9 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
 									FROM ergebnisse e \
 									LEFT JOIN zeiten z ON (z.`Regatta_ID` = e.`Regatta_ID` AND z.Rennen = e.Rennen AND e.Lauf = z.Lauf AND e.`TNr` = z.`TNr`) \
-									INNER JOIN rennen r ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` OR r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND z.`MesspunktNr` IS NULL) \
+									INNER JOIN rennen r \
+										ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` OR r.`Regatta_ID` = e.`Regatta_ID` \
+										AND r.`Rennen` = e.`Rennen` AND z.`MesspunktNr` IS NULL) \
 									LEFT JOIN meldungen m ON (e.`TNr` = m.`TNr` AND m.Regatta_ID = e.Regatta_ID AND m.Rennen = e.Rennen ) \
 									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = e.`Regatta_ID`) \
 									INNER JOIN ruderer r1 ON (m.`ruderer1_ID` = r1.`ID`) \
@@ -150,7 +154,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
 									WHERE e.Rennen = ? AND e.Lauf = ? AND e.Regatta_ID = ? \
-									ORDER BY ISNULL(z.`Zeit`), z.`Zeit` ASC, teams.`Teamname`";
+									ORDER BY ISNULL(z.`Zeit`), z.`Zeit` ASC, e.Bahn ASC, teams.`Teamname`";
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
