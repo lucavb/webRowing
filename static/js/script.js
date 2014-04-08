@@ -38,6 +38,12 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
+	Handlebars.registerHelper("everyOther", function (index, amount, scope) {
+	    if ( ++index % amount) 
+	        return scope.inverse(this);
+	    else 
+	        return scope.fn(this);
+	});
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
@@ -72,7 +78,7 @@ $(document).ready(function() {
 			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
 		}
 		else {
-			printErrMsg("Entschuldigung", "Bitte geben Sie eine Nummer an.")
+			printErrMsg("Entschuldigung", "Bitte geben Sie eine Nummer als Rennen an.")
 		}		
 	});
 

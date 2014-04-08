@@ -14,6 +14,7 @@ body {
     font-size: 33px;
     text-align: center;
     margin: 45px 0 0 0;
+    width:80px;
 }
 
 #rennen_nummer_alternativ{
@@ -22,6 +23,25 @@ body {
 
 a.active{
     font-weight: bold; 
+}
+
+a.popoverRower{
+    color: #333333;
+}
+
+/* PC */
+
+@media only screen and (min-device-width:1025px) {
+    .same_row {
+        display: table;
+        width: 100%;
+    }
+
+    .col-md-4 {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+    }
 }
 
 @media only screen and (max-device-width: 480px) and (orientation : landscape) {
@@ -66,7 +86,16 @@ a.active{
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) {
     /* iPad Normal Landscape */
+    .same_row {
+        display: table;
+        width: 100%;
+    }
 
+    .col-md-4 {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+    }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) {
@@ -81,7 +110,16 @@ a.active{
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio: 2) {
     /* iPad Normal Landscape Retina */
+    .same_row {
+        display: table;
+        width: 100%;
+    }
 
+    .col-md-4 {
+        float: none;
+        display: table-cell;
+        vertical-align: top;
+    }
 }
 
 @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio: 2) {
