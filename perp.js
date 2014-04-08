@@ -25,7 +25,7 @@ function getCurrentRace(type, callback) {
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
 					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
 					WHERE l.IstStartZeit IS NULL\
-					ORDER BY l.SollStartZeit ASC, l.Rennen ASC \
+					ORDER BY ab.Order ASC, l.SollStartZeit ASC, l.Rennen ASC \
 					LIMIT 1";
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
@@ -64,7 +64,7 @@ function getRaceByID(type, id, callback) {
 			callback(ret);
 		}
 		else if (rows.length == 0) {
-			console.log("    warning    - there was no race found for "+ id);
+			console.log("    warning    - there was no race found for " + id);
 			callback(ret);
 		}
 		else {	
@@ -87,6 +87,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
 				 LEFT JOIN `addressen` aU ON (aU.`ID` = l.`Schiedsrichter_ID_Umpire` AND aU.`IstSchiedsrichter` = 1) \
 				 LEFT JOIN addressen aJ ON (aJ.ID = l.`Schiedsrichter_ID_Judge` AND aJ.`IstSchiedsrichter` = 1) \
+				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish = 1) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
 	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
@@ -115,22 +116,28 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
-					async.each(rows2,
-						function(row2, callback) {
-							if (row2.Abgemeldet == 0) {
-								delete row2.Abgemeldet;
-							}
-							if (row2.Nachgemeldet == 0) {
-								delete row2.Nachgemeldet;
-							}
-							if (type == "result" && row2.Ausgeschieden == "") {
-								delete row2.Ausgeschieden;
-								delete row2.Kommentar;
-							}
-						});
+					if (rows2.length == 0) {
+						delete ret[row.Lauf];
+						callback();
+					}
+					else {
+						async.each(rows2,
+							function(row2, callback) {
+								if (row2.Abgemeldet == 0) {
+									delete row2.Abgemeldet;
+								}
+								if (row2.Nachgemeldet == 0) {
+									delete row2.Nachgemeldet;
+								}
+								if (type == "result" && row2.Ausgeschieden == "") {
+									delete row2.Ausgeschieden;
+									delete row2.Kommentar;
+								}
+							});
 
-					ret[row.Lauf].boote = rows2;
-					callback();
+						ret[row.Lauf].boote = rows2;
+						callback();
+					}
 				});
 				
 
