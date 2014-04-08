@@ -44,6 +44,16 @@ $(document).ready(function() {
 	    else 
 	        return scope.fn(this);
 	});
+	Handlebars.registerHelper("detectType", function(race, options){
+		if (race == "startlist") {
+			return options.fn(this);
+		}
+		else {
+			return options.inverse(this);
+		}
+	});
+	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
+	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
@@ -169,18 +179,13 @@ $(document).ready(function() {
 	// deals with a response from the server 
 	// and triggers the necessary handlebars template
 	function handleResponse(data) {
-		$("a.popoverRower").popover("destroy");
-		if (data.general.typ == "result") {
-			var source = $("#content-template-result").html();
-		}
-		else if (data.general.typ == "startlist") {
-			var source = $("#content-template-startlist").html();
-		}
-		else {
+		if (!data.general.hasOwnProperty("Rennen")) {
 			// so this no race. let's print the error message
 			printErrMsg(data.general.header, data.general.msg);
 			return;
 		}
+		$("a.popoverRower").popover("destroy");
+		var source = $("#template-general-race").html();
 		var counter = 0;
 		var boote = 0;
 		$.each(data.abteilungen, function(key, abteilung ) {

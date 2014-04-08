@@ -37,7 +37,7 @@ a.popoverRower{
         width: 100%;
     }
 
-    .col-md-4 {
+    .col-* {
         float: none;
         display: table-cell;
         vertical-align: top;
@@ -91,7 +91,7 @@ a.popoverRower{
         width: 100%;
     }
 
-    .col-md-4 {
+    .col-* {
         float: none;
         display: table-cell;
         vertical-align: top;
@@ -115,7 +115,7 @@ a.popoverRower{
         width: 100%;
     }
 
-    .col-md-4 {
+    .col-* {
         float: none;
         display: table-cell;
         vertical-align: top;

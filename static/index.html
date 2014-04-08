@@ -52,7 +52,7 @@
 		<div id="container">
 		</div>
 	</div>
-	<script id="content-template-result" type="text/x-handlebars-template">
+	<script id="template-general-race" type="text/x-handlebars-template">
 		<div class="row">
 			<div class="col-md-11">
 				<div class="page-header">
@@ -84,8 +84,10 @@
 							</div>
 							<div class="table-responsive">
 								<table class="table table-striped">
-									<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
+									<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th>
+									{{#detectType ../general.typ}}{{else}}<th>Zeit</th>{{/detectType}}</tr>
 									{{#each boote}}
+										
 										{{#if Abgemeldet}}
 											<tr class="danger">
 										{{else}}
@@ -95,27 +97,12 @@
 												<tr>
 											{{/if}}
 										{{/if}}
-
-											<td>
-											{{#if Ausgeschieden}}
-												-
-											{{else}}
-												{{Bahn}}
-											{{/if}}</td><td>{{BugNr}}</td>
-											<td>
-												<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-												data-content='{{ruderer this}}' >
-												{{Teamname}}
-												</a>
-											</td>
-											<td>
-											{{#if Ausgeschieden}}
-												{{Kommentar}}
-											{{else}}
-												{{Zeit}}
-											{{/if}}
-											</td>
-											
+										{{! true means startlist; false result}}
+										{{#detectType ../../general.typ}}
+											{{> table_type_startlist this}}
+										{{else}}
+											{{> table_type_result this}}
+										{{/detectType}}
 										</tr>
 									{{/each}}
 								</table>
@@ -124,73 +111,39 @@
 					</div>
 				{{#everyOther @index 2}}
 					</div>
-				{{else}}
 				{{/everyOther}}
 			{{/each}}
 		</div>
 	</script>
-	<script id="content-template-startlist" type="text/x-handlebars-template">
-		<div class="row">
-			<div class="col-md-11">
-				<div class="page-header">
-			  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
-			  	</div>
-			</div>
-			<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
-		</div>
-		<h2>Allgemein</h2>
-		<div class="row">
-		  <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
-		  <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
-		  <div class="col-md-3">{{general.NameK}}</div>
-		  <div class="col-md-3">{{general.Position}} m</div>
-		</div>
-		<h2>Abteilungen</h2>
-		<div class="row">
-			{{#each abteilungen}}
-				{{#everyOther @index 2}}
-				{{else}}
-					<div class="same_row">
-				{{/everyOther}}
-				<div class="col-md-6">
-					<div class="panel panel-default">
-						<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4></div>
-						<div class="panel-body">
-							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
-							<p>Umpire: {{general.umpire}} / Judge: {{general.judge}} </p>
-						</div>
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th></tr>
-								{{#each boote}}
-									{{#if Abgemeldet}}
-										<tr class="danger">
-									{{else}}
-										{{#if Nachgemeldet}}
-											<tr class="success">
-										{{else}}
-											<tr>
-										{{/if}}
-									{{/if}}
-										<td>{{Bahn}}</td><td>{{BugNr}}</td>
-										<td>
-											<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-											data-content='{{ruderer this}}' >
-											{{Teamname}}
-											</a>
-										</td>
-									</tr>
-								{{/each}}
-							</table>
-						</div>
-					</div>
-				</div>
-				{{#everyOther @index 2}}
-					</div>
-				{{else}}
-				{{/everyOther}}
-			{{/each}}
-		</div>
+	<script id="table-template-result" type="text/x-handlebars-template">
+		<td>
+		{{#if Ausgeschieden}}
+			-
+		{{else}}
+			{{Bahn}}
+		{{/if}}</td><td>{{BugNr}}</td>
+		<td>
+			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			data-content='{{ruderer this}}' >
+			{{Teamname}}
+			</a>
+		</td>
+		<td>
+		{{#if Ausgeschieden}}
+			{{Kommentar}}
+		{{else}}
+			{{Zeit}}
+		{{/if}}
+		</td>
+	</script>
+	<script id="table-template-startlist" type="text/x-handlebars-template">
+		<td>{{this.Bahn}}</td><td>{{BugNr}}</td>
+		<td>
+			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			data-content='{{ruderer this}}' >
+			{{Teamname}}
+			</a>
+		</td>
 	</script>
 </body>
 </html>
