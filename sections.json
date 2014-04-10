@@ -1,0 +1,37 @@
+{
+	"1" : {
+		"first_letter" : "V",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Vorlauf"
+	},
+	"2" : {
+		"first_letter" : "H",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Hoffnungslauf"
+	},
+	"3" : {
+		"first_letter" : "S",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Semifinale"
+	},
+	"4" : {
+		"first_letter" : "A",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Abteilung"
+	},
+	"5" : {
+		"first_letter" : "F",
+		"range_regex" : "[A-Z]+",
+		"replacement" : "Finale"
+	},
+	"6" : {
+		"first_letter" : "Q",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Viertelfinale"
+	},
+	"7" : {
+		"first_letter" : "Z",
+		"range_regex" : "[0-9]+",
+		"replacement" : "Zwischenlauf"
+	}
+}

@@ -3,6 +3,9 @@ var mysql = require('mysql');
 var async = require("async");
 var fs = require("fs");
 
+// read info about the replacement for sections V1 = Vorlauf 1
+var sections_conf = JSON.parse(fs.readFileSync("./sections.json"));
+
 
 // setting up mysql connection
 var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
@@ -195,36 +198,14 @@ function getSections(type, regatta_id, rennen_id, callback) {
 
 // rename function in order to rename A1 to Abteilung 1
 function reframeSections(section) {
-	var regexVorlauf = new RegExp("V[0-9]+");
-	var regexHoffnung = new RegExp("H[0-9]+");
-	var regexSemi = new RegExp("S[0-9]+");
-	var regexAbteilung = new RegExp("A[0-9]+");
-	var regexFinale = new RegExp("F[A-Z]+");
-	var regexViertelFinale = new RegExp("Q[0-9]+");
-	var regexZwischen = new RegExp("Z[0-9]+");
-	var firstPart = "";
-	if (regexVorlauf.test(section)) {
-		firstPart = "Vorlauf";
+	for (var key in sections_conf) {
+		var regEx = new RegExp(sections_conf[key].first_letter + sections_conf[key].range_regex);
+		if (regEx.test(section)) {
+			return sections_conf[key].replacement + " " + section.substring(1);
+		}
 	}
-	else if (regexHoffnung.test(section)) {
-		firstPart = "Hoffnungslauf";
-	}
-	else if (regexSemi.test(section)) {
-		firstPart = "Semifinale";
-	}
-	else if (regexAbteilung.test(section)) {
-		firstPart = "Abteilung";
-	}
-	else if (regexFinale.test(section)) {
-		firstPart = "Finale";
-	}
-	else if (regexZwischen.test(section)) {
-		firstPart = "Zwischenlauf";
-	}
-	else {
-		return section + "";
-	}
-	return firstPart + ' ' + section.substring(1);
+	// well this is awkward. let's just return it then
+	return section;
 }
 
 module.exports.getRaceByID = getRaceByID;
