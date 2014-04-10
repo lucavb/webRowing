@@ -6,11 +6,7 @@ var fs = require("fs");
 
 // setting up mysql connection
 var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
-var connection = mysql.createConnection({
-	host : mysql_conf.host,
-	user : mysql_conf.username,
-	password : mysql_conf.password
-});
+var connection = mysql.createConnection(mysql_conf);
 connection.connect(function(err) {
 	if (err) {
 		console.log("    error   - couldn't connect to the server. that's bad");

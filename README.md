@@ -15,7 +15,7 @@ also add a file called 'mysql_conf' with the following structure
 <pre>
 {
 	"host" : "YOUR HOSTNAME",
-	"username" : "YOUR USERNAME",
+	"user" : "YOUR USERNAME",
 	"password" : "YOUR PASSWORD",
 	"database" : "YOUR DATABASENAME"
 }

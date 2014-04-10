@@ -1,5 +1,4 @@
 var express = require('express');
-var async = require('async');
 var app = express();
 var io = require('socket.io').listen(app.listen(8000), {
 	"log level" : 1
