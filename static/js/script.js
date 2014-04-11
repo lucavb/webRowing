@@ -184,6 +184,7 @@ $(document).ready(function() {
 			printErrMsg(data.general.header, data.general.msg);
 			return;
 		}
+		clearErrorMsg();
 		$("a.popoverRower").popover("destroy");
 		var source = $("#template-general-race").html();
 		var counter = 0;
@@ -232,4 +233,8 @@ $(document).ready(function() {
 			return "startlist";
 		}
 	}
-});
+
+	function clearErrorMsg() {
+		$("#pre-container").html("");
+	}
+ });

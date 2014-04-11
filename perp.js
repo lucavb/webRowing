@@ -12,7 +12,7 @@ var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
 var connection = mysql.createConnection(mysql_conf);
 connection.connect(function(err) {
 	if (err) {
-		console.log("    error   - couldn't connect to the server. that's bad");
+		console.log("    error   - couldn't connect to the server. that's bad.");
 	}
 });
 connection.query("USE " + mysql_conf.database);
@@ -23,13 +23,18 @@ function getCurrentRace(type, callback) {
 					FROM ablauf ab \
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
 					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
+					INNER JOIN startlisten s ON s.Regatta_ID = ab.Regatta_ID AND s.Lauf = ab.Lauf AND s.Rennen = ab.Rennen \
 					WHERE l.IstStartZeit IS NULL\
 					ORDER BY ab.Order ASC, l.SollStartZeit ASC, l.Rennen ASC \
 					LIMIT 1";
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
 			console.log("    warning - there was no current race found");
-			callback(null);
+			callback(createError("Entschuldigung", "Es wird kein weiteres Rennen mehr durchgeführt."));
+		}
+		else if (err) {
+			console.log("    error   - The query returned the following error.");
+			console.log(err);
 		}
 		else {
 			getRaceByID(type, rows[0].Rennen, function(ret) {
@@ -64,17 +69,18 @@ function getRaceByID(type, id, callback) {
 		}
 		else if (rows.length == 0) {
 			console.log("  warning   - there was no race found for " + id);
-			ret.general.header = "Entschuldigung";
-			ret.general.msg = "Es wurde kein Rennen mit der Nummer " + id + " gefunden.";
-			callback(ret);
+			callback(createError("Entschuldigung", "Es wurde kein Rennen mit der Nummer " + id + " gefunden."));
 		}
 		else {	
 			ret.general = rows[0];
 			ret.general.typ = type;
+			// let's find the real position
 			ret.general.Position = 2000 - ret.general.Position;
 			getSections(type, rows[0].Regatta_ID, id, function(value) {
-				ret.abteilungen = value;
-				callback(ret);
+				if (value != null) {
+					ret.abteilungen = value;
+					callback(ret);
+				}
 			})
 			
 		}
@@ -92,6 +98,11 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
 	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
+		if (err) {
+			console.log("    error   - The query, to find the sections, failed for the follwing reason.");
+			console.log(err);
+			callback(null);
+		}
 		var counter = rows.length;
 		async.each(rows,
 			function(row, callback) {
@@ -206,6 +217,16 @@ function reframeSections(section) {
 	}
 	// well this is awkward. let's just return it then
 	return section;
+}
+
+function createError(header, msg) {
+	var ret = {
+		general: {
+			"header" : header,
+			"msg" : msg
+		}
+	}
+	return ret;
 }
 
 module.exports.getRaceByID = getRaceByID;
