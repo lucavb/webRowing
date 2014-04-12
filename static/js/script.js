@@ -24,6 +24,7 @@ $(document).ready(function() {
 	Handlebars.registerHelper("momentCalendar", function(timestamp) {
 	    return moment(timestamp).calendar();
 	});
+	// generates a string containing all the rowers based on the obj handed over
 	Handlebars.registerHelper("ruderer", function(obj) {
 		var ret = "";
 		ret += obj.r1_string;
@@ -38,12 +39,27 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
+	Handlebars.registerHelper("betweenTimes", function(boat) {
+		var ret = "";
+		if (boat.Zeit_1 != null) {
+			ret += boat.Zeit_1 + " ";
+		}
+		if (boat.Zeit_2 != null) {
+			ret += boat.Zeit_2 + " ";
+		}
+		if (boat.Zeit_3 != null) {
+			ret += boat.Zeit_3;
+		}
+		return new Handlebars.SafeString(ret);
+	});
+	// think it's fairly obvious
 	Handlebars.registerHelper("everyOther", function (index, amount, scope) {
 	    if ( ++index % amount) 
 	        return scope.inverse(this);
 	    else 
 	        return scope.fn(this);
 	});
+	// true if startlist, false otherwise
 	Handlebars.registerHelper("detectType", function(race, options){
 		if (race == "startlist") {
 			return options.fn(this);
@@ -93,6 +109,7 @@ $(document).ready(function() {
 	});
 
 
+	// for fake a's
 	$(document).on("click", "a.fake", function(e) {
 		e.preventDefault();
 		return false;

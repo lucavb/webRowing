@@ -67,7 +67,7 @@
 		  <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
 		  <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
 		  <div class="col-md-3">{{general.NameK}}</div>
-		  <div class="col-md-3">{{general.Position}} m</div>
+		  <div class="col-md-3">{{general.Distanz}} m</div>
 		</div>
 		<h2>Abteilungen</h2>
 		<div class="row">
@@ -133,7 +133,10 @@
 		{{#if Ausgeschieden}}
 			{{Kommentar}}
 		{{else}}
-			{{Zeit}}
+			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			data-content='{{betweenTimes this}}' >
+			{{ZielZeit}}
+			</a>
 		{{/if}}
 		</td>
 	</script>
