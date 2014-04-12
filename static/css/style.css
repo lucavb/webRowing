@@ -29,6 +29,14 @@ a.popoverRower{
     color: #333333;
 }
 
+tr.danger > td{
+    background-color: #e38d8b !important;
+}
+
+tr.success > td {
+    background-color: #93cf90 !important;
+}
+
 /* PC */
 
 @media only screen and (min-device-width:1025px) {

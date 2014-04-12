@@ -26,6 +26,9 @@ also add a file called 'mysql_conf' with the following structure
 <p>Please place Bootstrap 3 ( http://getbootstrap.com/ ) into the static folder; jQuery ( https://jquery.com/ ) and handlebars ( http://handlebarsjs.com/ ) are also required for the project to work.
 The concrete paths can be seen from the index.html in the static folder.</p>
 
+### Further stuff
+
+<p>Also you might wanna replace the string for the organizer of the regatta.</p>
 
 ## Starting
 

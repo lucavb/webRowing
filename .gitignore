@@ -5,3 +5,7 @@ static/js/jquery-1.11.0.min.js
 static/js/moment.min.js
 mysql_conf
 static/js/moment-with-langs.min.js
+
+static/favicon.ico
+
+static/favicon.png
