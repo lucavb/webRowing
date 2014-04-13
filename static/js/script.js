@@ -42,10 +42,10 @@ $(document).ready(function() {
 	Handlebars.registerHelper("betweenTimes", function(boat) {
 		var ret = "";
 		if (boat.Zeit_1 != null) {
-			ret += boat.Zeit_1 + " ";
+			ret += boat.Zeit_1 + "<br />";
 		}
 		if (boat.Zeit_2 != null) {
-			ret += boat.Zeit_2 + " ";
+			ret += boat.Zeit_2 + "<br />";
 		}
 		if (boat.Zeit_3 != null) {
 			ret += boat.Zeit_3;
@@ -116,7 +116,9 @@ $(document).ready(function() {
 	});
 
 	$(document).on("mouseover", "a.popoverRower", function() {
-		$(this).popover("show");
+		$(this).popover({
+			html: true
+		}).popover("show");
 	});
 
 	$(document).on("mouseleave", "a.popoverRower", function() {
