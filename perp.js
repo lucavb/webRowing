@@ -60,9 +60,9 @@ function getRaceByID(type, id, callback) {
 				 INNER JOIN rennen r ON (r.Rennen = l.Rennen AND r.Regatta_ID = l.Regatta_ID) \
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = l.Regatta_ID \
 				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.StartMesspunktNr = m.MesspunktNr) \
-				 WHERE l.Rennen = " + id + " \
+				 WHERE l.Rennen = ? \
 				 LIMIT 1";
-	connection.query(query, function (err, rows) {
+	connection.query(query, [id], function (err, rows) {
 		if (err) {
 			console.log("  warning   - " + err);
 			callback(ret);
@@ -182,7 +182,6 @@ function getSections(type, regatta_id, rennen_id, callback) {
 						callback();
 					}
 					else {
-
 						async.each(rows2,
 							function(row2, callback) {
 								if (row2.Abgemeldet == 0) {
@@ -195,7 +194,8 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									delete row2.Ausgeschieden;
 									delete row2.Kommentar;
 								}
-							});
+							}
+						);
 
 						ret[row.Lauf].boote = rows2;
 						callback();

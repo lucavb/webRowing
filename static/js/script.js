@@ -15,17 +15,17 @@ $(document).ready(function() {
 	// set the language for moment.js
 	moment.lang("de");
 	// register a handlebars helper for moment js
-	Handlebars.registerHelper("momentFromNow", function(timestamp) {
+	Handlebars.registerHelper("momentFromNow", function (timestamp) {
 	    return moment(timestamp).fromNow();
 	});
-	Handlebars.registerHelper("momentFormat", function(timestamp) {
+	Handlebars.registerHelper("momentFormat", function (timestamp) {
 	    return moment(timestamp).format('LLL');
 	});
-	Handlebars.registerHelper("momentCalendar", function(timestamp) {
+	Handlebars.registerHelper("momentCalendar", function (timestamp) {
 	    return moment(timestamp).calendar();
 	});
 	// generates a string containing all the rowers based on the obj handed over
-	Handlebars.registerHelper("ruderer", function(obj) {
+	Handlebars.registerHelper("ruderer", function (obj) {
 		var ret = "";
 		ret += obj.r1_string;
 		for (var i = 2; i <= 8; i++) {
@@ -39,7 +39,7 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
-	Handlebars.registerHelper("betweenTimes", function(boat) {
+	Handlebars.registerHelper("betweenTimes", function (boat) {
 		var ret = "";
 		if (boat.Zeit_1 != null) {
 			ret += boat.Zeit_1 + "<br />";
@@ -60,7 +60,7 @@ $(document).ready(function() {
 	        return scope.fn(this);
 	});
 	// true if startlist, false otherwise
-	Handlebars.registerHelper("detectType", function(race, options){
+	Handlebars.registerHelper("detectType", function (race, options){
 		if (race == "startlist") {
 			return options.fn(this);
 		}
@@ -68,6 +68,7 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
+	// register both partials for either startlists or results
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
 	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
 	// gather information about the hashtag
@@ -104,6 +105,7 @@ $(document).ready(function() {
 			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
 		}
 		else {
+			// value is not a number. might wanna translate that into english for different regions
 			printErrMsg("Entschuldigung", "Bitte geben Sie eine Nummer als Rennen an.")
 		}		
 	});
@@ -161,7 +163,7 @@ $(document).ready(function() {
 	 *
 	 */
 
-	// sets the function pased on the hash
+	// sets the function of the page based on the hash
 	function parseHash() {
 		var hash = window.location.hash.split("#")[1];
 
@@ -169,7 +171,7 @@ $(document).ready(function() {
 			if (hash == "startlist") {
 				currentType = false;
 			}
-			else {
+			else if (hash == "result") {
 				currentType = true;
 			}
 		}
@@ -221,11 +223,11 @@ $(document).ready(function() {
 	}
 
 	function printErrMsg(header, content) {
-		var ret = '<div class="alert alert-warning alert-dismissable"> \
+		var html = '<div class="alert alert-warning alert-dismissable"> \
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> \
 			<strong>';
-		ret += header + "</strong> " + content + "</div>";
-		$("#pre-container").html(ret);
+		html += header + "</strong> " + content + "</div>";
+		$("#pre-container").html(html);
 	}
 
 	// checks whether a given variable is numeric 
@@ -245,12 +247,7 @@ $(document).ready(function() {
 
 	// returns the current type of site
 	function startOrResult() {
-		if (currentType) {
-			return "result";
-		}
-		else {
-			return "startlist";
-		}
+		return (currentType) ? "result" : "startlist";
 	}
 
 	function clearErrorMsg() {
