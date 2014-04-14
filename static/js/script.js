@@ -87,7 +87,7 @@ $(document).ready(function() {
 		$(".switch_page").removeClass("active");
 		$(this).addClass("active");
 		currentType = $(this).attr("data-page");
-		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
+		socket.emit('request', { "type" : currentType, "race_id" : requested_id});
 		if (currentType == "news") {
 			setAutoMode(false);
 		}
@@ -101,7 +101,7 @@ $(document).ready(function() {
 			requested_id = value;
 			setAutoMode(false);
 			// in case we are in the news section we are going to switch to startlist
-			if (currentType != "startlist" || currentType != "result") {
+			if (currentType != "startlist" && currentType != "result") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
@@ -209,7 +209,7 @@ $(document).ready(function() {
 			$("#toggleUpdate").removeClass("btn-danger");
 			$("#toggleUpdate").addClass("btn-success");
 			requested_id = 0;
-			if (currentType != "startlist" || currentType != "result") {
+			if (currentType != "startlist" && currentType != "result") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
@@ -275,5 +275,6 @@ $(document).ready(function() {
 
 	function forceSwitch(new_page) {
 		$(".switch_page[data-page='" + new_page + "']").click();
+		window.location.hash = "#" + new_page;
 	}
  });
