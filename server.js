@@ -7,6 +7,9 @@ var io = require('socket.io').listen(app.listen(8000), {
 // load perp module for the output
 var perp = require('./perp.js');
 
+// load news module for news
+var news = require("./news.js");
+
 // let's serve some static content 
 app.use('/', express.static(__dirname + '/static'));
 
@@ -34,6 +37,18 @@ io.sockets.on('connection', function(socket) {
 			perp.getCurrentRace("result", function(value) {
 				socket.broadcast.emit(data.type, value);
 			});
+		}
+		else if (data.type == "news") {
+			socket.broadcast.emit("news", news.getAllNews());
+		}
+	});
+
+	socket.on("broadtcastNews", function (data) {
+		// first validate it
+		if (news.validate(data)) {
+			news.addNews(data);
+			// print them all
+			socket.broadcast.emit("news", news.getAllNews());
 		}
 	});
 
@@ -65,6 +80,9 @@ io.sockets.on('connection', function(socket) {
 					socket.emit("request", value);
 				})
 			}
+		}
+		else if (data.type == "news") {
+			socket.emit("news", news.getAllNews());
 		}
 	});
 });

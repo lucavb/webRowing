@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
 	// some basic variables and objects
-	var currentType = false; // false = startlist; true = result
+	var currentType = "startlist"; // false = startlist; true = result
 	var autoUpdate = true;
 	var requested_id = 0;
 	var socket = io.connect();
@@ -60,7 +60,7 @@ $(document).ready(function() {
 	        return scope.fn(this);
 	});
 	// true if startlist, false otherwise
-	Handlebars.registerHelper("detectType", function (race, options){
+	Handlebars.registerHelper("detectType", function (race, options) {
 		if (race == "startlist") {
 			return options.fn(this);
 		}
@@ -74,7 +74,7 @@ $(document).ready(function() {
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
-	socket.emit('request', { "type" : startOrResult(), "race_id" : requested_id});
+	socket.emit('request', { "type" : currentType, "race_id" : requested_id});
 
 	/*
 	`*
@@ -84,15 +84,13 @@ $(document).ready(function() {
 	
 	// those to a's for switching the page
 	$(".switch_page").click(function() {
-		if ($(this).attr("data-page") == "startlist") {
-			currentType = false;
-		}
-		else {
-			currentType = true;
-		}
 		$(".switch_page").removeClass("active");
 		$(this).addClass("active");
+		currentType = $(this).attr("data-page");
 		socket.emit('request', { "type" : $(this).attr("data-page"), "race_id" : requested_id});
+		if (currentType == "news") {
+			setAutoMode(false);
+		}
 	})
 
 	// that form to request a certain race
@@ -102,7 +100,11 @@ $(document).ready(function() {
 		if (isInt(value)) {
 			requested_id = value;
 			setAutoMode(false);
-			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+			// in case we are in the news section we are going to switch to startlist
+			if (currentType != "startlist" || currentType != "result") {
+				forceSwitch("startlist");
+			}
+			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
 		}
 		else {
 			// value is not a number. might wanna translate that into english for different regions
@@ -139,21 +141,27 @@ $(document).ready(function() {
 	 *
 	 */
 
-	socket.on("startlist", function(data) {
-		if (autoUpdate && startOrResult() == "startlist") {
+	socket.on("startlist", function (data) {
+		if (autoUpdate && currentType == "startlist") {
 			handleResponse(data);
 		}
 	});
 
-	socket.on("result", function(data) {
-		if (autoUpdate && startOrResult() == "result") {
+	socket.on("result", function (data) {
+		if (autoUpdate && currentType == "result") {
 			handleResponse(data);
 		}
 	});
 
 	// requested response
-	socket.on("request", function(data) {
+	socket.on("request", function (data) {
 		handleResponse(data);
+	});
+
+	socket.on("news", function (data) {
+		if (currentType == "news") {
+			printNews(data);
+		}
 	});
 
 
@@ -163,16 +171,29 @@ $(document).ready(function() {
 	 *
 	 */
 
+	function printNews (data) {
+		data = JSON.parse(data);
+		// we need to reverse it for the order
+		data.reverse();
+		var source = $("#template-news").html();
+		var template = Handlebars.compile(source);
+		var html = template(data);
+		$("#container").html(html);
+	}
+
 	// sets the function of the page based on the hash
 	function parseHash() {
 		var hash = window.location.hash.split("#")[1];
 
 		if(hash !== undefined){
 			if (hash == "startlist") {
-				currentType = false;
+				currentType = "startlist";
 			}
 			else if (hash == "result") {
-				currentType = true;
+				currentType = "result";
+			}
+			else if (hash == "news") {
+				currentType = "news";
 			}
 		}
 	}
@@ -188,7 +209,10 @@ $(document).ready(function() {
 			$("#toggleUpdate").removeClass("btn-danger");
 			$("#toggleUpdate").addClass("btn-success");
 			requested_id = 0;
-			socket.emit("request", { "type" : startOrResult(), "race_id" : requested_id});
+			if (currentType != "startlist" || currentType != "result") {
+				forceSwitch("startlist");
+			}
+			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
 		}
 	}
 
@@ -245,12 +269,11 @@ $(document).ready(function() {
 		return counter;
 	}
 
-	// returns the current type of site
-	function startOrResult() {
-		return (currentType) ? "result" : "startlist";
-	}
-
 	function clearErrorMsg() {
 		$("#pre-container").html("");
+	}
+
+	function forceSwitch(new_page) {
+		$(".switch_page[data-page='" + new_page + "']").click();
 	}
  });

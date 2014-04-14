@@ -33,6 +33,7 @@
 	      <ul class="nav navbar-nav">
 	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
 	        <li><a class='switch_page' data-page='result' href="#result">Ergebnisse</a></li>
+	        <li><a class='switch_page' data-page='news' href="#news">Nachrichten</a></li>
 	        <form class="navbar-form navbar-left" id='request_race' role="search">
 	            <div class="form-group">
 	                <input type="number" class="form-control" placeholder="Nummer des Rennens">
@@ -148,6 +149,12 @@
 			{{Teamname}}
 			</a>
 		</td>
+	</script>
+	<script id="template-news" type="text/x-handlebars-template">
+		{{#each this}}
+			<h3>{{header}} <small>{{momentCalendar timestamp}}</small></h3>
+			<p><pre>{{msg}}</pre></p>
+		{{/each}}
 	</script>
 </body>
 </html>
