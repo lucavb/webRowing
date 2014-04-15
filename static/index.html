@@ -152,8 +152,17 @@
 	</script>
 	<script id="template-news" type="text/x-handlebars-template">
 		{{#each this}}
-			<h3>{{header}} <small>{{momentCalendar timestamp}}</small></h3>
-			<p><pre>{{msg}}</pre></p>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						{{header}}
+					</h3>
+					{{momentCalendar timestamp}}
+				</div>
+				<div class="panel-body">
+					{{safeString msg}}
+				</div>
+			</div>
 		{{/each}}
 	</script>
 </body>

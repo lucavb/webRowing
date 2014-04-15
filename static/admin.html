@@ -30,7 +30,6 @@
 		  		obj.msg = $("#inputMsg").val();
 		  		obj.secret = $("#inputSecret").val();
 		  		socket.emit("broadtcastNews", obj);
-		  		console.log(obj);
 		  		return false;
 		  	})
 		  	$("#auto").click(function() {

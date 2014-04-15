@@ -68,6 +68,10 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
+	// register SafeString
+	Handlebars.registerHelper("safeString", function (text) {
+		return new Handlebars.SafeString(text);
+	});
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
 	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
