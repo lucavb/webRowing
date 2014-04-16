@@ -1,5 +1,5 @@
 var fs = require("fs");
-var news = new Array();
+var news = [];
 var moment = require('moment');
 
 // one might wanna change this to something more secure

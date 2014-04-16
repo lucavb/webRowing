@@ -1,9 +1,11 @@
-.krg_rot{
-    color:#c40505 !important;
-}
+/* the navbar requires a padding from the top */
 
 body { 
     padding-top: 70px;
+}
+
+.krg_rot{
+    color:#c40505 !important;
 }
 
 #rennen_nummer{
@@ -25,9 +27,13 @@ a.active{
     font-weight: bold; 
 }
 
+/* making those popover links black, less like a link */
+
 a.popoverRower{
     color: #333333;
 }
+
+/* I disagree on the colors bootstrap sets for the rows */
 
 tr.danger > td{
     background-color: #e38d8b !important;

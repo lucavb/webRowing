@@ -74,8 +74,7 @@ function getRaceByID(type, id, callback) {
 		else {	
 			ret.general = rows[0];
 			ret.general.typ = type;
-			// let's find the real position
-			ret.general.Distanz = 2000 - ret.general.Distanz;
+			ret.general.Distanz = 2000 - ret.general.Distanz;	// let's find the real position
 			getSections(type, rows[0].Regatta_ID, id, function(value) {
 				if (value != null) {
 					ret.abteilungen = value;
@@ -122,7 +121,8 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(r8.`VName`, ' ', r8.`NName`, ' (', r8.`JahrG`, ')') as r8_string, \
 									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
 									FROM startlisten \
-									LEFT JOIN meldungen m ON (startlisten.`TNr` = m.`TNr` AND m.Regatta_ID = startlisten.Regatta_ID AND m.Rennen = startlisten.Rennen ) \
+									LEFT JOIN meldungen m ON (startlisten.`TNr` = m.`TNr` AND m.Regatta_ID = startlisten.Regatta_ID \
+										AND m.Rennen = startlisten.Rennen ) \
 									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = startlisten.Regatta_ID) \
 									INNER JOIN ruderer r1 ON (m.`ruderer1_ID` = r1.`ID`) \
 									LEFT JOIN ruderer r2 ON (m.`ruderer2_ID` = r2.`ID`) \
@@ -137,7 +137,8 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									ORDER BY startlisten.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, \
+									e.`Ausgeschieden`, e.`Kommentar`, \
 									CONCAT(m0.Position, 'm: ', z0.Zeit) AS Zeit_1, \
 									CONCAT(m1.Position, 'm: ', z1.Zeit) AS Zeit_2, \
 									CONCAT(m2.Position, 'm: ', z2.Zeit) AS Zeit_3, \
@@ -151,15 +152,20 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(r8.`VName`, ' ', r8.`NName`, ' (', r8.`JahrG`, ')') as r8_string, \
 									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
 									FROM ergebnisse e \
-									LEFT JOIN zeiten z ON (z.`Regatta_ID` = e.`Regatta_ID` AND z.Rennen = e.Rennen AND e.Lauf = z.Lauf AND e.`TNr` = z.`TNr`) \
+									LEFT JOIN zeiten z ON (z.`Regatta_ID` = e.`Regatta_ID` AND z.Rennen = e.Rennen \
+										AND e.Lauf = z.Lauf AND e.`TNr` = z.`TNr`) \
 									INNER JOIN rennen r \
-										ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` OR r.`Regatta_ID` = e.`Regatta_ID` \
+										ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` \
+										OR r.`Regatta_ID` = e.`Regatta_ID` \
 										AND r.`Rennen` = e.`Rennen` AND z.`MesspunktNr` IS NULL) \
 									LEFT JOIN meldungen m ON (e.`TNr` = m.`TNr` AND m.Regatta_ID = e.Regatta_ID AND m.Rennen = e.Rennen ) \
 									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = e.`Regatta_ID`) \
-									LEFT JOIN zeiten z0 ON (z0.Regatta_ID = e.Regatta_ID AND z0.Rennen = e.Rennen AND e.Lauf = z0.Lauf AND e.TNr = z0.TNr AND z0.MesspunktNr = 1) \
-									LEFT JOIN zeiten z1 ON (z1.Regatta_ID = e.Regatta_ID AND z1.Rennen = e.Rennen AND e.Lauf = z1.Lauf AND e.TNr = z1.TNr AND z1.MesspunktNr = 2) \
-									LEFT JOIN zeiten z2 ON (z2.Regatta_ID = e.Regatta_ID AND z2.Rennen = e.Rennen AND e.Lauf = z2.Lauf AND e.TNr = z2.TNr AND z2.MesspunktNr = 3) \
+									LEFT JOIN zeiten z0 ON (z0.Regatta_ID = e.Regatta_ID AND z0.Rennen = e.Rennen AND e.Lauf = z0.Lauf \
+										AND e.TNr = z0.TNr AND z0.MesspunktNr = 1) \
+									LEFT JOIN zeiten z1 ON (z1.Regatta_ID = e.Regatta_ID AND z1.Rennen = e.Rennen AND e.Lauf = z1.Lauf \
+										AND e.TNr = z1.TNr AND z1.MesspunktNr = 2) \
+									LEFT JOIN zeiten z2 ON (z2.Regatta_ID = e.Regatta_ID AND z2.Rennen = e.Rennen AND e.Lauf = z2.Lauf \
+										AND e.TNr = z2.TNr AND z2.MesspunktNr = 3) \
 									LEFT JOIN messpunkte m0 ON (m0.Regatta_ID = z0.Regatta_ID AND z0.MesspunktNr = m0.MesspunktNr) \
 									LEFT JOIN messpunkte m1 ON (m1.Regatta_ID = z1.Regatta_ID AND z1.MesspunktNr = m1.MesspunktNr) \
 									LEFT JOIN messpunkte m2 ON (m2.Regatta_ID = z2.Regatta_ID AND z2.MesspunktNr = m2.MesspunktNr) \
