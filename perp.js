@@ -91,8 +91,10 @@ function getSections(type, regatta_id, rennen_id, callback) {
 	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, rennen.NameD, CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
 				 FROM laeufe l \
 				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
-				 LEFT JOIN `addressen` aU ON (aU.`ID` = l.`Schiedsrichter_ID_Umpire` AND aU.`IstSchiedsrichter` = 1) \
-				 LEFT JOIN addressen aJ ON (aJ.ID = l.`Schiedsrichter_ID_Judge` AND aJ.`IstSchiedsrichter` = 1) \
+				 LEFT JOIN schiedsrichterliste sJ ON (sJ.Schiedsrichter_ID = l.`Schiedsrichter_ID_Judge` AND sJ.Regatta_ID = l.Regatta_ID) \
+				 LEFT JOIN schiedsrichterliste sU ON (sU.Schiedsrichter_ID = l.`Schiedsrichter_ID_Umpire` AND sU.Regatta_ID = l.Regatta_ID) \
+				 LEFT JOIN `addressen` aU ON (aU.`ID` = sU.`Schiedsrichter_ID` AND aU.`IstSchiedsrichter` = 1) \
+				 LEFT JOIN addressen aJ ON (aJ.ID = sJ.`Schiedsrichter_ID` AND aJ.`IstSchiedsrichter` = 1) \
 				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish = 1) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
