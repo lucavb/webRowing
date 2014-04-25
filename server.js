@@ -10,6 +10,10 @@ var perp = require('./perp.js');
 // load news module for news
 var news = require("./news.js");
 
+// load admin module
+
+var admin = require("./admin.js");
+
 // let's serve some static content 
 app.use('/', express.static(__dirname + '/static'));
 
@@ -50,6 +54,10 @@ io.sockets.on('connection', function(socket) {
 			// print them all
 			socket.broadcast.emit("news", news.getAllNews());
 		}
+	});
+
+	socket.on("publishResult", function (data) {
+		admin.setState(data);
 	});
 
 	// on requests this code will be executed and either return

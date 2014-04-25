@@ -4,6 +4,14 @@ body {
     padding-top: 70px;
 }
 
+body { 
+  background: url(../images/Wallpaper.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
 .krg_rot{
     color:#c40505 !important;
 }

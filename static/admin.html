@@ -31,7 +31,12 @@
 		  		obj.secret = $("#inputSecret").val();
 		  		socket.emit("broadtcastNews", obj);
 		  		return false;
-		  	})
+		  	});
+
+		  	$("#publishResult").submit(function() {
+		  		socket.emit("publishResult", $("#inputRace").val());
+		  		return false;
+		  	});
 		  	$("#auto").click(function() {
 		  		if (timer == null) {
 		  			timer = setInterval(function() {
@@ -54,14 +59,34 @@
 </head>
 <body>
 	<div class="container">
-		<h3>Manuell</h3>
-		<button class="btn" id="push_startlist">Push Startlist</button>
-		<button class="btn" id="push_result">Push Result</button>
-		<button class="btn" id="push_news">Push News</button>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Manuell</h3>
+				<button class="btn" id="push_startlist">Push Startlist</button>
+				<button class="btn" id="push_result">Push Result</button>
+				<button class="btn" id="push_news">Push News</button>
 
-		<h3>Auto Modus</h3>
-		<button id="auto" class="btn btn-danger">Auto Modus</button>
-
+				<h3>Auto Modus</h3>
+				<button id="auto" class="btn btn-danger">Auto Modus</button>
+			</div>
+			<div class="col-md-8">
+				<h3>Laufsichtbarkeit ändern</h3>
+				<p>Folgende Formatierung liegt zu Grunde: <pre>RennenID;Lauf;Status</pre>0 = nicht öffentlich; 1 = nur Startlisten; 2 = Ergebnisse + Startlisten</p>
+				<form class="form-horizontal" role="form" id="publishResult">
+					<div class="form-group">
+				    	<label for="inputHeader" class="col-sm-2 control-label">Rennenkennung</label>
+				    	<div class="col-sm-10">
+				      		<input type="text" class="form-control" id="inputRace" placeholder="1;v8;0" required>
+				    	</div>
+				  	</div>
+				  	<div class="form-group">
+				    	<div class="col-sm-offset-2 col-sm-10">
+				      		<button type="submit" class="btn btn-primary">Publish</button>
+				    	</div>
+				  	</div>
+				</form>
+			</div>
+		</div>
 		<h3>Broadcast News</h3>
 		<form class="form-horizontal" role="form" id="broadtcastNews">
 			<div class="form-group">
@@ -88,7 +113,6 @@
 		    	</div>
 		  	</div>
 		</form>
-
 	</div>
 </body>
 </html>

@@ -95,10 +95,17 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 LEFT JOIN schiedsrichterliste sU ON (sU.Schiedsrichter_ID = l.`Schiedsrichter_ID_Umpire` AND sU.Regatta_ID = l.Regatta_ID) \
 				 LEFT JOIN `addressen` aU ON (aU.`ID` = sU.`Schiedsrichter_ID` AND aU.`IstSchiedsrichter` = 1) \
 				 LEFT JOIN addressen aJ ON (aJ.ID = sJ.`Schiedsrichter_ID` AND aJ.`IstSchiedsrichter` = 1) \
-				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish = 1) \
+				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
-	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
+	var param = 0;				 
+	if (type == "result") {
+		param = 2;
+	}
+	else if (type == "startlist") {
+		param = 1;
+	}
+	connection.query(query, [param, rennen_id, regatta_id], function (err, rows) {
 		if (err) {
 			console.log("    error   - The query, to find the sections, failed for the follwing reason.");
 			console.log(err);
@@ -204,7 +211,6 @@ function getSections(type, regatta_id, rennen_id, callback) {
 								}
 							}
 						);
-
 						ret[row.Lauf].boote = rows2;
 						callback();
 					}
