@@ -16,7 +16,11 @@ connection.connect(function(err) {
 	}
 });
 connection.query("USE " + mysql_conf.database);
-connection.query("SET NAMES 'UTF8'");
+connection.query("SET NAMES 'UTF8'", function(err, rows) {
+	if (!err){
+		console.log("    info    - Connection to the database for perp.js has been established");
+	}
+});
 
 function getCurrentRace(type, callback) {
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
@@ -88,7 +92,7 @@ function getRaceByID(type, id, callback) {
 
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
-	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, rennen.NameD, CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
+	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, rennen.NameD, CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
 				 FROM laeufe l \
 				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
 				 LEFT JOIN schiedsrichterliste sJ ON (sJ.Schiedsrichter_ID = l.`Schiedsrichter_ID_Judge` AND sJ.Regatta_ID = l.Regatta_ID) \
