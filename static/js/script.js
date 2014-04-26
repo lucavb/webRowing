@@ -68,9 +68,36 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
+	// true if the boat did finish
+	Handlebars.registerHelper("endTime", function (boat) {
+		if (boat.ZielZeit != null) {
+			return boat.ZielZeit;
+		}
+		if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet != 1) {
+			return "Nicht am Start erschienen";
+		}
+		else if (boat.ZielZeit == null && boat.Ausgeschieden == 1 && boat.Abgemeldet != 1) {
+			return boat.Kommentar;
+		}
+		else if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet == 1) {
+			return "Abgemeldet";
+		}
+	});
 	// register SafeString
 	Handlebars.registerHelper("safeString", function (text) {
 		return new Handlebars.SafeString(text);
+	});
+	// row color
+	Handlebars.registerHelper("detectRowColor", function (boat) {
+		if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
+			return new Handlebars.SafeString("<tr class='danger'>");
+		}
+		else if (boat.Nachgemeldet == 1) {
+			return new Handlebars.SafeString('<tr class="success">');
+		}
+		else {
+			return Handlebars.SafeString("<tr>");
+		}
 	});
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());

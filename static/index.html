@@ -55,23 +55,34 @@
 		</div>
 	</div>
 	<script id="template-general-race" type="text/x-handlebars-template">
-		<div class="row">
-			<div class="col-md-11">
-				<div class="page-header">
-			  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
-			  	</div>
+		<div class="background-complementairy">
+			<div class="row">
+				<div class="col-md-11">
+					<div class="page-header">
+				  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
+				  	</div>
+				</div>
+				<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
 			</div>
-			<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
 		</div>
-		<h2>Allgemein</h2>
-		<div class="row">
-		  <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
-		  <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
-		  <div class="col-md-3">{{general.NameK}}</div>
-		  <div class="col-md-3">{{general.Distanz}} m</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Allgemein</h3>
+			</div>
+			<div class="panel-body">
+			    <div class="row">
+			      <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
+			      <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+			      <div class="col-md-3">{{general.NameK}}</div>
+			      <div class="col-md-3">{{general.Distanz}} m</div>
+			    </div>
+			</div>
 		</div>
+		<div class="background-complementairy">
 		<h2>Abteilungen</h2>
+		</div>
 		<div class="row">
+
 			{{#each abteilungen}}
 				{{#everyOther @index 2}}
 				{{else}}
@@ -90,15 +101,7 @@
 									{{#detectType ../general.typ}}{{else}}<th>Zeit</th>{{/detectType}}</tr>
 									{{#each boote}}
 										
-										{{#if Abgemeldet}}
-											<tr class="danger">
-										{{else}}
-											{{#if Nachgemeldet}}
-												<tr class="success">
-											{{else}}
-												<tr>
-											{{/if}}
-										{{/if}}
+										{{detectRowColor this}}
 										{{! true means startlist; false result}}
 										{{#detectType ../../general.typ}}
 											{{> table_type_startlist this}}
@@ -127,7 +130,8 @@
 			{{else}}
 				-
 			{{/if}}
-		{{/if}}</td><td>{{BugNr}}</td>
+		{{/if}}
+		</td><td>{{BugNr}}</td>
 		<td>
 			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
 			data-content='{{ruderer this}}' >
@@ -138,14 +142,10 @@
 		{{#if Ausgeschieden}}
 			{{Kommentar}}
 		{{else}}
-			{{#if ZielZeit}}
-				<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-				data-content='{{betweenTimes this}}' >
-				{{ZielZeit}}
-				</a>
-			{{else}}
-				Nicht am Start erschienen
-			{{/if}}
+			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			data-content='{{betweenTimes this}}' >
+				{{endTime this}}
+			</a>
 		{{/if}}
 		</td>
 	</script>
