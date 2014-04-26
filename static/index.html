@@ -90,8 +90,19 @@
 				{{/everyOther}}
 					<div class="col-md-6">
 						<div class="panel panel-default">
-							<div class="panel-heading"><h4>{{general.Lauf_Reframe}}</h4>
-							{{#detectType ../general.typ}}{{else}}{{#if general.ErgebnisKorrigiert}}<small>Ergebnis korrigiert</small>{{/if}}{{/detectType}}</div>
+							<div class="panel-heading">
+								<h4>{{general.Lauf_Reframe}} 
+									{{#if general.ErgebnisEndgueltig}}
+									{{else}}
+										(vorläufig!)
+									{{/if}}
+								</h4>
+							{{#detectType ../general.typ}}{{else}}
+								{{#if general.ErgebnisKorrigiert}}<small>Ergebnis korrigiert</small>
+
+								{{/if}}
+								
+							{{/detectType}}</div>
 							<div class="panel-body">
 								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 								<p>Umpire: {{general.umpire}} / Judge: {{general.judge}}</p>
