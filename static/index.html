@@ -122,7 +122,11 @@
 		{{#if Ausgeschieden}}
 			-
 		{{else}}
-			{{Bahn}}
+			{{#if ZielZeit}}
+				{{Bahn}}
+			{{else}}
+				-
+			{{/if}}
 		{{/if}}</td><td>{{BugNr}}</td>
 		<td>
 			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
@@ -134,10 +138,14 @@
 		{{#if Ausgeschieden}}
 			{{Kommentar}}
 		{{else}}
-			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-			data-content='{{betweenTimes this}}' >
-			{{ZielZeit}}
-			</a>
+			{{#if ZielZeit}}
+				<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+				data-content='{{betweenTimes this}}' >
+				{{ZielZeit}}
+				</a>
+			{{else}}
+				Nicht am Start erschienen
+			{{/if}}
 		{{/if}}
 		</td>
 	</script>
