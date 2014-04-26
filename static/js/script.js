@@ -41,14 +41,14 @@ $(document).ready(function() {
 	});
 	Handlebars.registerHelper("betweenTimes", function (boat) {
 		var ret = "";
-		if (boat.Zeit_1 != null) {
-			ret += boat.Zeit_1 + "<br />";
+		if (boat.position_1 != null) {
+			ret += boat.position_1 + "m: " + boat.zeit_1 + "<br />";
 		}
-		if (boat.Zeit_2 != null) {
-			ret += boat.Zeit_2 + "<br />";
+		if (boat.position_2 != null) {
+			ret += boat.position_2 + "m: " + boat.zeit_2 + "<br />";
 		}
-		if (boat.Zeit_3 != null) {
-			ret += boat.Zeit_3;
+		if (boat.position_3 != null) {
+			ret += boat.position_3 + "m: " + boat.zeit_3;
 		}
 		return new Handlebars.SafeString(ret);
 	});

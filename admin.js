@@ -15,7 +15,6 @@ connection.query("SET NAMES 'UTF8'");
 
 function setState (string) {
 	string = string.toLowerCase();
-	console.log(string);
 	var regEx = new RegExp("[0-9]+[;][a,q,v,s,f,z,h][0-9]+[;][0-2]");
 	if (!regEx.test(string)) {
 		console.log("    error   - the string was found invalid");
@@ -23,7 +22,6 @@ function setState (string) {
 	}
 	// gather information
 	var arr = string.split(";");
-	console.log(arr);
 	var query = "UPDATE ablauf SET publish = ? WHERE Regatta_ID = 37 AND Rennen = ? AND LOWER(Lauf) = ? ";
 	connection.query(query, [arr[2], arr[0], arr[1]], function(err, rows) {
 		if (err || rows.length == 0) {
@@ -35,7 +33,7 @@ function setState (string) {
 			console.log(err);
 		}
 		else {
-			console.log("    info    - Rennen ");
+			console.log("    info    - Change visibility: Race " + arr[0] + " Section " + arr[1] + " -> " + arr[2]);
 		}
 	});
 }

@@ -148,9 +148,12 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				else if (type == "result") {
 					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, \
 									e.`Ausgeschieden`, e.`Kommentar`, \
-									CONCAT(m0.Position, 'm: ', z0.Zeit) AS Zeit_1, \
-									CONCAT(m1.Position, 'm: ', z1.Zeit) AS Zeit_2, \
-									CONCAT(m2.Position, 'm: ', z2.Zeit) AS Zeit_3, \
+									m0.Position AS position_1,\
+									m1.Position AS position_2, \
+									m2.Position AS position_3, \
+									z0.Zeit AS zeit_1, \
+									z1.Zeit AS zeit_2, \
+									z2.Zeit AS zeit_3, \
 									CONCAT(r1.`VName`, ' ', r1.`NName`, ' (', r1.`JahrG`, ')') as r1_string, \
 									CONCAT(r2.`VName`, ' ', r2.`NName`, ' (', r2.`JahrG`, ')') as r2_string, \
 									CONCAT(r3.`VName`, ' ', r3.`NName`, ' (', r3.`JahrG`, ')') as r3_string, \
