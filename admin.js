@@ -11,7 +11,11 @@ connection.connect(function(err) {
 	}
 });
 connection.query("USE " + mysql_conf.database);
-connection.query("SET NAMES 'UTF8'");
+connection.query("SET NAMES 'UTF8'", function(err, rows) {
+	if (!err){
+		console.log("    info    - Connection to the database for admin.js has been established");
+	}
+});
 
 function setState (string) {
 	string = string.toLowerCase();

@@ -91,11 +91,14 @@
 					<div class="col-md-6">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h4>{{general.Lauf_Reframe}} 
-									{{#if general.ErgebnisEndgueltig}}
+								<h4>{{general.Lauf_Reframe}}
+									{{#detectType ../general.typ}}
 									{{else}}
-										(vorläufig!)
-									{{/if}}
+										{{#if general.ErgebnisEndgueltig}}
+										{{else}}
+											(vorläufig!)
+										{{/if}}
+									{{/detectType}}
 								</h4>
 							{{#detectType ../general.typ}}{{else}}
 								{{#if general.ErgebnisKorrigiert}}<small>Ergebnis korrigiert</small>

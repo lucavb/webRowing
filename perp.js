@@ -22,6 +22,7 @@ connection.query("SET NAMES 'UTF8'", function(err, rows) {
 	}
 });
 
+// finds the current race according to the table "ablauf" (order)
 function getCurrentRace(type, callback) {
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
@@ -90,6 +91,7 @@ function getRaceByID(type, id, callback) {
 	});
 }
 
+// gathers information on the section and finds all boats that where set for the section
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
 	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, \
@@ -167,9 +169,11 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(r6.`VName`, ' ', r6.`NName`, ' (', r6.`JahrG`, ')') as r6_string, \
 									CONCAT(r7.`VName`, ' ', r7.`NName`, ' (', r7.`JahrG`, ')') as r7_string, \
 									CONCAT(r8.`VName`, ' ', r8.`NName`, ' (', r8.`JahrG`, ')') as r8_string, \
-									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
+									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string, \
+									IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
 									FROM startlisten s \
 									LEFT JOIN ergebnisse e ON (e.Lauf = s.Lauf AND e.Regatta_ID = s.Regatta_ID AND e.Rennen = s.Rennen AND e.`TNr` = s.`TNr`) \
+									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
 									LEFT JOIN zeiten z ON (z.`Regatta_ID` = s.`Regatta_ID` AND z.Rennen = s.Rennen \
 										AND s.Lauf = z.Lauf AND s.`TNr` = z.`TNr`) \
 									INNER JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` \
@@ -199,7 +203,10 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
-					if (rows2.length == 0) {
+					if (err) {
+						console.log(err);
+					}
+					else if (rows2.length == 0 || (rows2[0].hasStarted == 0 && type == "result")) {
 						delete ret[row.Lauf];
 						callback();
 					}
@@ -222,8 +229,6 @@ function getSections(type, regatta_id, rennen_id, callback) {
 						callback();
 					}
 				});
-				
-
 			}, function(err) {
 				if (err) {
 					console.log(err);
