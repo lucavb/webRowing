@@ -10,6 +10,10 @@ var perp = require('./perp.js');
 // load news module for news
 var news = require("./news.js");
 
+// load admin module
+
+var admin = require("./admin.js");
+
 // let's serve some static content 
 app.use('/', express.static(__dirname + '/static'));
 
@@ -19,11 +23,15 @@ app.get('/', function(req, res) {
 });
 
 
-console.log('    info    - Listening on port 8000');
+console.log('    info    - Express listening on port 8000');
 
 // actual stuff
 
 io.sockets.on('connection', function(socket) {
+	// output when a socket connects
+	var address = socket.handshake.address;
+	console.log("    info    - New connection from " + address.address + ":" + address.port);
+
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
 		console.log("    info    - broadcasting " + data.type);
@@ -52,10 +60,14 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+	socket.on("publishResult", function (data) {
+		admin.setState(data);
+	});
+
 	// on requests this code will be executed and either return
 	// a requested race or the next one
 	socket.on("request", function(data) {
-		console.log("    info    - Got the following Request: " + data.type + " for the ID " + data.race_id);
+		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
 		if (data.type == "result") {
 			if (data.race_id == 0) {
 				perp.getCurrentRace("result", function(value) {

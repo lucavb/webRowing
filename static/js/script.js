@@ -39,16 +39,16 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
-	Handlebars.registerHelper("betweenTimes", function (boat) {
+	Handlebars.registerHelper("interimTimesToggle", function (boat) {
 		var ret = "";
-		if (boat.Zeit_1 != null) {
-			ret += boat.Zeit_1 + "<br />";
+		if (boat.position_1 != null) {
+			ret += boat.position_1 + "m: " + boat.zeit_1 + "<br />";
 		}
-		if (boat.Zeit_2 != null) {
-			ret += boat.Zeit_2 + "<br />";
+		if (boat.position_2 != null) {
+			ret += boat.position_2 + "m: " + boat.zeit_2 + "<br />";
 		}
-		if (boat.Zeit_3 != null) {
-			ret += boat.Zeit_3;
+		if (boat.position_3 != null) {
+			ret += boat.position_3 + "m: " + boat.zeit_3;
 		}
 		return new Handlebars.SafeString(ret);
 	});
@@ -68,13 +68,64 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
+	// true if the boat did finish
+	Handlebars.registerHelper("endTime", function (boat) {
+		if (boat.ZielZeit != null) {
+			return boat.ZielZeit;
+		}
+		if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet != 1) {
+			return "Nicht am Start erschienen";
+		}
+		else if (boat.ZielZeit == null && boat.Ausgeschieden == 1 && boat.Abgemeldet != 1) {
+			return boat.Kommentar;
+		}
+		else if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet == 1) {
+			return "Abgemeldet";
+		}
+	});
 	// register SafeString
 	Handlebars.registerHelper("safeString", function (text) {
 		return new Handlebars.SafeString(text);
 	});
+	// row color
+	Handlebars.registerHelper("detectRowColor", function (boat) {
+		if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
+			return new Handlebars.SafeString("<tr class='danger'>");
+		}
+		else if (boat.Nachgemeldet == 1) {
+			return new Handlebars.SafeString('<tr class="success">');
+		}
+		else {
+			return Handlebars.SafeString("<tr>");
+		}
+	});
+	// interim times -> special displaying
+	Handlebars.registerHelper("interimTimes", function (section, options) {
+		if (section.general.interim == true) {
+			return options.inverse(this);
+		}
+		else {
+			return options.fn(this);
+		}
+	});
+	Handlebars.registerHelper("latestInterim", function (boat) {
+		if (boat.zeit_3 != null) {
+			return boat.zeit_3 + " (bei " + boat.position_3 + "m)";
+		}
+		else if (boat.zeit_2 != null) {
+			return boat.zeit_2 + " (bei " + boat.position_2 + "m)";
+		}
+		else if (boat.zeit_1 != null) {
+			return boat.zeit_1 + " (bei " + boat.position_1 + "m)";
+		}
+		else {
+			return "-";
+		}
+	});
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
 	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
+	Handlebars.registerPartial("table_type_interim", $("#table-template-interim").html());
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty

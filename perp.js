@@ -1,3 +1,5 @@
+var track_length = 2000; // enter the distance of the track here
+
 // import stuff
 var mysql = require('mysql');
 var async = require("async");
@@ -16,8 +18,13 @@ connection.connect(function(err) {
 	}
 });
 connection.query("USE " + mysql_conf.database);
-connection.query("SET NAMES 'UTF8'");
+connection.query("SET NAMES 'UTF8'", function(err, rows) {
+	if (!err){
+		console.log("    info    - Connection to the database for perp.js has been established");
+	}
+});
 
+// finds the current race according to the table "ablauf" (order)
 function getCurrentRace(type, callback) {
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
@@ -74,7 +81,7 @@ function getRaceByID(type, id, callback) {
 		else {	
 			ret.general = rows[0];
 			ret.general.typ = type;
-			ret.general.Distanz = 2000 - ret.general.Distanz;	// let's find the real position
+			ret.general.Distanz = track_length - ret.general.Distanz;	// let's find the real distance
 			getSections(type, rows[0].Regatta_ID, id, function(value) {
 				if (value != null) {
 					ret.abteilungen = value;
@@ -86,17 +93,28 @@ function getRaceByID(type, id, callback) {
 	});
 }
 
+// gathers information on the section and finds all boats that where set for the section
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
-	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, rennen.NameD, CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
+	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, \
+				 CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
 				 FROM laeufe l \
 				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
-				 LEFT JOIN `addressen` aU ON (aU.`ID` = l.`Schiedsrichter_ID_Umpire` AND aU.`IstSchiedsrichter` = 1) \
-				 LEFT JOIN addressen aJ ON (aJ.ID = l.`Schiedsrichter_ID_Judge` AND aJ.`IstSchiedsrichter` = 1) \
-				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish = 1) \
+				 LEFT JOIN schiedsrichterliste sJ ON (sJ.Schiedsrichter_ID = l.`Schiedsrichter_ID_Judge` AND sJ.Regatta_ID = l.Regatta_ID) \
+				 LEFT JOIN schiedsrichterliste sU ON (sU.Schiedsrichter_ID = l.`Schiedsrichter_ID_Umpire` AND sU.Regatta_ID = l.Regatta_ID) \
+				 LEFT JOIN `addressen` aU ON (aU.`ID` = sU.`Schiedsrichter_ID` AND aU.`IstSchiedsrichter` = 1) \
+				 LEFT JOIN addressen aJ ON (aJ.ID = sJ.`Schiedsrichter_ID` AND aJ.`IstSchiedsrichter` = 1) \
+				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
-	connection.query(query, [rennen_id, regatta_id], function (err, rows) {
+	var param = 0;				 
+	if (type == "result") {
+		param = 2;
+	}
+	else if (type == "startlist") {
+		param = 1;
+	}
+	connection.query(query, [param, rennen_id, regatta_id], function (err, rows) {
 		if (err) {
 			console.log("    error   - The query, to find the sections, failed for the follwing reason.");
 			console.log(err);
@@ -108,6 +126,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				row.Lauf_Reframe = reframeSections(row.Lauf);
 				ret[row.Lauf] = { "general" : "", "boote" : {}};
 				ret[row.Lauf].general = row;
+				ret[row.Lauf].general.typ = type;
 				if (type == "startlist") {
 					// i'd like to mention that the datastructure has not been made by me and has been made around 2000 i think.
 					var query2 = "	SELECT startlisten.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, \
@@ -137,11 +156,13 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									ORDER BY startlisten.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, \
-									e.`Ausgeschieden`, e.`Kommentar`, \
-									CONCAT(m0.Position, 'm: ', z0.Zeit) AS Zeit_1, \
-									CONCAT(m1.Position, 'm: ', z1.Zeit) AS Zeit_2, \
-									CONCAT(m2.Position, 'm: ', z2.Zeit) AS Zeit_3, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
+									m0.Position AS position_1, \
+									m1.Position AS position_2, \
+									m2.Position AS position_3, \
+									z0.Zeit AS zeit_1, \
+									z1.Zeit AS zeit_2, \
+									z2.Zeit AS zeit_3, \
 									CONCAT(r1.`VName`, ' ', r1.`NName`, ' (', r1.`JahrG`, ')') as r1_string, \
 									CONCAT(r2.`VName`, ' ', r2.`NName`, ' (', r2.`JahrG`, ')') as r2_string, \
 									CONCAT(r3.`VName`, ' ', r3.`NName`, ' (', r3.`JahrG`, ')') as r3_string, \
@@ -150,16 +171,16 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(r6.`VName`, ' ', r6.`NName`, ' (', r6.`JahrG`, ')') as r6_string, \
 									CONCAT(r7.`VName`, ' ', r7.`NName`, ' (', r7.`JahrG`, ')') as r7_string, \
 									CONCAT(r8.`VName`, ' ', r8.`NName`, ' (', r8.`JahrG`, ')') as r8_string, \
-									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
-									FROM ergebnisse e \
-									LEFT JOIN zeiten z ON (z.`Regatta_ID` = e.`Regatta_ID` AND z.Rennen = e.Rennen \
-										AND e.Lauf = z.Lauf AND e.`TNr` = z.`TNr`) \
-									INNER JOIN rennen r \
-										ON (r.`Regatta_ID` = e.`Regatta_ID` AND r.`Rennen` = e.`Rennen` AND r.`ZielMesspunktNr` = z.`MesspunktNr` \
-										OR r.`Regatta_ID` = e.`Regatta_ID` \
-										AND r.`Rennen` = e.`Rennen` AND z.`MesspunktNr` IS NULL) \
-									LEFT JOIN meldungen m ON (e.`TNr` = m.`TNr` AND m.Regatta_ID = e.Regatta_ID AND m.Rennen = e.Rennen ) \
-									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = e.`Regatta_ID`) \
+									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string, \
+									IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
+									FROM startlisten s \
+									LEFT JOIN ergebnisse e ON (e.Lauf = s.Lauf AND e.Regatta_ID = s.Regatta_ID AND e.Rennen = s.Rennen AND e.`TNr` = s.`TNr`) \
+									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
+									LEFT JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
+									LEFT JOIN zeiten z ON (z.`Regatta_ID` = s.`Regatta_ID` AND z.Rennen = s.Rennen \
+										AND s.Lauf = z.Lauf AND s.`TNr` = z.`TNr` AND z.`MesspunktNr` = r.`ZielMesspunktNr`) \
+									LEFT JOIN meldungen m ON (s.`TNr` = m.`TNr` AND m.Regatta_ID = s.Regatta_ID AND m.Rennen = s.Rennen ) \
+									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = s.`Regatta_ID`) \
 									LEFT JOIN zeiten z0 ON (z0.Regatta_ID = e.Regatta_ID AND z0.Rennen = e.Rennen AND e.Lauf = z0.Lauf \
 										AND e.TNr = z0.TNr AND z0.MesspunktNr = 1) \
 									LEFT JOIN zeiten z1 ON (z1.Regatta_ID = e.Regatta_ID AND z1.Rennen = e.Rennen AND e.Lauf = z1.Lauf \
@@ -178,12 +199,15 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r7 ON (m.`ruderer7_ID` = r7.`ID`) \
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
-									WHERE e.Rennen = ? AND e.Lauf = ? AND e.Regatta_ID = ? \
-									ORDER BY ISNULL(z.`Zeit`), z.`Zeit` ASC, e.Bahn ASC, teams.`Teamname`";
+									WHERE s.Rennen = ? AND s.Lauf = ? AND s.Regatta_ID = ? \
+									ORDER BY ISNULL(z.Zeit), z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
-					if (rows2.length == 0) {
+					if (err) {
+						console.log(err);
+					}
+					else if (rows2.length == 0 || (rows2[0].hasStarted == 0 && type == "result" && rows2[0].zeit_1 == null)) {
 						delete ret[row.Lauf];
 						callback();
 					}
@@ -200,15 +224,16 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									delete row2.Ausgeschieden;
 									delete row2.Kommentar;
 								}
+								// race has not been finished yet but there are already times available
+								if (row2.hasStarted == 0 && row2.zeit_1 != null) {
+									ret[row.Lauf].general.interim = true;
+								}
 							}
 						);
-
 						ret[row.Lauf].boote = rows2;
 						callback();
 					}
 				});
-				
-
 			}, function(err) {
 				if (err) {
 					console.log(err);
