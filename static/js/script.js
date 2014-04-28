@@ -39,7 +39,7 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
-	Handlebars.registerHelper("betweenTimes", function (boat) {
+	Handlebars.registerHelper("interimTimesToggle", function (boat) {
 		var ret = "";
 		if (boat.position_1 != null) {
 			ret += boat.position_1 + "m: " + boat.zeit_1 + "<br />";
@@ -99,9 +99,33 @@ $(document).ready(function() {
 			return Handlebars.SafeString("<tr>");
 		}
 	});
+	// interim times -> special displaying
+	Handlebars.registerHelper("interimTimes", function (section, options) {
+		if (section.general.interim == true) {
+			return options.inverse(this);
+		}
+		else {
+			return options.fn(this);
+		}
+	});
+	Handlebars.registerHelper("latestInterim", function (boat) {
+		if (boat.zeit_3 != null) {
+			return boat.zeit_3 + " (bei " + boat.position_3 + "m)";
+		}
+		else if (boat.zeit_2 != null) {
+			return boat.zeit_2 + " (bei " + boat.position_2 + "m)";
+		}
+		else if (boat.zeit_1 != null) {
+			return boat.zeit_1 + " (bei " + boat.position_1 + "m)";
+		}
+		else {
+			return "-";
+		}
+	});
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
 	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
+	Handlebars.registerPartial("table_type_interim", $("#table-template-interim").html());
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
