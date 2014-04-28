@@ -19,8 +19,9 @@ connection.query("SET NAMES 'UTF8'", function(err, rows) {
 
 function setState (string) {
 	string = string.toLowerCase();
-	var regEx = new RegExp("[0-9]+[;][a,q,v,s,z,h][0-9]+[;][0-2]");
-	if (!regEx.test(string)) {
+	var regEx = new RegExp("[0-9]+;[a,q,v,s,z,h][0-9]+;[0-2]");
+	var regEx2 = new RegExp("[0-9]+;[f][a-z]+;[0-2]");
+	if (!regEx.test(string) && !regEx2.test(string)) {
 		console.log("    error   - the string was found invalid");
 		return;
 	}
