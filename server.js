@@ -23,11 +23,15 @@ app.get('/', function(req, res) {
 });
 
 
-console.log('    info    - Listening on port 8000');
+console.log('    info    - Express listening on port 8000');
 
 // actual stuff
 
 io.sockets.on('connection', function(socket) {
+	// output when a socket connects
+	var address = socket.handshake.address;
+	console.log("    info    - New connection from " + address.address + ":" + address.port);
+
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
 		console.log("    info    - broadcasting " + data.type);
