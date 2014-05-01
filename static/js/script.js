@@ -7,9 +7,7 @@ $(document).ready(function() {
 	var socket = io.connect("http://10.0.0.241:8001", {
 		transports : ["websocket"]
 	});
-
-	console.log("hi");
-
+	
 	/*
 	 *
 	 * preparation: handlebars and moment.js
