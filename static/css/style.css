@@ -43,7 +43,7 @@ a.active{
 
 /* making those popover links black, less like a link */
 
-a.popoverRower{
+a.popoverToggle{
     color: #333333;
 }
 

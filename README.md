@@ -10,7 +10,7 @@
 
 ### node.js dependencies
 
-please install socket.io, express, async, moment and the mysql module in the main folder.
+please install socket.io (0.9.x | 1.0.x does not seem to work yet), express, async, moment and the mysql module in the main folder.
 also add a file called 'mysql_conf' with the following structure
 <pre>
 {

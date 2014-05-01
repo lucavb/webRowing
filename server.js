@@ -11,7 +11,6 @@ var perp = require('./perp.js');
 var news = require("./news.js");
 
 // load admin module
-
 var admin = require("./admin.js");
 
 // let's serve some static content 
@@ -51,6 +50,7 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+	// news stuff. new one comes in -> add it -> broadcast all
 	socket.on("broadtcastNews", function (data) {
 		// first validate it
 		if (news.validate(data)) {
@@ -60,6 +60,7 @@ io.sockets.on('connection', function(socket) {
 		}
 	});
 
+	// update the visibility of a race
 	socket.on("publishResult", function (data) {
 		admin.setState(data);
 	});
