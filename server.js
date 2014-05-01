@@ -1,8 +1,8 @@
-var express = require('express');
+var express = require("express");
 var app = express();
-var io = require('socket.io').listen(app.listen(8000), {
-	"log level" : 1
-});
+var server = require("http").Server(app);
+var io = require("socket.io")(server);
+server.listen(8000);
 
 // load perp module for the output
 var perp = require('./perp.js');
@@ -28,9 +28,9 @@ console.log('    info    - Express listening on port 8000');
 
 io.sockets.on('connection', function(socket) {
 	// output when a socket connects
-	var address = socket.handshake.address;
-	console.log("    info    - New connection from " + address.address + ":" + address.port);
-
+	//var address = socket.handshake.address;
+	//console.log("    info    - New connection from " + address.address + ":" + address.port);
+	
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
 		console.log("    info    - broadcasting " + data.type);
