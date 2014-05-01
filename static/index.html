@@ -71,15 +71,15 @@
 			</div>
 			<div class="panel-body">
 			    <div class="row">
-			      <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
-			      <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
-			      <div class="col-md-3">{{general.NameK}}</div>
-			      <div class="col-md-3">{{general.Distanz}} m</div>
+				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
+				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3">{{general.NameK}}</div>
+				    <div class="col-md-3">{{general.Distanz}} m</div>
 			    </div>
 			</div>
 		</div>
 		<div class="background-complementairy">
-		<h2>Abteilungen</h2>
+			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
 
@@ -95,17 +95,15 @@
 									<h4>{{general.Lauf_Reframe}}
 										{{#detectType ../general.typ}}
 										{{else}}
-											{{#if general.ErgebnisEndgueltig}}
-											{{else}}
+											{{#unless general.ErgebnisEndgueltig}}
 												(vorläufig!)
-											{{/if}}
+											{{/unless}}
 										{{/detectType}}
 									</h4>
 								{{#detectType ../general.typ}}{{else}}
-									{{#if general.ErgebnisKorrigiert}}<small>Ergebnis korrigiert</small>
-
+									{{#if general.ErgebnisKorrigiert}}
+										<small>Ergebnis korrigiert</small>
 									{{/if}}
-									
 								{{/detectType}}</div>
 								<div class="panel-body">
 									<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
@@ -114,17 +112,23 @@
 								</div>
 								<div class="table-responsive">
 									<table class="table table-striped">
-										<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th>
-										{{#detectType ../general.typ}}{{else}}<th>Zeit</th>{{/detectType}}</tr>
+										<tr>
+											<th>Bahn</th>
+											<th>Bug Nr.</th>
+											<th>Teamname</th>
+										{{#detectType ../general.typ}}
+										{{else}}
+											<th>Zeit</th>
+										{{/detectType}}
+										</tr>
 										{{#each boote}}
-											
 											{{detectRowColor this}}
-											{{! true means startlist; false result}}
-											{{#detectType ../../general.typ}}
-												{{> table_type_startlist this}}
-											{{else}}
-												{{> table_type_result this}}
-											{{/detectType}}
+												{{! true means startlist; false result}}
+												{{#detectType ../../general.typ}}
+													{{> table_type_startlist this}}
+												{{else}}
+													{{> table_type_result this}}
+												{{/detectType}}
 											</tr>
 										{{/each}}
 									</table>
@@ -143,38 +147,39 @@
 
 	<script id="table-template-result" type="text/x-handlebars-template">
 		<td>
-		{{#if Ausgeschieden}}
-			-
-		{{else}}
-			{{#if ZielZeit}}
-				{{Bahn}}
-			{{else}}
+			{{#if Ausgeschieden}}
 				-
+			{{else}}
+				{{#if ZielZeit}}
+					{{Bahn}}
+				{{else}}
+					-
+				{{/if}}
 			{{/if}}
-		{{/if}}
-		</td><td>{{BugNr}}</td>
+		</td>
+		<td>{{BugNr}}</td>
 		<td>
-			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
 			data-content='{{ruderer this}}' >
 				{{Teamname}}
 			</a>
 		</td>
 		<td>
-		{{#if Ausgeschieden}}
-			{{Kommentar}}
-		{{else}}
-			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-			data-content='{{interimTimesToggle this}}' >
-				{{endTime this}}
-			</a>
-		{{/if}}
+			{{#if Ausgeschieden}}
+				{{Kommentar}}
+			{{else}}
+				<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+				data-content='{{interimTimesToggle this}}' >
+					{{endTime this}}
+				</a>
+			{{/if}}
 		</td>
 	</script>
 
 	<script id="table-template-startlist" type="text/x-handlebars-template">
 		<td>{{this.Bahn}}</td><td>{{BugNr}}</td>
 		<td>
-			<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+			<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
 			data-content='{{ruderer this}}' >
 				{{Teamname}}
 			</a>
@@ -184,7 +189,7 @@
 	<script id="table-template-interim" type="text/x-handlebars-template">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h4>{{general.Lauf_Reframe}} (läuft noch & vorläufig!)
+				<h4>{{general.Lauf_Reframe}} (läuft noch & vorläufig!)</h4>
 			</div>
 			<div class="panel-body">
 				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
@@ -194,11 +199,12 @@
 					<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
 					{{#each boote}}
 						<tr><td>{{Bahn}}</td><td>{{BugNr}}</td><td>
-							<a class="fake popoverRower" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+							<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
 							data-content='{{ruderer this}}' >
 							{{Teamname}}
 							</a>
-						</td><td>{{latestInterim this}}</td></tr>
+						</td>
+						<td>{{latestInterim this}}</td></tr>
 					{{/each}}
 				</table>
 			</div>

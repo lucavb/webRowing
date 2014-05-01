@@ -25,6 +25,8 @@ connection.query("SET NAMES 'UTF8'", function(err, rows) {
 });
 
 // finds the current race according to the table "ablauf" (order)
+// please use the sortRaces project to fill the table.
+// the table ablauf is not included in perp!
 function getCurrentRace(type, callback) {
 	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
@@ -107,6 +109,9 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
+
+	// in order to allow the ablauf table to hide races
+	// the right level needs to be selected
 	var param = 0;				 
 	if (type == "result") {
 		param = 2;
@@ -114,6 +119,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 	else if (type == "startlist") {
 		param = 1;
 	}
+
 	connection.query(query, [param, rennen_id, regatta_id], function (err, rows) {
 		if (err) {
 			console.log("    error   - The query, to find the sections, failed for the follwing reason.");
@@ -214,18 +220,8 @@ function getSections(type, regatta_id, rennen_id, callback) {
 					else {
 						async.each(rows2,
 							function(row2, callback) {
-								if (row2.Abgemeldet == 0) {
-									delete row2.Abgemeldet;
-								}
-								if (row2.Nachgemeldet == 0) {
-									delete row2.Nachgemeldet;
-								}
-								if (type == "result" && row2.Ausgeschieden == "") {
-									delete row2.Ausgeschieden;
-									delete row2.Kommentar;
-								}
 								// race has not been finished yet but there are already times available
-								if (row2.hasStarted == 0 && row2.zeit_1 != null) {
+								if (row2.hasStarted == 0 && row2.zeit_1 != null && type == "result") {
 									ret[row.Lauf].general.interim = true;
 								}
 							}
@@ -234,7 +230,8 @@ function getSections(type, regatta_id, rennen_id, callback) {
 						callback();
 					}
 				});
-			}, function(err) {
+			},
+			function(err) {
 				if (err) {
 					console.log(err);
 				}
@@ -259,6 +256,8 @@ function reframeSections(section) {
 	return section;
 }
 
+// creates an object that will contain the error message. if it is
+// delivered to the client it will be displayed
 function createError(header, msg) {
 	var ret = {
 		general: {

@@ -8,16 +8,13 @@ $(document).ready(function() {
 
 	/*
 	 *
-	 * execute me stuff
+	 * preparation: handlebars and moment.js
 	 *
 	 */
 
 	// set the language for moment.js
 	moment.lang("de");
 	// register a handlebars helper for moment js
-	Handlebars.registerHelper("momentFromNow", function (timestamp) {
-	    return moment(timestamp).fromNow();
-	});
 	Handlebars.registerHelper("momentFormat", function (timestamp) {
 	    return moment(timestamp).format('LLL');
 	});
@@ -39,6 +36,7 @@ $(document).ready(function() {
 		}
 		return ret ;
 	});
+	// creates the string for toggle that appears when you hover of the finish time
 	Handlebars.registerHelper("interimTimesToggle", function (boat) {
 		var ret = "";
 		if (boat.position_1 != null) {
@@ -68,7 +66,7 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
-	// true if the boat did finish
+	// determines the output for the finish time column(did not start, finish time, ...)
 	Handlebars.registerHelper("endTime", function (boat) {
 		if (boat.ZielZeit != null) {
 			return boat.ZielZeit;
@@ -76,7 +74,7 @@ $(document).ready(function() {
 		if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet != 1) {
 			return "Nicht am Start erschienen";
 		}
-		else if (boat.ZielZeit == null && boat.Ausgeschieden == 1 && boat.Abgemeldet != 1) {
+		else if (boat.ZielZeit == null && boat.Ausgeschieden == 1) {
 			return boat.Kommentar;
 		}
 		else if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet == 1) {
@@ -87,7 +85,7 @@ $(document).ready(function() {
 	Handlebars.registerHelper("safeString", function (text) {
 		return new Handlebars.SafeString(text);
 	});
-	// row color
+	// row color not that easy after all
 	Handlebars.registerHelper("detectRowColor", function (boat) {
 		if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
 			return new Handlebars.SafeString("<tr class='danger'>");
@@ -108,6 +106,7 @@ $(document).ready(function() {
 			return options.fn(this);
 		}
 	});
+	// returns the newest interim time of the boat and the place of measure
 	Handlebars.registerHelper("latestInterim", function (boat) {
 		if (boat.zeit_3 != null) {
 			return boat.zeit_3 + " (bei " + boat.position_3 + "m)";
@@ -126,6 +125,13 @@ $(document).ready(function() {
 	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
 	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
 	Handlebars.registerPartial("table_type_interim", $("#table-template-interim").html());
+
+	/**
+	 *
+	 * Execute me stuff
+	 *
+	 */
+
 	// gather information about the hashtag
 	parseHash();
 	// initial request so the site won't be empty
@@ -174,13 +180,14 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(document).on("mouseover", "a.popoverRower", function() {
+	// enables those cool popovers
+	$(document).on("mouseover", "a.popoverToggle", function() {
 		$(this).popover({
 			html: true
 		}).popover("show");
 	});
 
-	$(document).on("mouseleave", "a.popoverRower", function() {
+	$(document).on("mouseleave", "a.popoverToggle", function() {
 		$(this).popover("hide");
 	});
 
@@ -285,7 +292,7 @@ $(document).ready(function() {
 			return;
 		}
 		clearErrorMsg();
-		$("a.popoverRower").popover("destroy");
+		$("a.popoverToggle").popover("destroy");
 		var source = $("#template-general-race").html();
 		var counter = 0;
 		var boote = 0;
