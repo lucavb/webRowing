@@ -4,7 +4,11 @@ $(document).ready(function() {
 	var currentType = "startlist"; // false = startlist; true = result
 	var autoUpdate = true;
 	var requested_id = 0;
-	var socket = io.connect();
+	var socket = io.connect("http://10.0.0.241:8001", {
+		transports : ["websocket"]
+	});
+
+	console.log("hi");
 
 	/*
 	 *
