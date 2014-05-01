@@ -17,3 +17,7 @@ static/images/Wallpaper_option.jpg
 static/images/Wallpaper_.jpg
 
 static/images/Wallpaper__.jpg
+
+static/socket.io/socket.io.js
+
+static/socket.io/socket.io_v1.X.js
