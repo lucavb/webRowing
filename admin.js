@@ -1,21 +1,6 @@
-// import stuff
-var mysql = require('mysql');
-var fs = require("fs");
 
 // setting up mysql connection
-var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
-var connection = mysql.createConnection(mysql_conf);
-connection.connect(function(err) {
-	if (err) {
-		console.log("    error   - couldn't connect to the server. that's bad.");
-	}
-});
-connection.query("USE " + mysql_conf.database);
-connection.query("SET NAMES 'UTF8'", function(err, rows) {
-	if (!err){
-		console.log("    info    - Connection to the database for admin.js has been established");
-	}
-});
+var connection = require("./mysql_conn.js").connection;
 
 function setState (string) {
 	string = string.toLowerCase();
@@ -29,11 +14,7 @@ function setState (string) {
 	var arr = string.split(";");
 	var query = "UPDATE ablauf SET publish = ? WHERE Regatta_ID = 37 AND Rennen = ? AND LOWER(Lauf) = ? ";
 	connection.query(query, [arr[2], arr[0], arr[1]], function(err, rows) {
-		if (err || rows.length == 0) {
-			console.log("    warning - there was no current race found");
-			callback(createError("Entschuldigung", "Es wird kein weiteres Rennen mehr durchgeführt."));
-		}
-		else if (err) {
+		if (err) {
 			console.log("    error   - The query returned the following error.");
 			console.log(err);
 		}

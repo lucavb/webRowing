@@ -92,7 +92,7 @@
 						{{#interimTimes this}}
 							<div class="panel panel-default">
 								<div class="panel-heading">
-									<h4>{{general.Lauf_Reframe}}
+									<h4>{{general.lauf_pretty}}
 										{{#detectType ../general.typ}}
 										{{else}}
 											{{#unless general.ErgebnisEndgueltig}}
@@ -107,7 +107,7 @@
 								{{/detectType}}</div>
 								<div class="panel-body">
 									<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
-									<p>Umpire: {{general.umpire}} / Judge: {{general.judge}}</p>
+									<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
 
 								</div>
 								<div class="table-responsive">
@@ -189,7 +189,7 @@
 	<script id="table-template-interim" type="text/x-handlebars-template">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h4>{{general.Lauf_Reframe}} (läuft noch & vorläufig!)</h4>
+				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
 			</div>
 			<div class="panel-body">
 				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
