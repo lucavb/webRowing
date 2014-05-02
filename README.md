@@ -30,7 +30,7 @@ The concrete paths can be seen from the index.html in the static folder.</p>
 
 <p>Also you might wanna replace the string for the organizer of the regatta.</p>
 
-## Starting
+## Starting (development)
 
 simple. either run:
 <pre>
@@ -41,3 +41,9 @@ or run:
 nodejs server.js
 </pre>
 depeneding on your node.js installation.
+
+## Deployment
+
+<p>First of all you might wanna move the admin.html file. I can not cause that much harm but you never know.</p>
+<p>I recommend forever ( https://github.com/nodejitsu/forever ) to keep the server up running. If you want to use express you are done. </p>
+<p>Most people do use apache as their webserver. However this is no problem. Edit the script.js under static/js so it connects to the right server. Also you will have to copy the static folder to your Webroot. Then you should be good to go.</p>
