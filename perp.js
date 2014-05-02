@@ -1,24 +1,8 @@
 var track_length = 2000; // enter the distance of the track here
 
 // import stuff
-var mysql = require('mysql');
 var async = require("async");
-var fs = require("fs");
-
-// setting up mysql connection
-var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
-var connection = mysql.createConnection(mysql_conf);
-connection.connect(function(err) {
-	if (err) {
-		console.log("    error   - couldn't connect to the server. that's bad.");
-	}
-});
-connection.query("USE " + mysql_conf.database);
-connection.query("SET NAMES 'UTF8'", function(err, rows) {
-	if (!err){
-		console.log("    info    - Connection to the database for perp.js has been established");
-	}
-});
+var connection = require("./mysql_conn.js").connection;
 
 // finds the current race according to the table "ablauf" (order)
 // please use the sortRaces project to fill the table.
