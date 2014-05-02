@@ -1,3 +1,4 @@
+// import
 var fs = require("fs");
 var news = [];
 var moment = require('moment');

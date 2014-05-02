@@ -1,3 +1,4 @@
+// import
 var express = require('express');
 var app = express();
 var io = require('socket.io').listen(app.listen(8000), {
@@ -21,11 +22,9 @@ app.get('/', function(req, res) {
     res.render('static/index.html');
 });
 
-
 console.log('    info    - Express listening on port 8000');
 
 // actual stuff
-
 io.sockets.on('connection', function(socket) {
 	// output when a socket connects
 	var address = socket.handshake.address;

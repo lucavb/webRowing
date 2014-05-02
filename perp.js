@@ -99,6 +99,7 @@ function getRaceByID(type, id, callback) {
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = new Object();
 	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, \
+				 CONCAT(p.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
 				 CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge \
 				 FROM laeufe l \
 				 LEFT JOIN rennen ON (l.Regatta_ID = rennen.Regatta_ID AND l.Rennen = rennen.Rennen) \
@@ -106,6 +107,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 LEFT JOIN schiedsrichterliste sU ON (sU.Schiedsrichter_ID = l.`Schiedsrichter_ID_Umpire` AND sU.Regatta_ID = l.Regatta_ID) \
 				 LEFT JOIN `addressen` aU ON (aU.`ID` = sU.`Schiedsrichter_ID` AND aU.`IstSchiedsrichter` = 1) \
 				 LEFT JOIN addressen aJ ON (aJ.ID = sJ.`Schiedsrichter_ID` AND aJ.`IstSchiedsrichter` = 1) \
+				 INNER JOIN parameter p ON (p.Sektion = 'Uebersetzer_Lauftypen' AND p.Schluessel = SUBSTRING(l.Lauf,1,1)) \
 				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
 				 ORDER BY  l.`SollStartZeit` ASC";
@@ -129,7 +131,6 @@ function getSections(type, regatta_id, rennen_id, callback) {
 		var counter = rows.length;
 		async.each(rows,
 			function(row, callback) {
-				row.Lauf_Reframe = reframeSections(row.Lauf);
 				ret[row.Lauf] = { "general" : "", "boote" : {}};
 				ret[row.Lauf].general = row;
 				ret[row.Lauf].general.typ = type;
@@ -241,19 +242,6 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				}
 			});
 	});
-}
-
-
-// rename function in order to rename A1 to Abteilung 1
-function reframeSections(section) {
-	for (var key in sections_conf) {
-		var regEx = new RegExp(sections_conf[key].first_letter + sections_conf[key].range_regex);
-		if (regEx.test(section)) {
-			return sections_conf[key].replacement + " " + section.substring(1);
-		}
-	}
-	// well this is awkward. let's just return it then
-	return section;
 }
 
 // creates an object that will contain the error message. if it is
