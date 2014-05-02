@@ -5,10 +5,6 @@ var mysql = require('mysql');
 var async = require("async");
 var fs = require("fs");
 
-// read info about the replacement for sections V1 = Vorlauf 1
-var sections_conf = JSON.parse(fs.readFileSync("./sections.json"));
-
-
 // setting up mysql connection
 var mysql_conf = JSON.parse(fs.readFileSync("./mysql_conf"));
 var connection = mysql.createConnection(mysql_conf);
