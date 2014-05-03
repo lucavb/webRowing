@@ -256,10 +256,10 @@ $(document).ready(function() {
 			}
 			else if (hash == "news") {
 				currentType = "news";
-			}
-			$(".switch_page").removeClass("active");
-			$(".switch_page[data-page=" + currentType + "]").addClass("active");
+			}	
 		}
+		$(".switch_page").removeClass("active");
+		$(".switch_page[data-page=" + currentType + "]").addClass("active");
 	}
 
 	// sets the mode for auto updates
