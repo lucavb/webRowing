@@ -28,13 +28,19 @@
 	        <span class="icon-bar"></span>
 	      </button>
 	      <a class="navbar-brand krg_rot fake visible-md visible-lg visible-xs"  href="#">Kölner Regatta-Verband e.V.</a>
-	      <a class="navbar-brand krg_rot fake visible-sm "  href="#">KRV e.V.</a>
+	      <a class="navbar-brand krg_rot fake visible-sm"  href="#">KRV e.V.</a>
 	    </div>
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
 	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
-	        <li><a class='switch_page' data-page='result' href="#result">Ergebnisse</a></li>
-	        <li><a class='switch_page' data-page='news' href="#news">Nachrichten</a></li>
+	        <li class="dropdown">
+	            <a href="#" class="dropdown-toggle fake" data-toggle="dropdown">Ergebnisse <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                	<li><a class="switch_page" data-page='result' href="#result">Ergebnisse kompakt</a></li>
+                	<li><a class="switch_page" data-page='resultDetail' href="#resultDetail">Ergebnisse detailliert</a></li>
+            	</ul>
+	        </li>
+	        <li><a class='switch_page' data-page='news' href="#news">News</a></li>
 	        <form class="navbar-form navbar-left" id='request_race' role="search">
 	            <div class="form-group">
 	                <input type="number" class="form-control" placeholder="Nummer des Rennens">
@@ -60,6 +66,7 @@
 		<div id="container">
 		</div>
 	</div>
+
 	<script id="template-general-race" type="text/x-handlebars-template">
 		<div class="background-complementairy">
 			<div class="row">
@@ -93,7 +100,12 @@
 				{{#detectType general.typ}}
 					{{> panel_startlist this}}
 				{{else}}
-					{{> panel_result this}}
+					{{#resultDetail}}
+						{{> panel_result_detail ../this}}
+					{{else}}
+						{{> panel_result this}}
+					{{/resultDetail}}
+					
 				{{/detectType}}				
 			{{/each}}
 		</div>
@@ -106,7 +118,7 @@
 		{{/everyOther}}
 
 		<div class="col-md-6">
-			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
+			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
 				<div class="panel-heading">
 					<h4>{{general.lauf_pretty}}</h4>Rennen {{general.Rennen}}
 				</div>
@@ -216,13 +228,86 @@
 		{{/everyOther}}
 	</script>
 
+	<script id="panel_result_detail" type="text/x-handlebars-template">
+		<div class="col-md-12">
+			{{#interimTimes this}}
+			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
+				<div class="panel-heading">
+					<h4>{{general.lauf_pretty}}</h4> Rennen {{general.Rennen}}
+				</div>
+
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<th>Bahn</th>
+							<th>Bug Nr.</th>
+							<th>Teamname</th>
+							{{#if_eq general.Distanz "2000"}}
+								<th>500m</th>
+								<th>1000m</th>
+								<th>1500m</th>
+							{{else}}
+								{{#if_eq general.Distanz "1500"}}
+									<th>1000m</th>
+									<th>1500m</th>
+								{{/if_eq}}
+							{{/if_eq}}
+							<th>Zeit</th>
+						</tr>
+						{{#each boote}}
+							{{detectRowColor this}}
+								<td>
+									{{#if Ausgeschieden}}
+										-
+									{{else}}
+										{{#if ZielZeit}}
+											{{Bahn}}
+										{{else}}
+											-
+										{{/if}}
+									{{/if}}
+								</td>
+								<td>{{BugNr}}</td>
+								<td>
+									<p>{{Teamname}}<br />
+									<span style="margin-left:5px;">{{ruderer this}}</span></p>
+								</td>
+								{{#if_eq ../general.Distanz "2000"}}
+									<td>{{zeit_1}}</td>
+									<td>{{zeit_2}}</td>
+									<td>{{zeit_3}}</td>
+								{{else}}
+									{{#if_eq ../general.Distanz "1500"}}
+										<td>{{zeit_2}}</td>
+										<td>{{zeit_3}}</td>
+									{{/if_eq}}
+								{{/if_eq}}
+								<td>
+									{{#if Ausgeschieden}}
+										{{Kommentar}}
+									{{else}}
+										{{endTime this}}
+									{{/if}}
+								</td>
+							</tr>
+						{{/each}}
+					</table>
+				</div>
+				<div class="panel-footer">
+					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+					<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+				</div>
+			</div>
+			{{else}}
+				{{> panel_interim_detail}}
+			{{/interimTimes}}
+		</div>
+	</script>
+
 	<script id="panel_interim" type="text/x-handlebars-template">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
 				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4> Rennen {{general.Rennen}}
-			</div>
-			<div class="panel-body">
-				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
@@ -235,6 +320,55 @@
 							</a>
 						</td>
 						<td>{{latestInterim this}}</td></tr>
+					{{/each}}
+				</table>
+			</div>
+		</div>
+	</script>
+
+	<script id="panel_interim_detail" type="text/x-handlebars-template">
+		<div class="panel panel-default panel-danger">
+			<div class="panel-heading">
+				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4> Rennen {{general.Rennen}}
+			</div>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<tr>
+						<th>Bahn</th>
+						<th>Bug Nr.</th>
+						<th>Teamname</th>
+						{{#if_eq general.Distanz "2000"}}
+							<th>500m</th>
+							<th>1000m</th>
+							<th>1500m</th>
+						{{else}}
+							{{#if_eq general.Distanz "1500"}}
+								<th>1000m</th>
+								<th>1500m</th>
+							{{/if_eq}}
+						{{/if_eq}}
+						<th>Zeit</th>
+					</tr>
+					{{#each boote}}
+						<tr>
+							<td>{{Bahn}}</td>
+							<td>{{BugNr}}</td>
+							<td>
+								<p>{{Teamname}}<br />
+								<span style="margin-left:5px;">{{ruderer this}}</span></p>
+							</td>
+							{{#if_eq ../general.Distanz "2000"}}
+								<td>{{zeit_1}}</td>
+								<td>{{zeit_2}}</td>
+								<td>{{zeit_3}}</td>
+							{{else}}
+								{{#if_eq ../general.Distanz "1500"}}
+									<td>{{zeit_2}}</td>
+									<td>{{zeit_3}}</td>
+								{{/if_eq}}
+							{{/if_eq}}
+							<td>-</td>
+						</tr>
 					{{/each}}
 				</table>
 			</div>

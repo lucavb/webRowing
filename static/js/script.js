@@ -66,6 +66,15 @@ $(document).ready(function() {
 			return options.inverse(this);
 		}
 	});
+	// result compact or detail
+	Handlebars.registerHelper("resultDetail", function (options) {
+		if (currentType == "result") {
+			return options.inverse(this);
+		}
+		else if (currentType == "resultDetail") {
+			return options.fn(this);
+		}
+	});
 	// determines the output for the finish time column(did not start, finish time, ...)
 	Handlebars.registerHelper("endTime", function (boat) {
 		if (boat.ZielZeit != null) {
@@ -121,10 +130,19 @@ $(document).ready(function() {
 			return "-";
 		}
 	});
+	// if equals helper
+	Handlebars.registerHelper('if_eq', function(a, b, opts) {
+	    if(a == b) // Or === depending on your needs
+	        return opts.fn(this);
+	    else
+	        return opts.inverse(this);
+	});
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("panel_startlist", $("#panel_startlist").html());
 	Handlebars.registerPartial("panel_result", $("#panel_result").html());
 	Handlebars.registerPartial("panel_interim", $("#panel_interim").html());
+	Handlebars.registerPartial("panel_interim_detail", $("#panel_interim_detail").html());
+	Handlebars.registerPartial("panel_result_detail", $("#panel_result_detail").html());
 
 	/**
 	 *
@@ -162,7 +180,7 @@ $(document).ready(function() {
 			requested_id = value;
 			setAutoMode(false);
 			// in case we are in the news section we are going to switch to startlist
-			if (currentType != "startlist" && currentType != "result") {
+			if (currentType != "startlist" && currentType != "result" && currentType != "resultDetail") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
@@ -210,7 +228,7 @@ $(document).ready(function() {
 	});
 
 	socket.on("result", function (data) {
-		if (autoUpdate && currentType == "result") {
+		if (autoUpdate && (currentType == "result" || currentType == "resultDetail")) {
 			handleResponse(data);
 		}
 	});
@@ -256,7 +274,10 @@ $(document).ready(function() {
 			}
 			else if (hash == "news") {
 				currentType = "news";
-			}	
+			}
+			else if (hash == "resultDetail") {
+				currentType = "resultDetail";
+			}
 		}
 		$(".switch_page").removeClass("active");
 		$(".switch_page[data-page=" + currentType + "]").addClass("active");
@@ -273,7 +294,7 @@ $(document).ready(function() {
 			$("#toggleUpdate").removeClass("btn-danger");
 			$("#toggleUpdate").addClass("btn-success");
 			requested_id = 0;
-			if (currentType != "startlist" && currentType != "result") {
+			if (currentType != "startlist" && currentType != "result" && currentType != "resultDetail") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});

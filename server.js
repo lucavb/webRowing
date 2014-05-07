@@ -68,6 +68,9 @@ io.sockets.on('connection', function(socket) {
 	// a requested race or the next one
 	socket.on("request", function(data) {
 		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
+		if (data.type == "resultDetail") {
+			data.type = "result";
+		}
 		if (data.type == "result") {
 			if (data.race_id == 0) {
 				perp.getCurrentRace("result", function(value) {
