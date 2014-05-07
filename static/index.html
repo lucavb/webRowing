@@ -27,7 +27,8 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand krg_rot fake" href="#">Kölner Regatta-Verband e.V.</a>
+	      <a class="navbar-brand krg_rot fake visible-md visible-lg visible-xs"  href="#">Kölner Regatta-Verband e.V.</a>
+	      <a class="navbar-brand krg_rot fake visible-sm "  href="#">KRV e.V.</a>
 	    </div>
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
@@ -42,7 +43,12 @@
 	        </form>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
-	        <li><button id="toggleUpdate" class="btn btn-success navbar-btn">Automatische Aktualisierung</button></li>
+	        <li>
+	        	<button id="toggleUpdate" class="btn btn-success navbar-btn">
+	        		<span class="visible-md visible-lg visible-xs" >Automatische Aktualisierung</span>
+	        		<span class="glyphicon visible-sm glyphicon-refresh height20"></span>
+	        	</button>
+	        </li>
 	      </ul>
 	    </div><!--/.nav-collapse -->
 	  </div>
@@ -59,10 +65,10 @@
 			<div class="row">
 				<div class="col-md-11">
 					<div class="page-header">
-				  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
 				  	</div>
 				</div>
-				<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
 			</div>
 		</div>
 		<div class="panel panel-default">
