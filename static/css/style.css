@@ -49,6 +49,7 @@ a.popoverToggle{
 
 /* I disagree on the colors bootstrap sets for the rows */
 
+/*
 tr.danger > td{
     background-color: #e38d8b !important;
 }
@@ -56,6 +57,7 @@ tr.danger > td{
 tr.success > td {
     background-color: #93cf90 !important;
 }
+*/
 
 .height20 {
     height: 20px;

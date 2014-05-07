@@ -122,9 +122,9 @@ $(document).ready(function() {
 		}
 	});
 	// register both partials for either startlists or results
-	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
-	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
-	Handlebars.registerPartial("table_type_interim", $("#table-template-interim").html());
+	Handlebars.registerPartial("panel_startlist", $("#panel_startlist").html());
+	Handlebars.registerPartial("panel_result", $("#panel_result").html());
+	Handlebars.registerPartial("panel_interim", $("#panel_interim").html());
 
 	/**
 	 *

@@ -21,3 +21,11 @@ static/images/Wallpaper__.jpg
 static/socket.io/socket.io.js
 
 static/socket.io/socket.io_v1.X.js
+
+static/js/libs/handlebars-v1.3.0.js
+
+static/js/libs/jquery-1.11.0.min.js
+
+static/js/libs/moment-with-langs.min.js
+
+static/js/libs/moment.min.js
