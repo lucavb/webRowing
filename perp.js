@@ -27,6 +27,7 @@ function getCurrentRace(type, callback) {
 		}
 		else {
 			getRaceByID(type, rows[0].Rennen, function(ret) {
+				ret.abteilungen[rows[0].Lauf].general.next = 1;
 				callback(ret);
 			});
 		}
@@ -240,5 +241,19 @@ function createError(header, msg) {
 	return ret;
 }
 
+// returns an array of all the sections that will be done.
+function getAllSections(callback) {
+	var query = "SELECT ab.Rennen, ab.Lauf, l.SollStartZeit, IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
+				 FROM ablauf ab \
+				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
+				 INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
+				 WHERE ab.publish >= 1 \
+				 ORDER BY ab.ORDER ASC, l.SollStartZeit";
+	connection.query(query, function(err, rows) {
+		callback(rows);
+	});			 
+}
+
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;
+module.exports.getAllSections = getAllSections;

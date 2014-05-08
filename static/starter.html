@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Kölner Regatta-Verband e.V.</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="js/libs/jquery-1.11.0.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/libs/handlebars-v1.3.0.js"></script>
+	<script src="js/libs/moment-with-langs.min.js"></script>
+	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
+	<script>
+		$(document).ready(function() {
+			var socket = io.connect();
+			var sections = [];
+			var currentSpot = -1;
+			var countdownTime = 1000;
+			var countdownInterval = setInterval(function() {
+				$( ".countdown" ).each(function() {
+					var target = $(this).attr("data-time");
+					$(this).html(moment(target).calendar());
+				});
+				$(".now").html(moment().format('LLLL'));
+			}, countdownTime);
+			var last_race = null;
+
+			/**
+			 *
+			 * jQuery
+			 *
+			 */
+			$(document).on("click", "a.fake", function(e) {
+				e.preventDefault();
+				return false;
+			});
+
+			$(document).on("click", ".pager li", function(e) {
+				e.preventDefault();
+				moveSection($(this).attr("data-move"));
+				//console.log(sections[currentSpot]);
+				return false;
+			});
+
+			// the awesome stuff
+
+			$(document).on('keypress', function(e) {
+			    var tag = e.target.tagName.toLowerCase();
+			    // left arrow a
+			    if ((e.which === 97 || e.keyCode === 37) && tag != 'input' && tag != 'textarea') {
+			    	moveSection(-1);
+			    }
+			    // right arrow d
+			    else if ((e.which === 100 || e.keyCode === 39) && tag != 'input' && tag != 'textarea') {
+			    	moveSection(1);
+			    }			        
+
+			});
+
+			socket.emit("sections", " ");
+
+			socket.on("sections", function(data) {
+				updateSections(data);
+			});
+			socket.on("request", function (data) {
+				displayStartlist(data);
+			});
+
+			moment.lang("de");
+
+			Handlebars.registerHelper("momentFormat", function (timestamp) {
+			    return moment(timestamp).format('LLL');
+			});
+			Handlebars.registerHelper("momentCalendar", function (timestamp) {
+			    return moment(timestamp).calendar();
+			});
+
+			Handlebars.registerHelper("isCurrent", function (race, options) {
+				if (race.general.Lauf == sections[currentSpot].Lauf) {
+					return options.fn(this);
+				}
+				else {
+					return options.inverse(this);
+				}
+			});
+
+			Handlebars.registerHelper("consolelog", function(obj) {
+				console.log(obj);
+			});
+
+			Handlebars.registerHelper("detectRowColor", function (boat) {
+				if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
+					return new Handlebars.SafeString("<tr class='danger'>");
+				}
+				else if (boat.Nachgemeldet == 1) {
+					return new Handlebars.SafeString('<tr class="success">');
+				}
+				else {
+					return Handlebars.SafeString("<tr>");
+				}
+			});
+
+			Handlebars.registerHelper("ruderer", function (obj) {
+				var ret = "";
+				ret += obj.r1_string;
+				for (var i = 2; i <= 8; i++) {
+					if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
+						break;
+					}
+					ret += ", " + obj["r" + i + "_string"];
+				}
+				if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
+					ret += ", St. " + obj.rS_string;
+				}
+				return ret ;
+			});
+
+			function moveSection (value) {
+				var valueInt = parseInt(value);
+				if ( (currentSpot + valueInt) < 0 || (currentSpot + valueInt) >= sections.length ) {
+					return;
+				}
+				currentSpot += parseInt(value);
+				getRace();
+			}
+
+			function updateSections(new_sections) {
+				sections = new_sections;
+				for (var i = 0; i < sections.length; i++) {
+					if (sections[i].hasStarted == 0) {
+						if (currentSpot != -1 && currentSpot != i) {
+							alert("wir sind weiter");
+							break;
+						}
+						currentSpot = i;
+						//console.log(sections);
+						getRace();
+						break;
+					}
+				}
+			}
+
+			function getRace () {
+				if (last_race == null || last_race.general.Rennen != sections[currentSpot].Rennen) {
+					socket.emit("request", { "type" : "startlist", "race_id" : sections[currentSpot].Rennen});
+				}
+				else {
+					displayStartlist(last_race);
+				}
+			}
+
+			function displayStartlist(race) {
+				var source = $("#general_startlist").html();
+				var template = Handlebars.compile(source);
+				var html = template(race);
+				last_race = race;
+				$("#container").html(html);
+			}
+		});
+		
+	</script>
+</head>
+<body>
+
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand krg_rot fake visible-md visible-lg visible-xs"  href="#">Kölner Regatta-Verband e.V.</a>
+	      <a class="navbar-brand krg_rot fake visible-sm"  href="#">KRV e.V.</a>
+	    </div>
+	    <div class="navbar-collapse collapse">
+	      <ul class="nav navbar-nav">
+	        <li><a class="fake" href="#">Aktuelle Zeit: <span class="now" data-time=""></span></a></li>
+	      </ul>
+	      <ul class="nav navbar-nav navbar-right">
+	        <li>
+	        	
+	        </li>
+	      </ul>
+	    </div><!--/.nav-collapse -->
+	  </div>
+	</div>
+	<div id="container" class="container">
+
+	</div>
+
+	<script id="general_startlist" type="text/x-handlebars-template">
+
+		<div class="row">
+			{{#each abteilungen}}
+				{{#isCurrent this}}
+					<div class="col-md-12">
+						<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+							<div class="panel-heading">
+								<h4 class="p-anel-title">{{general.lauf_pretty}} 
+								<span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentCalendar general.SollStartZeit}}</span></h4>
+							</div>
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-3">Rennen {{../general.Rennen}}</div>
+									<div class="col-md-3">{{momentFormat general.SollStartZeit}}</div>
+									<div class="col-md-3">{{../../general.NameK}}</div>
+									<div class="col-md-3">{{general.Distanz}} m</div>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<th>Bahn</th>
+										<th>Bug Nr.</th>
+										<th>Teamname</th>
+									</tr>
+									{{#each boote}}
+										{{detectRowColor this}}
+											<td>
+												{{this.Bahn}}
+											</td>
+											<td>
+												{{BugNr}}
+											</td>
+											<td>
+												<p>{{Teamname}}<br />
+												<span style="margin-left:10px;">{{ruderer this}}</span></p>
+											</td>
+										</tr>
+									{{/each}}
+								</table>
+							</div>
+							<div class="panel-footer">
+								<ul class="pager">
+									<li data-move="-1" class="previous"><a href="#">&larr; Vorheriges</a></li>
+									<li data-move="1" class="next"><a href="#">Nächstes &rarr;</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				{{else}}
+				{{/isCurrent}}			
+			{{/each}}
+		</div>
+	</script>
+</body>
+</html>

@@ -64,6 +64,12 @@ io.sockets.on('connection', function(socket) {
 		admin.setState(data);
 	});
 
+	socket.on("sections", function (data) {
+		perp.getAllSections(function(callback) {
+			socket.emit("sections", callback);
+		});
+	});
+
 	// on requests this code will be executed and either return
 	// a requested race or the next one
 	socket.on("request", function(data) {
