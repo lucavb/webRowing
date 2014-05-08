@@ -27,8 +27,8 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	      </button>
-	      <a class="navbar-brand krg_rot fake visible-md visible-lg visible-xs"  href="#">Kölner Regatta-Verband e.V.</a>
-	      <a class="navbar-brand krg_rot fake visible-sm"  href="#">KRV e.V.</a>
+	      <a class="navbar-brand krg_rot visible-md visible-lg visible-xs"  href="/">Kölner Regatta-Verband e.V.</a>
+	      <a class="navbar-brand krg_rot visible-sm"  href="/">KRV e.V.</a>
 	    </div>
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
@@ -120,7 +120,14 @@
 		<div class="col-md-6">
 			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
 				<div class="panel-heading">
-					<h4>{{general.lauf_pretty}}</h4>Rennen {{general.Rennen}}
+					<div class="row">
+						<div class="col-md-6">
+							<h4>{{general.lauf_pretty}}</h4>
+						</div>
+						<div class="col-md-6">
+							<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+						</div>
+					</div>
 				</div>
 				<div class="panel-body">
 					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
@@ -167,7 +174,14 @@
 			{{#interimTimes this}}
 			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
 				<div class="panel-heading">
-					<h4>{{general.lauf_pretty}}</h4> Rennen {{general.Rennen}}
+					<div class="row">
+						<div class="col-md-6">
+							<h4>{{general.lauf_pretty}}</h4>
+						</div>
+						<div class="col-md-6">
+							<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+						</div>
+					</div>
 				</div>
 
 				<div class="table-responsive">
@@ -233,7 +247,14 @@
 			{{#interimTimes this}}
 			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
 				<div class="panel-heading">
-					<h4>{{general.lauf_pretty}}</h4> Rennen {{general.Rennen}}
+					<div class="row">
+						<div class="col-md-6">
+							<h4>{{general.lauf_pretty}}</h4>
+						</div>
+						<div class="col-md-6">
+							<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+						</div>
+					</div>
 				</div>
 
 				<div class="table-responsive">
@@ -307,7 +328,14 @@
 	<script id="panel_interim" type="text/x-handlebars-template">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
-				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4> Rennen {{general.Rennen}}
+				<div class="row">
+					<div class="col-md-8">
+						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
+					</div>
+					<div class="col-md-4">
+						<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+					</div>
+				</div>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
@@ -329,7 +357,14 @@
 	<script id="panel_interim_detail" type="text/x-handlebars-template">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
-				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4> Rennen {{general.Rennen}}
+				<div class="row">
+					<div class="col-md-8">
+						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
+					</div>
+					<div class="col-md-4">
+						<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+					</div>
+				</div>
 			</div>
 			<div class="table-responsive">
 				<table class="table table-striped">
