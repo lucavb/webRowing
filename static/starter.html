@@ -55,20 +55,20 @@
 						<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
 							<div class="panel-heading">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-6 col-xs-6">
 										<h4>{{general.lauf_pretty}}</h4>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-6 col-xs-6">
 										<h4 class="text-right"><span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentCalendar general.SollStartZeit}}</span></h4>
 									</div>
 								</div>
 							</div>
 							<div class="panel-body">
 								<div class="row">
-									<div class="col-md-3">Rennen {{../general.Rennen}}</div>
-									<div class="col-md-3">{{momentFormat general.SollStartZeit}}</div>
-									<div class="col-md-3">{{../../general.NameK}}</div>
-									<div class="col-md-3">{{general.Distanz}} m</div>
+									<div class="col-md-3 col-xs-6">Rennen {{../general.Rennen}}</div>
+									<div class="col-md-3 col-xs-6">{{momentFormat general.SollStartZeit}}</div>
+									<div class="col-md-3 col-xs-6">{{../../general.NameK}}</div>
+									<div class="col-md-3 col-xs-6">{{general.Distanz}} m</div>
 								</div>
 							</div>
 							<div class="table-responsive">
