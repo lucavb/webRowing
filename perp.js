@@ -27,7 +27,6 @@ function getCurrentRace(type, callback) {
 		}
 		else {
 			getRaceByID(type, rows[0].Rennen, function(ret) {
-				ret.abteilungen[rows[0].Lauf].general.next = 1;
 				callback(ret);
 			});
 		}
@@ -78,7 +77,7 @@ function getRaceByID(type, id, callback) {
 
 // gathers information on the section and finds all boats that where set for the section
 function getSections(type, regatta_id, rennen_id, callback) {
-	var ret = new Object();
+	var ret = [];
 	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, \
 				 CONCAT(p.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
 				 CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge, \
@@ -116,9 +115,9 @@ function getSections(type, regatta_id, rennen_id, callback) {
 		var counter = rows.length;
 		async.each(rows,
 			function(row, callback) {
-				ret[row.Lauf] = { "general" : "", "boote" : {}};
-				ret[row.Lauf].general = row;
-				ret[row.Lauf].general.typ = type;
+				var section = { "general" : "", "boote" : {}};
+				section.general = row;
+				section.general.typ = type;
 				if (type == "startlist") {
 					// i'd like to mention that the datastructure has not been made by me and has been made around 2000 i think.
 					var query2 = "	SELECT s.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, \
@@ -200,7 +199,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 						console.log(err);
 					}
 					else if (rows2.length == 0 || (rows2[0].hasStarted == 0 && type == "result" && rows2[0].zeit_1 == null)) {
-						delete ret[row.Lauf];
+						//delete ret[row.Lauf];
 						callback();
 					}
 					else {
@@ -208,11 +207,12 @@ function getSections(type, regatta_id, rennen_id, callback) {
 							function(row2, callback) {
 								// race has not been finished yet but there are already times available
 								if (row2.hasStarted == 0 && row2.zeit_1 != null && type == "result") {
-									ret[row.Lauf].general.interim = true;
+									section.general.interim = true;
 								}
 							}
 						);
-						ret[row.Lauf].boote = rows2;
+						section.boote = rows2;
+						ret.push(section);
 						callback();
 					}
 				});
