@@ -15,10 +15,11 @@
 	<script src="js/libs/moment-with-langs.min.js"></script>
 	<script src="js/libs/ember-1.5.1.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
-	<script src="js/view_script.js"></script>
+	<script src="js/view_scaript.js"></script>
 	<script src="js/view_app.js"></script>
 </head>
 <body>
+	<script type="text/x-handlebars">
 	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	  <div class="container">
 	    <div class="navbar-header">
@@ -33,7 +34,7 @@
 	    </div>
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
-	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
+	        <li>{{#link-to 'startlists'}}Startlisten{{/link-to}}</li>
 	        <li class="dropdown">
 	            <a href="#" class="dropdown-toggle fake" data-toggle="dropdown">Ergebnisse <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -65,18 +66,21 @@
 		<span id="pre-container">
 		</span>
 		<div id="container">
+			{{outlet}}
 		</div>
 	</div>
+	</script>
 
-	<script id="template-general-race" type="text/x-handlebars-template">
+	<script id="race" type="text/x-handlebars">
+		{{console this}}
 		<div class="background-complementairy">
 			<div class="row">
 				<div class="col-md-11">
 					<div class="page-header">
-				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
+				  		<h1>{{data.general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{data.general.Rennen}}</small></h1>
 				  	</div>
 				</div>
-				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{data.general.Rennen}}</div>
 			</div>
 		</div>
 		<div class="panel panel-default panel-primary">
@@ -85,10 +89,10 @@
 			</div>
 			<div class="panel-body">
 			    <div class="row">
-				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
-				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
-				    <div class="col-md-3">{{general.NameK}}</div>
-				    <div class="col-md-3">{{general.Distanz}} m</div>
+				    <div class="col-md-3">{{data.general.anzahl_boote}} Boote</div>
+				    <div class="col-md-3">{{data.general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3">{{data.general.NameK}}</div>
+				    <div class="col-md-3">{{data.general.Distanz}} m</div>
 			    </div>
 			</div>
 		</div>
@@ -96,20 +100,45 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-
-			{{#each abteilungen}}
-				{{#detectType general.typ}}
-					{{> panel_startlist this}}
-				{{else}}
-					{{#resultDetail}}
-						{{> panel_result_detail ../this}}
-					{{else}}
-						{{> panel_result this}}
-					{{/resultDetail}}
-					
-				{{/detectType}}				
-			{{/each}}
+			{{outlet}}
+			
 		</div>
+		
+	</script>
+
+	<script id="startlists" type="text/x-handlebars">
+		<h2>RACE:</h2>
+		{{#each data.abteilungen}}
+			{{#everyOther @index 2}}
+			{{else}}
+				<div class="same_row">
+			{{/everyOther}}
+				<h3>{{general.lauf_pretty}}
+			{{#everyOther @index 2}}
+				</div>
+			{{/everyOther}}
+		{{/each}}
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<script id="template-general-race" type="text/x-handlebars-template">
+		
 	</script>
 
 	<script id="panel_startlist" type="text/x-handlebars-template">
