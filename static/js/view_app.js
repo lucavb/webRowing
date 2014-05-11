@@ -81,6 +81,8 @@ App.ResultsDetailsRoute = Ember.Route.extend({
 // change us :P
 var raceOutside;
 var currentRace = 0;
+
+moment.lang("de");
 var autoMode = true;
 var socket = io.connect();
 
@@ -92,35 +94,5 @@ socket.on("request", function(data) {
 	raceOutside.set("sections", data.abteilungen);
 });
 
-/**
- *
- *handlebars helpers
- *
- */
 
 
-Ember.Handlebars.helper('console', function(value) {
-    console.log(value);
-});
-
-Handlebars.registerHelper("ruderer", function (obj) {
-	var ret = "";
-	ret += obj.r1_string;
-	for (var i = 2; i <= 8; i++) {
-		if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
-			break;
-		}
-		ret += ", " + obj["r" + i + "_string"];
-	}
-	if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
-		ret += ", St. " + obj.rS_string;
-	}
-	return ret;
-});
-Handlebars.registerHelper("everyOther", function (amount, scope) {
-	var index = scope.data.view.contentIndex;
-    if ( ++index % amount) 
-        return scope.inverse(this, scope);
-    else 
-        return scope.fn(this, scope);
-});

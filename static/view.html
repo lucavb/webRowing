@@ -17,6 +17,7 @@
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
 	<script src="js/view_scaript.js"></script>
 	<script src="js/view_app.js"></script>
+	<script src="js/view_helpers.js"></script>
 </head>
 <body>
 	<script type="text/x-handlebars">
@@ -42,7 +43,7 @@
                 	<li>{{#link-to 'resultsDetails'}}Ergebnisse detailliert{{/link-to}}</li>
             	</ul>
 	        </li>
-	        <li><a class='switch_page' data-page='news' href="#news">News</a></li>
+	        <li>{{#link-to 'news'}}News{{/link-to}}</li>
 	        <form class="navbar-form navbar-left" {{action "getRace" on="submit"}}>
 	            <div class="form-group">
 	            	{{input value=race_id type="number" class="form-control" place="Nummer des Rennens"}}
@@ -106,6 +107,7 @@
 				{{/everyOther}}
 
 				<div class="col-md-6">
+					{{console general.hasStarted}}
 					<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
 						<div class="panel-heading">
 							<div class="row">
@@ -118,7 +120,7 @@
 							</div>
 						</div>
 						<div class="panel-body">
-							
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 						</div>
 						<div class="table-responsive">
 							<table class="table table-striped">
@@ -128,7 +130,7 @@
 									<th>Teamname</th>
 								</tr>
 								{{#each boote}}
-									<tr>
+									{{detectRowColor this}}
 										<td>
 											{{this.Bahn}}
 										</td>
@@ -136,7 +138,7 @@
 											{{BugNr}}
 										</td>
 										<td>
-											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content=''>
+											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" {{bind-attr data-content={{ruderer this}}}}>
 												{{Teamname}}
 											</a>
 										</td>

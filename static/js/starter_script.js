@@ -129,7 +129,7 @@ $(document).ready(function() {
 
   function getRace () {
     if (last_race == null || last_race.general.Rennen != sections[currentSpot].Rennen) {
-      socket.emit("request", { "type" : "startlist", "race_id" : sections[currentSpot].Rennen});
+      socket.emit("request", { "type" : "startlists", "race_id" : sections[currentSpot].Rennen});
     }
     else {
       displayStartlist(last_race);
