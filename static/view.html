@@ -38,8 +38,8 @@
 	        <li class="dropdown">
 	            <a href="#" class="dropdown-toggle fake" data-toggle="dropdown">Ergebnisse <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                	<li><a class="switch_page" data-page='result' href="#result">Ergebnisse kompakt</a></li>
-                	<li><a class="switch_page" data-page='resultDetail' href="#resultDetail">Ergebnisse detailliert</a></li>
+                	<li>{{#link-to 'results'}}Ergebnisse kompakt{{/link-to}}</li>
+                	<li>{{#link-to 'resultsDetails'}}Ergebnisse detailliert{{/link-to}}</li>
             	</ul>
 	        </li>
 	        <li><a class='switch_page' data-page='news' href="#news">News</a></li>
@@ -72,15 +72,18 @@
 	</script>
 
 	<script id="race" type="text/x-handlebars">
-		{{console this}}
+		{{outlet}}
+	</script>
+
+	<script id="startlists" type="text/x-handlebars">
 		<div class="background-complementairy">
 			<div class="row">
 				<div class="col-md-11">
 					<div class="page-header">
-				  		<h1>{{data.general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{data.general.Rennen}}</small></h1>
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
 				  	</div>
 				</div>
-				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{data.general.Rennen}}</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
 			</div>
 		</div>
 		<div class="panel panel-default panel-primary">
@@ -89,10 +92,10 @@
 			</div>
 			<div class="panel-body">
 			    <div class="row">
-				    <div class="col-md-3">{{data.general.anzahl_boote}} Boote</div>
-				    <div class="col-md-3">{{data.general.anzahl_abteilungen}} Abteilung(en)</div>
-				    <div class="col-md-3">{{data.general.NameK}}</div>
-				    <div class="col-md-3">{{data.general.Distanz}} m</div>
+				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
+				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3">{{general.NameK}}</div>
+				    <div class="col-md-3">{{general.Distanz}} m</div>
 			    </div>
 			</div>
 		</div>
@@ -100,25 +103,81 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-			{{outlet}}
-			
+			{{#each sections}}
+				{{#everyOther 2}}
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
+
+				<div class="col-md-6">
+					<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+						<div class="panel-heading">
+							<div class="row">
+								<div class="col-md-6">
+									<h4>{{general.lauf_pretty}}</h4>
+								</div>
+								<div class="col-md-6">
+									<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+								</div>
+							</div>
+						</div>
+						<div class="panel-body">
+							
+						</div>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr>
+									<th>Bahn</th>
+									<th>Bug Nr.</th>
+									<th>Teamname</th>
+								</tr>
+								{{#each boote}}
+									<tr>
+										<td>
+											{{this.Bahn}}
+										</td>
+										<td>
+											{{BugNr}}
+										</td>
+										<td>
+											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content=''>
+												{{Teamname}}
+											</a>
+										</td>
+									</tr>
+								{{/each}}
+							</table>
+						</div>
+					</div>
+				</div>
+
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}
+				
+			{{/each}}
 		</div>
-		
 	</script>
 
-	<script id="startlists" type="text/x-handlebars">
-		<h2>RACE:</h2>
-		{{#each data.abteilungen}}
-			{{#everyOther @index 2}}
-			{{else}}
-				<div class="same_row">
-			{{/everyOther}}
-				<h3>{{general.lauf_pretty}}
-			{{#everyOther @index 2}}
-				</div>
-			{{/everyOther}}
-		{{/each}}
-	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

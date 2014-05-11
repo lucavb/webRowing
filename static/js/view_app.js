@@ -1,42 +1,34 @@
 var App = Ember.Application.create();
 
 App.Data = Ember.Object.extend({
-	data : null
+	general : null,
+	sections : null
 });
 
 App.Router.map(function() {
 	this.resource("race", function() {
 		this.resource("startlists");
 		this.resource("results");
+		this.resource("resultsDetails");
 	});
-  //this.resource("startlists");
-  //this.resource("results");
-  //this.resource("resultsDetails");
-  this.resource("news");
+	this.resource("resultsDetails");
 });
 
 App.IndexRoute = Ember.Route.extend({
-  beforeModel: function() {
-    this.transitionTo('startlists');
-  }
-});
-
-App.RaceRoute = Ember.Route.extend({
-	model : function () {
-		var startlist = App.Data.create({
-			"dummy" : "element",
-			data : null
-		});
-		startlistOutside = startlist;
-		return startlist;
+	beforeModel: function() {
+		this.transitionTo('startlists');
 	}
 });
 
 App.StartlistsRoute = Ember.Route.extend({
+	beforeModel : function() {
+		socket.emit('request', { "type" : "startlist", "race_id" : "0"});
+	},
 	model : function () {
 		var startlist = App.Data.create({
 			"dummy" : "element",
-			data : null
+			general : null,
+			sections : null
 		});
 		startlistOutside = startlist;
 		return startlist;
@@ -46,26 +38,29 @@ App.StartlistsRoute = Ember.Route.extend({
 
 
 // change us :P
+var raceOutside;
 var startlistOutside;
 var resultOutside;
 var newsOutside;
 
 var socket = io.connect();
 
-socket.emit('request', { "type" : "startlist", "race_id" : "0"});
+
 
 socket.on("request", function(data) {
-	console.log("setze neue daten");
-	startlistOutside.set("data", data);
+	startlistOutside.set("general", data.general);
+	startlistOutside.set("sections", data.abteilungen);
+
 });
 
 Ember.Handlebars.helper('console', function(value) {
     console.log(value);
 });
 
-Ember.Handlebars.helper("everyOther", function (index, amount, scope) {
+Handlebars.registerHelper("everyOther", function (amount, scope) {
+	var index = scope.data.view.contentIndex;
     if ( ++index % amount) 
-        return scope.inverse(this);
+        return scope.inverse(this, scope);
     else 
-        return scope.fn(this);
+        return scope.fn(this, scope);
 });
