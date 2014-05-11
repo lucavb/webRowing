@@ -43,16 +43,16 @@
             	</ul>
 	        </li>
 	        <li><a class='switch_page' data-page='news' href="#news">News</a></li>
-	        <form class="navbar-form navbar-left" id='request_race' role="search">
+	        <form class="navbar-form navbar-left" {{action "getRace" on="submit"}}>
 	            <div class="form-group">
-	                <input type="number" class="form-control" placeholder="Nummer des Rennens">
+	            	{{input value=race_id type="number" class="form-control" place="Nummer des Rennens"}}
 	            </div>
 	            <button type="submit" class="btn btn-default">Anfordern</button>
 	        </form>
 	      </ul>
 	      <ul class="nav navbar-nav navbar-right">
 	        <li>
-	        	<button id="toggleUpdate" class="btn btn-success navbar-btn">
+	        	<button id="toggleUpdate" class="btn btn-success navbar-btn" {{action "toggleUpdate"}}>
 	        		<span class="visible-md visible-lg visible-xs" >Automatische Aktualisierung</span>
 	        		<span class="glyphicon visible-sm glyphicon-refresh height20"></span>
 	        	</button>
@@ -69,10 +69,6 @@
 			{{outlet}}
 		</div>
 	</div>
-	</script>
-
-	<script id="race" type="text/x-handlebars">
-		{{outlet}}
 	</script>
 
 	<script id="startlists" type="text/x-handlebars">
@@ -150,6 +146,109 @@
 						</div>
 					</div>
 				</div>
+
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}
+				
+			{{/each}}
+		</div>
+	</script>
+
+	<script id="results" type="text/x-handlebars">
+		<div class="background-complementairy">
+			<div class="row">
+				<div class="col-md-11">
+					<div class="page-header">
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
+				  	</div>
+				</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
+			</div>
+		</div>
+		<div class="panel panel-default panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Allgemein</h3>
+			</div>
+			<div class="panel-body">
+			    <div class="row">
+				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
+				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3">{{general.NameK}}</div>
+				    <div class="col-md-3">{{general.Distanz}} m</div>
+			    </div>
+			</div>
+		</div>
+		<div class="background-complementairy">
+			<h2>Abteilungen</h2>
+		</div>
+		<div class="row">
+			{{#each sections}}
+				{{#everyOther 2}}
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
+				
+				<div class="col-md-6">
+					<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
+						<div class="panel-heading">
+							<div class="row">
+								<div class="col-md-6">
+									<h4>{{general.lauf_pretty}}</h4>
+								</div>
+								<div class="col-md-6">
+									<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+								</div>
+							</div>
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr>
+									<th>Bahn</th>
+									<th>Bug Nr.</th>
+									<th>Teamname</th>
+									<th>Zeit</th>
+								</tr>
+								{{#each boote}}
+									<tr>
+										<td>
+											{{#if ausgeschieden}}
+												-
+											{{else}}
+												{{#if zielZeit}}
+													{{Bahn}}
+												{{else}}
+													-
+												{{/if}}
+											{{/if}}
+										</td>
+										<td>{{BugNr}}</td>
+										<td>
+											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+											data-content='{{ruderer this}}' >
+												{{Teamname}}
+											</a>
+										</td>
+										<td>
+											{{#if ausgeschieden}}
+												{{Kommentar}}
+											{{else}}
+												<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
+												data-content='' >
+												</a>
+											{{/if}}
+										</td>
+									</tr>
+								{{/each}}
+							</table>
+						</div>
+						<div class="panel-footer">
+							<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+						</div>
+					</div>
+				</div>
+
 
 				{{#everyOther 2}}
 					</div>
@@ -284,10 +383,10 @@
 						{{#each boote}}
 							{{detectRowColor this}}
 								<td>
-									{{#if Ausgeschieden}}
+									{{#if ausgeschieden}}
 										-
 									{{else}}
-										{{#if ZielZeit}}
+										{{#if zielZeit}}
 											{{Bahn}}
 										{{else}}
 											-
@@ -302,7 +401,7 @@
 									</a>
 								</td>
 								<td>
-									{{#if Ausgeschieden}}
+									{{#if ausgeschieden}}
 										{{Kommentar}}
 									{{else}}
 										<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"

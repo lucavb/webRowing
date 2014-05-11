@@ -147,7 +147,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									ORDER BY s.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit as zielZeit, e.`Ausgeschieden` AS ausgeschieden, e.`Kommentar`, \
 									m0.Position AS position_1, \
 									m1.Position AS position_2, \
 									m2.Position AS position_3, \

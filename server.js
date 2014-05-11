@@ -33,13 +33,13 @@ io.sockets.on('connection', function(socket) {
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
 		console.log("    info    - broadcasting " + data.type);
-		if (data.type == "startlist") {
+		if (data.type == "startlists") {
 			perp.getCurrentRace("startlist", function(value) {
 				socket.broadcast.emit(data.type, value);
 			});
 			
 		}
-		else if (data.type == "result") {
+		else if (data.type == "results") {
 			perp.getCurrentRace("result", function(value) {
 				socket.broadcast.emit(data.type, value);
 			});
@@ -75,9 +75,9 @@ io.sockets.on('connection', function(socket) {
 	socket.on("request", function(data) {
 		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
 		if (data.type == "resultDetail") {
-			data.type = "result";
+			data.type = "results";
 		}
-		if (data.type == "result") {
+		if (data.type == "results") {
 			if (data.race_id == 0) {
 				perp.getCurrentRace("result", function(value) {
 					socket.emit("request", value);
@@ -89,7 +89,7 @@ io.sockets.on('connection', function(socket) {
 				})
 			}
 		}
-		else if (data.type == "startlist") {
+		else if (data.type == "startlists") {
 			if (data.race_id == 0) {
 				perp.getCurrentRace("startlist", function(value) {
 					socket.emit("request", value);
