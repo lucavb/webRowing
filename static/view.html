@@ -59,7 +59,7 @@
 	        	</button>
 	        </li>
 	      </ul>
-	    </div><!--/.nav-collapse -->
+	    </div>
 	  </div>
 	</div>
 
@@ -73,6 +73,7 @@
 	</script>
 
 	<script id="startlists" type="text/x-handlebars">
+		{{console this}}
 		<div class="background-complementairy">
 			<div class="row">
 				<div class="col-md-11">
@@ -107,8 +108,12 @@
 				{{/everyOther}}
 
 				<div class="col-md-6">
-					{{console general.hasStarted}}
-					<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+					
+					{{#if general.hasStarted}}
+						<div class="panel panel-default panel-success">
+					{{else}}
+						<div class="panel panel-default panel-warning">
+					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6">
@@ -138,7 +143,7 @@
 											{{BugNr}}
 										</td>
 										<td>
-											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" {{bind-attr data-content={{ruderer this}}}}>
+											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom">
 												{{Teamname}}
 											</a>
 										</td>
@@ -192,7 +197,11 @@
 				{{/everyOther}}
 				
 				<div class="col-md-6">
-					<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
+					{{#if general.hasStarted}}
+						<div class="panel panel-default panel-success">
+					{{else}}
+						<div class="panel panel-default panel-warning">
+					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6">
@@ -213,7 +222,7 @@
 									<th>Zeit</th>
 								</tr>
 								{{#each boote}}
-									<tr>
+									{{detectRowColor this}}
 										<td>
 											{{#if ausgeschieden}}
 												-
@@ -238,6 +247,7 @@
 											{{else}}
 												<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
 												data-content='' >
+													{{endTime this}}
 												</a>
 											{{/if}}
 										</td>
@@ -246,17 +256,189 @@
 							</table>
 						</div>
 						<div class="panel-footer">
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
 							<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
 						</div>
 					</div>
 				</div>
-
-
 				{{#everyOther 2}}
 					</div>
 				{{/everyOther}}
-				
 			{{/each}}
+		</div>
+	</script>
+
+	<script id="resultsDetails" type="text/x-handlebars">
+		<div class="background-complementairy">
+			<div class="row">
+				<div class="col-md-11">
+					<div class="page-header">
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
+				  	</div>
+				</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
+			</div>
+		</div>
+		<div class="panel panel-default panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Allgemein</h3>
+			</div>
+			<div class="panel-body">
+			    <div class="row">
+				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
+				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3">{{general.NameK}}</div>
+				    <div class="col-md-3">{{general.Distanz}} m</div>
+			    </div>
+			</div>
+		</div>
+		<div class="background-complementairy">
+			<h2>Abteilungen</h2>
+		</div>
+		<div class="row">
+			{{#each sections}}
+				<div class="col-md-12">
+					{{#interimTimes general}}
+						{{#if general.hasStarted}}
+							<div class="panel panel-default panel-success">
+						{{else}}
+							<div class="panel panel-default panel-warning">
+						{{/if}}
+							<div class="panel-heading">
+								<div class="row">
+									<div class="col-md-6">
+										<h4>{{general.lauf_pretty}}</h4>
+									</div>
+									<div class="col-md-6">
+										<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+									</div>
+								</div>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<th>Bahn</th>
+										<th>Bug Nr.</th>
+										<th>Teamname</th>
+										{{#if_eq general.Distanz "2000"}}
+											<th>500m</th>
+											<th>1000m</th>
+											<th>1500m</th>
+										{{else}}
+											{{#if_eq general.Distanz "1500"}}
+												<th>1000m</th>
+												<th>1500m</th>
+											{{/if_eq}}
+										{{/if_eq}}
+										<th>Zeit</th>
+									</tr>
+									{{#each boot in boote}}
+										{{detectRowColor boot}}
+											<td>
+												{{#if boot.ausgeschieden}}
+													-
+												{{else}}
+													{{#if boot.zielZeit}}
+														{{boot.Bahn}}
+													{{else}}
+														-
+													{{/if}}
+												{{/if}}
+											</td>
+											<td>{{boot.BugNr}}</td>
+											<td>
+												<p>{{boot.Teamname}}<br />
+												<span style="margin-left:5px;">{{ruderer boot}}</span></p>
+											</td>
+											{{#if_eq general.Distanz 2000}}
+												<td>{{boot.zeit_1}}</td>
+												<td>{{boot.zeit_2}}</td>
+												<td>{{boot.zeit_3}}</td>
+											{{else}}
+												{{#if_eq general.Distanz 1500}}
+													<td>{{boot.zeit_2}}</td>
+													<td>{{boot.zeit_3}}</td>
+												{{/if_eq}}
+											{{/if_eq}}
+											<td>
+												{{#if boot.ausgeschieden}}
+													{{boot.Kommentar}}
+												{{else}}
+													{{endTime boot}}
+												{{/if}}
+											</td>
+										</tr>
+									{{/each}}
+								</table>
+							</div>
+							<div class="panel-footer">
+								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+							</div>
+						</div>
+					{{else}}
+						{{partial "panel_interim_detail"}}
+					{{/interimTimes}}
+				</div>
+			{{/each}}
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name='_panel_interim_detail' id="panel_interim_detail">
+		{{log "interim"}}
+		<div class="panel panel-default panel-danger">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8">
+						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
+					</div>
+					<div class="col-md-4">
+						<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<tr>
+						<th>Bahn</th>
+						<th>Bug Nr.</th>
+						<th>Teamname</th>
+						{{#if_eq general.Distanz "2000"}}
+							<th>500m</th>
+							<th>1000m</th>
+							<th>1500m</th>
+						{{else}}
+							{{#if_eq general.Distanz "1500"}}
+								<th>1000m</th>
+								<th>1500m</th>
+							{{/if_eq}}
+						{{/if_eq}}
+						<th>Zeit</th>
+					</tr>
+					{{#each boot in boote}}
+						<tr>
+							<td>{{boot.Bahn}}</td>
+							<td>{{boot.BugNr}}</td>
+							<td>
+								<p>{{boot.Teamname}}<br />
+								<span style="margin-left:5px;">{{ruderer this}}</span></p>
+							</td>
+							{{#if_eq general.Distanz "2000"}}
+								<td>{{boot.zeit_1}}</td>
+								<td>{{boot.zeit_2}}</td>
+								<td>{{boot.zeit_3}}</td>
+							{{else}}
+								{{#if_eq general.Distanz "1500"}}
+									<td>{{boot.zeit_2}}</td>
+									<td>{{boot.zeit_3}}</td>
+								{{/if_eq}}
+							{{/if_eq}}
+							<td>-</td>
+						</tr>
+					{{/each}}
+				</table>
+			</div>
 		</div>
 	</script>
 
@@ -515,7 +697,7 @@
 		</div>
 	</script>
 
-	<script id="panel_interim" type="text/x-handlebars-template">
+	<script id="panel_interim" type="text/x-handlebars">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
 				<div class="row">
@@ -544,7 +726,7 @@
 		</div>
 	</script>
 
-	<script id="panel_interim_detail" type="text/x-handlebars-template">
+	<script id="2"  type="text/x-handlebars">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
 				<div class="row">

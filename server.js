@@ -74,7 +74,7 @@ io.sockets.on('connection', function(socket) {
 	// a requested race or the next one
 	socket.on("request", function(data) {
 		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
-		if (data.type == "resultDetail") {
+		if (data.type == "resultsDetails") {
 			data.type = "results";
 		}
 		if (data.type == "results") {

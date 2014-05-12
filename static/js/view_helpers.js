@@ -64,16 +64,16 @@ Handlebars.registerHelper("resultDetail", function (options) {
 });
 // determines the output for the finish time column(did not start, finish time, ...)
 Ember.Handlebars.helper("endTime", function (boat) {
-	if (boat.ZielZeit != null) {
-		return boat.ZielZeit;
+	if (boat.zielZeit != null) {
+		return boat.zielZeit;
 	}
-	if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet != 1) {
+	if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.Abgemeldet != 1) {
 		return "Nicht am Start erschienen";
 	}
-	else if (boat.ZielZeit == null && boat.Ausgeschieden == 1) {
+	else if (boat.zielZeit == null && boat.ausgeschieden == 1) {
 		return boat.Kommentar;
 	}
-	else if (boat.ZielZeit == null && boat.Ausgeschieden != 1 && boat.Abgemeldet == 1) {
+	else if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.Abgemeldet == 1) {
 		return "Abgemeldet";
 	}
 });
@@ -83,19 +83,20 @@ Ember.Handlebars.helper("safeString", function (text) {
 });
 // row color not that easy after all
 Ember.Handlebars.helper("detectRowColor", function (boat) {
-	if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
+	if (boat.Abgemeldet == 1 && boat.zielZeit == null) {
 		return new Handlebars.SafeString("<tr class='danger'>");
 	}
 	else if (boat.Nachgemeldet == 1) {
 		return new Handlebars.SafeString('<tr class="success">');
 	}
 	else {
-		return Handlebars.SafeString("<tr>");
+		return new Handlebars.SafeString("<tr>");
 	}
 });
 // interim times -> special displaying
-Handlebars.registerHelper("interimTimes", function (section, options) {
-	if (section.general.interim == true) {
+Handlebars.registerHelper("interimTimes", function (general, options) {
+	var value = Ember.get(this, general);
+	if (value.interim) {
 		return options.inverse(this);
 	}
 	else {
@@ -118,9 +119,24 @@ Ember.Handlebars.helper("latestInterim", function (boat) {
 	}
 });
 // if equals helper
-Ember.Handlebars.helper('if_eq', function(a, b, opts) {
-    if(a == b) // Or === depending on your needs
+Handlebars.registerHelper('if_eq', function(a, b, opts) {
+	var value = Ember.get(this, a); // resolve this 
+    if(value == b) // Or === depending on your needs
         return opts.fn(this);
     else
         return opts.inverse(this);
 });
+
+
+/**
+ *
+ * Partials
+ *
+ */
+
+ Handlebars.registerPartial("panel_interim_detail", $("#panel_interim_detail").html());
+
+
+
+
+

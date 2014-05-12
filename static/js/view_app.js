@@ -89,10 +89,18 @@ var socket = io.connect();
 
 
 socket.on("request", function(data) {
-	data.general.anzahl_abteilungen = data.abteilungen.length;
+	processRace(data);
 	raceOutside.set("general", data.general);
 	raceOutside.set("sections", data.abteilungen);
 });
+
+function processRace(race) {
+	race.general.anzahl_abteilungen = race.abteilungen.length;
+	race.general.anzahl_boote = 0;
+	$.each(race.abteilungen, function(key, abteilung ) {
+		race.general.anzahl_boote += abteilung.boote.length;
+	});
+}
 
 
 
