@@ -317,13 +317,11 @@ $(document).ready(function() {
 		clearErrorMsg();
 		$("a.popoverToggle").popover("destroy");
 		var source = $("#template-general-race").html();
-		var counter = 0;
 		var boote = 0;
 		$.each(data.abteilungen, function(key, abteilung ) {
-			counter++;
-			boote = boote + countElementObject(abteilung.boote);
+			boote = boote + abteilung.boote.length;
 		});
-		data.general.anzahl_abteilungen = counter;
+		data.general.anzahl_abteilungen = data.abteilungen.length;
 		data.general.anzahl_boote = boote;
 		requested_id = data.general.Rennen;
 		var template = Handlebars.compile(source);

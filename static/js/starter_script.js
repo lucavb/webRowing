@@ -6,7 +6,7 @@ $(document).ready(function() {
   var countdownInterval = setInterval(function() {
     $( ".countdown" ).each(function() {
       var target = $(this).attr("data-time");
-      $(this).html(moment(target).calendar());
+      $(this).html(moment(target).fromNow());
     });
     $(".now").html(moment().format('LLLL'));
   }, countdownTime);
@@ -44,6 +44,17 @@ $(document).ready(function() {
 
   });
 
+  // enables those cool popovers
+  $(document).on("mouseover", "a.tooltipToggle", function() {
+    $(this).tooltip({
+      html: true,
+    }).tooltip("show");
+  });
+
+  $(document).on("mouseleave", "a.tooltipToggle", function() {
+    $(this).tooltip("hide");
+  });
+
   socket.emit("sections", " ");
 
   socket.on("sections", function(data) {
@@ -61,6 +72,10 @@ $(document).ready(function() {
   Handlebars.registerHelper("momentCalendar", function (timestamp) {
       return moment(timestamp).calendar();
   });
+  Handlebars.registerHelper("momentNow", function (timestamp) {
+      return moment(timestamp).fromNow();
+  });
+
 
   Handlebars.registerHelper("isCurrent", function (race, options) {
     if (race.general.Lauf == sections[currentSpot].Lauf) {

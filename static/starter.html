@@ -59,7 +59,7 @@
 										<h4>{{general.lauf_pretty}}</h4>
 									</div>
 									<div class="col-md-6 col-xs-6">
-										<h4 class="text-right"><span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentCalendar general.SollStartZeit}}</span></h4>
+										<h4 class="text-right"><span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentNow general.SollStartZeit}}</span></h4>
 									</div>
 								</div>
 							</div>
@@ -87,8 +87,8 @@
 												{{BugNr}}
 											</td>
 											<td>
-												<p>{{Teamname}}<br />
-												<span style="margin-left:10px;">{{ruderer this}}</span></p>
+												{{Teamname}}<br />
+												<span style="margin-left:10px;">{{ruderer this}}</span>
 											</td>
 										</tr>
 									{{/each}}
@@ -96,8 +96,8 @@
 							</div>
 							<div class="panel-footer">
 								<ul class="pager">
-									<li data-move="-1" class="previous"><a href="#">&larr; Vorheriges</a></li>
-									<li data-move="1" class="next"><a href="#">Nächstes &rarr;</a></li>
+									<li data-move="-1" class="previous"><a href="#" class="tooltipToggle" data-toggle="tooltip" data-placement="bottom" title="Sie können auch die &larr; bzw. A Taste verwenden">&larr; Vorheriges</a></li>
+									<li data-move="1" class="next"><a href="#" class="tooltipToggle" data-toggle="tooltip" data-placement="bottom" title="Sie können auch die &rarr; bzw. D Taste verwenden">Nächstes &rarr;</a></li>
 								</ul>
 							</div>
 						</div>
