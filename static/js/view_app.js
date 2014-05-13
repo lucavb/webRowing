@@ -9,10 +9,19 @@ App.ApplicationController = Ember.Controller.extend({
 	actions: {
 		toggleUpdate : function () {
 			autoMode = !autoMode;
+			if (autoMode) {
+				$("#toggleUpdate").addClass("btn-success");
+				$("#toggleUpdate").removeClass("btn-danger");
+				socket.emit("request", { "type" : this.get("currentPath"), "race_id" : 0});
+			}
+			else if (!autoMode) {
+				$("#toggleUpdate").removeClass("btn-success");
+				$("#toggleUpdate").addClass("btn-danger");
+			}
 		},
 		getRace : function () {
 			currentRace = this.get("race_id");
-			autoMode = false;
+			this.send("toggleUpdate", "");
 			socket.emit("request", { "type" : this.get("currentPath"), "race_id" : currentRace});
 		}
 	}
@@ -27,6 +36,7 @@ App.Router.map(function() {
 
 App.IndexRoute = Ember.Route.extend({
 	beforeModel: function() {
+		this.set("autoMode", true);
 		this.transitionTo('startlists');
 	}
 });
