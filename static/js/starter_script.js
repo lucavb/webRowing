@@ -33,7 +33,7 @@ $(document).ready(function() {
         return false;
     });
 
-    $(document).on("click", ".pager li", function(e) {
+    $(document).on("click", ".mover", function(e) {
         e.preventDefault();
         moveSection($(this).attr("data-move"));
         //console.log(sections[currentSpot]);
