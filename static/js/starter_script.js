@@ -92,13 +92,13 @@ $(document).ready(function() {
 
     Handlebars.registerHelper("detectRowColor", function (boat) {
     if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
-      return new Handlebars.SafeString("<tr class='danger'>");
+        return new Handlebars.SafeString("<tr class='danger'>");
     }
-    else if (boat.Nachgemeldet == 1) {
-      return new Handlebars.SafeString('<tr class="success">');
+    else if (boat.Nachgemeldet == 1 && 1 == 0) {
+        return new Handlebars.SafeString('<tr class="success">');
     }
     else {
-      return Handlebars.SafeString("<tr>");
+        return Handlebars.SafeString("<tr>");
     }
     });
 
