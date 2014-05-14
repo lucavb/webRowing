@@ -1,96 +1,96 @@
 $(document).ready(function() {
-  var socket = io.connect();
-  var sections = [];
-  var currentSpot = -1;
-  var countdownTime = 1000;
-  var countdownInterval = setInterval(function() {
-    $( ".countdown" ).each(function() {
-      var target = $(this).attr("data-time");
-      $(this).html(moment(target).fromNow());
+    var socket = io.connect();
+    var sections = [];
+    var currentSpot = -1;
+    var countdownTime = 1000;
+    moment.lang("de");
+    var timers = function() {
+        $( ".countdown" ).each(function() {
+            var target = $(this).attr("data-time");
+            $(this).html(moment(target).fromNow());
+            if (moment(target) > moment()) {
+                $(this).addClass("green");
+                $(this).removeClass("red");
+            }
+            else {
+                $(this).addClass("red");
+                $(this).removeClass("green");
+            }
+        });
+        $(".now").html(moment().format('MMMM Do YYYY, H:mm:ss'));
+    }
+    timers();
+    var countdownInterval = setInterval(timers, countdownTime);
+    var last_race = null;
+
+    /**
+    *
+    * jQuery
+    *
+    */
+    $(document).on("click", "a.fake", function(e) {
+        e.preventDefault();
+        return false;
     });
-    $(".now").html(moment().format('LLLL'));
-  }, countdownTime);
-  var last_race = null;
 
-  /**
-   *
-   * jQuery
-   *
-   */
-  $(document).on("click", "a.fake", function(e) {
-    e.preventDefault();
-    return false;
-  });
+    $(document).on("click", ".pager li", function(e) {
+        e.preventDefault();
+        moveSection($(this).attr("data-move"));
+        //console.log(sections[currentSpot]);
+        return false;
+    });
 
-  $(document).on("click", ".pager li", function(e) {
-    e.preventDefault();
-    moveSection($(this).attr("data-move"));
-    //console.log(sections[currentSpot]);
-    return false;
-  });
+    // the awesome stuff
 
-  // the awesome stuff
+    $(document).on('keypress', function(e) {
+        var tag = e.target.tagName.toLowerCase();
+        // left arrow a
+        if ((e.which === 97 || e.keyCode === 37) && tag != 'input' && tag != 'textarea') {
+            moveSection(-1);
+        }
+        // right arrow d
+        else if ((e.which === 100 || e.keyCode === 39) && tag != 'input' && tag != 'textarea') {
+            moveSection(1);
+        }
 
-  $(document).on('keypress', function(e) {
-      var tag = e.target.tagName.toLowerCase();
-      // left arrow a
-      if ((e.which === 97 || e.keyCode === 37) && tag != 'input' && tag != 'textarea') {
-        moveSection(-1);
-      }
-      // right arrow d
-      else if ((e.which === 100 || e.keyCode === 39) && tag != 'input' && tag != 'textarea') {
-        moveSection(1);
-      }
+    });
 
-  });
+    socket.emit("sections", " ");
 
-  // enables those cool popovers
-  $(document).on("mouseover", "a.tooltipToggle", function() {
-    $(this).tooltip({
-      html: true,
-    }).tooltip("show");
-  });
+    socket.on("sections", function(data) {
+        updateSections(data);
+    });
+    socket.on("request", function (data) {
+        displayStartlist(data);
+    });
 
-  $(document).on("mouseleave", "a.tooltipToggle", function() {
-    $(this).tooltip("hide");
-  });
+    
 
-  socket.emit("sections", " ");
-
-  socket.on("sections", function(data) {
-    updateSections(data);
-  });
-  socket.on("request", function (data) {
-    displayStartlist(data);
-  });
-
-  moment.lang("de");
-
-  Handlebars.registerHelper("momentFormat", function (timestamp) {
-      return moment(timestamp).format('LLL');
-  });
-  Handlebars.registerHelper("momentCalendar", function (timestamp) {
-      return moment(timestamp).calendar();
-  });
-  Handlebars.registerHelper("momentNow", function (timestamp) {
-      return moment(timestamp).fromNow();
-  });
+    Handlebars.registerHelper("momentFormat", function (timestamp) {
+        return moment(timestamp).format('LLL');
+    });
+    Handlebars.registerHelper("momentCalendar", function (timestamp) {
+        return moment(timestamp).calendar();
+    });
+    Handlebars.registerHelper("momentNow", function (timestamp) {
+        return moment(timestamp).fromNow();
+    });
 
 
-  Handlebars.registerHelper("isCurrent", function (race, options) {
-    if (race.general.Lauf == sections[currentSpot].Lauf) {
-      return options.fn(this);
-    }
-    else {
-      return options.inverse(this);
-    }
-  });
+    Handlebars.registerHelper("isCurrent", function (race, options) {
+        if (race.general.Lauf == sections[currentSpot].Lauf) {
+            return options.fn(this);
+        }
+        else {
+            return options.inverse(this);
+        }
+    });
 
-  Handlebars.registerHelper("consolelog", function(obj) {
-    console.log(obj);
-  });
+    Handlebars.registerHelper("consolelog", function(obj) {
+        console.log(obj);
+    });
 
-  Handlebars.registerHelper("detectRowColor", function (boat) {
+    Handlebars.registerHelper("detectRowColor", function (boat) {
     if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
       return new Handlebars.SafeString("<tr class='danger'>");
     }
@@ -100,9 +100,9 @@ $(document).ready(function() {
     else {
       return Handlebars.SafeString("<tr>");
     }
-  });
+    });
 
-  Handlebars.registerHelper("ruderer", function (obj) {
+    Handlebars.registerHelper("ruderer", function (obj) {
     var ret = "";
     ret += obj.r1_string;
     for (var i = 2; i <= 8; i++) {
@@ -115,16 +115,16 @@ $(document).ready(function() {
       ret += ", St. " + obj.rS_string;
     }
     return ret ;
-  });
+    });
 
-  function moveSection (value) {
-    var valueInt = parseInt(value);
-    if ( (currentSpot + valueInt) < 0 || (currentSpot + valueInt) >= sections.length ) {
-      return;
+    function moveSection (value) {
+        var valueInt = parseInt(value);
+        if ( (currentSpot + valueInt) < 0 || (currentSpot + valueInt) >= sections.length ) {
+          return;
+        }
+        currentSpot += parseInt(value);
+        getRace();
     }
-    currentSpot += parseInt(value);
-    getRace();
-  }
 
     function updateSections(new_sections) {
         sections = new_sections;
