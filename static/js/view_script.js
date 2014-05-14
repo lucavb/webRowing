@@ -21,6 +21,9 @@ $(document).ready(function() {
 	Handlebars.registerHelper("momentCalendar", function (timestamp) {
 	    return moment(timestamp).calendar();
 	});
+	Handlebars.registerHelper("momentNow", function (timestamp) {
+    	return moment(timestamp).fromNow();
+  	});
 	// generates a string containing all the rowers based on the obj handed over
 	Handlebars.registerHelper("ruderer", function (obj) {
 		var ret = "";

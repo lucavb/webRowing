@@ -129,7 +129,7 @@
 					</div>
 				</div>
 				<div class="panel-body">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 				</div>
 				<div class="table-responsive">
 					<table class="table table-striped">
@@ -226,7 +226,7 @@
 					</table>
 				</div>
 				<div class="panel-footer">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 					<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
 				</div>
 			</div>
@@ -314,7 +314,7 @@
 					</table>
 				</div>
 				<div class="panel-footer">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 					<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
 				</div>
 			</div>
@@ -349,6 +349,9 @@
 						<td>{{latestInterim this}}</td></tr>
 					{{/each}}
 				</table>
+			</div>
+			<div class="panel-footer">
+				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 			</div>
 		</div>
 	</script>
@@ -406,6 +409,9 @@
 					{{/each}}
 				</table>
 			</div>
+			<div class="panel-footer">
+				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+			</div>
 		</div>
 	</script>
 
@@ -416,7 +422,7 @@
 					<h3 class="panel-title">
 						{{header}}
 					</h3>
-					{{momentCalendar timestamp}}
+					{{momentNow timestamp}}
 				</div>
 				<div class="panel-body">
 					{{safeString msg}}
