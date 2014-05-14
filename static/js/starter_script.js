@@ -1,7 +1,8 @@
 $(document).ready(function() {
     var socket = io.connect();
     var sections = [];
-    var currentSpot = -1;
+    var currentSpot = -1; // the current spot in the array
+    var raceNext = -1; // the spot of the race that should be up next
     var countdownTime = 1000;
     moment.lang("de");
     var timers = function() {
@@ -19,7 +20,7 @@ $(document).ready(function() {
         });
         $(".now").html(moment().format('MMMM Do YYYY, H:mm:ss'));
     }
-    timers();
+    $(".now").html(moment().format('MMMM Do YYYY, H:mm:ss'));
     var countdownInterval = setInterval(timers, countdownTime);
     var last_race = null;
 
@@ -54,6 +55,17 @@ $(document).ready(function() {
         }
 
     });
+
+    $("#goNext").click(function() {
+        currentSpot = raceNext;
+        moveSection(0);
+    });
+
+    /**
+     *
+     * socket.io
+     *
+     */
 
     socket.emit("sections", " ");
 
@@ -122,7 +134,7 @@ $(document).ready(function() {
         if ( (currentSpot + valueInt) < 0 || (currentSpot + valueInt) >= sections.length ) {
           return;
         }
-        currentSpot += parseInt(value);
+        currentSpot += valueInt;
         getRace();
     }
 
@@ -130,14 +142,11 @@ $(document).ready(function() {
         sections = new_sections;
         for (var i = 0; i < sections.length; i++) {
             if (sections[i].hasStarted == 0) {
-                if (currentSpot != -1 && currentSpot != i) {
-                    alert("wir sind weiter");
-                    break;
-                }
-            currentSpot = i;
-            //console.log(sections);
-            getRace();
-            break;
+                raceNext = i;
+                currentSpot = i;
+                //console.log(sections);
+                getRace();
+                break;
             }
         }
     }
@@ -157,5 +166,6 @@ $(document).ready(function() {
         var html = template(race);
         last_race = race;
         $("#container").html(html);
+        timers();
     }
 });
