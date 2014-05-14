@@ -126,36 +126,36 @@ $(document).ready(function() {
     getRace();
   }
 
-  function updateSections(new_sections) {
-    sections = new_sections;
-    for (var i = 0; i < sections.length; i++) {
-      if (sections[i].hasStarted == 0) {
-        if (currentSpot != -1 && currentSpot != i) {
-          alert("wir sind weiter");
-          break;
+    function updateSections(new_sections) {
+        sections = new_sections;
+        for (var i = 0; i < sections.length; i++) {
+            if (sections[i].hasStarted == 0) {
+                if (currentSpot != -1 && currentSpot != i) {
+                    alert("wir sind weiter");
+                    break;
+                }
+            currentSpot = i;
+            //console.log(sections);
+            getRace();
+            break;
+            }
         }
-        currentSpot = i;
-        //console.log(sections);
-        getRace();
-        break;
-      }
     }
-  }
 
-  function getRace () {
-    if (last_race == null || last_race.general.Rennen != sections[currentSpot].Rennen) {
-      socket.emit("request", { "type" : "startlist", "race_id" : sections[currentSpot].Rennen});
+    function getRace () {
+        if (last_race == null || last_race.general.Rennen != sections[currentSpot].Rennen) {
+            socket.emit("request", { "type" : "startlist", "race_id" : sections[currentSpot].Rennen});
+        }
+        else {
+            displayStartlist(last_race);
+        }
     }
-    else {
-      displayStartlist(last_race);
-    }
-  }
 
-  function displayStartlist(race) {
-    var source = $("#general_startlist").html();
-    var template = Handlebars.compile(source);
-    var html = template(race);
-    last_race = race;
-    $("#container").html(html);
-  }
+    function displayStartlist(race) {
+        var source = $("#general_startlist").html();
+        var template = Handlebars.compile(source);
+        var html = template(race);
+        last_race = race;
+        $("#container").html(html);
+    }
 });

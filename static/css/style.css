@@ -64,6 +64,10 @@ tr.success > td {
     line-height: 20px;
 }
 
+.right {
+    float: right;
+}
+
 /* PC */
 
 @media only screen and (min-device-width:1000px) {
