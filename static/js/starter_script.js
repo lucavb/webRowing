@@ -88,7 +88,6 @@ $(document).ready(function() {
         return moment(timestamp).fromNow();
     });
 
-
     Handlebars.registerHelper("isCurrent", function (race, options) {
         if (race.general.Lauf == sections[currentSpot].Lauf) {
             return options.fn(this);
@@ -103,15 +102,15 @@ $(document).ready(function() {
     });
 
     Handlebars.registerHelper("detectRowColor", function (boat) {
-    if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
-        return new Handlebars.SafeString("<tr class='danger'>");
-    }
-    else if (boat.Nachgemeldet == 1 && 1 == 0) {
-        return new Handlebars.SafeString('<tr class="success">');
-    }
-    else {
-        return Handlebars.SafeString("<tr>");
-    }
+        if (boat.Abgemeldet == 1 && boat.ZielZeit == null) {
+            return new Handlebars.SafeString("<tr class='danger'>");
+        }
+        else if (boat.Nachgemeldet == 1 && 1 == 0) {
+            return new Handlebars.SafeString('<tr class="success">');
+        }
+        else {
+            return Handlebars.SafeString("<tr>");
+        }
     });
 
     Handlebars.registerHelper("ruderer", function (obj) {
@@ -127,6 +126,18 @@ $(document).ready(function() {
       ret += ", St. " + obj.rS_string;
     }
     return ret ;
+    });
+
+    Handlebars.registerHelper("addition", function(boat) {
+        if (boat.Abgemeldet == 1) {
+            return "Abgemeldet";
+        }
+        else if (boat.zusatzGewicht != null) {
+            return "Zusatzgewicht: " + boat.zusatzGewicht + " kg";
+        }
+        else {
+            return "-";
+        }
     });
 
     function moveSection (value) {
@@ -148,6 +159,11 @@ $(document).ready(function() {
                 getRace();
                 break;
             }
+        }
+        if (currentSpot == -1) {
+            currentSpot = sections.length - 1;
+            raceNext = currentSpot;
+            getRace();
         }
     }
 

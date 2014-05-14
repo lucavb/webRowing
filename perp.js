@@ -94,7 +94,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 INNER JOIN rennen r ON (r.Rennen = l.Rennen AND r.Regatta_ID = l.Regatta_ID) \
 				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.ZielMesspunktNr = m.MesspunktNr) \
 				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
-				 ORDER BY  l.`SollStartZeit` ASC";
+				 ORDER BY ab.Order ASC, l.`SollStartZeit` ASC";
 
 	// in order to allow the ablauf table to hide races
 	// the right level needs to be selected
@@ -129,11 +129,14 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(r6.`VName`, ' ', r6.`NName`, ' (', r6.`JahrG`, ')') as r6_string, \
 									CONCAT(r7.`VName`, ' ', r7.`NName`, ' (', r7.`JahrG`, ')') as r7_string, \
 									CONCAT(r8.`VName`, ' ', r8.`NName`, ' (', r8.`JahrG`, ')') as r8_string, \
-									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string \
+									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string, \
+									IF(r.`MitSteuermann` && (r.`MinimalesSteuermanngewicht` - g.`Gewicht`) > 0, ROUND((r.`MinimalesSteuermanngewicht` - g.`Gewicht`), 2), NULL) as zusatzGewicht \
 									FROM startlisten s \
 									LEFT JOIN meldungen m ON (s.`TNr` = m.`TNr` AND m.Regatta_ID = s.Regatta_ID \
 										AND m.Rennen = s.Rennen ) \
 									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = s.Regatta_ID) \
+									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
+									INNER JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
 									INNER JOIN ruderer r1 ON (m.`ruderer1_ID` = r1.`ID`) \
 									LEFT JOIN ruderer r2 ON (m.`ruderer2_ID` = r2.`ID`) \
 									LEFT JOIN ruderer r3 ON (m.`ruderer3_ID` = r3.`ID`) \
@@ -143,8 +146,9 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r7 ON (m.`ruderer7_ID` = r7.`ID`) \
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
+									LEFT JOIN gewichte g ON (g.`Ruderer_ID` = rS.`ID` AND DATEDIFF(g.`Datum`, l.`SollStartZeit`) = 0) \
 									WHERE s.Rennen = ? AND s.Lauf = ? AND s.Regatta_ID = ? \
-									ORDER BY s.Bahn ASC";
+									ORDER BY m.Abgemeldet ASC, s.Bahn ASC";
 				}
 				else if (type == "result") {
 					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
@@ -167,7 +171,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									FROM startlisten s \
 									LEFT JOIN ergebnisse e ON (e.Lauf = s.Lauf AND e.Regatta_ID = s.Regatta_ID AND e.Rennen = s.Rennen AND e.`TNr` = s.`TNr`) \
 									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
-									LEFT JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
+									INNER JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
 									LEFT JOIN zeiten z ON (z.`Regatta_ID` = s.`Regatta_ID` AND z.Rennen = s.Rennen \
 										AND s.Lauf = z.Lauf AND s.`TNr` = z.`TNr` AND z.`MesspunktNr` = r.`ZielMesspunktNr`) \
 									LEFT JOIN meldungen m ON (s.`TNr` = m.`TNr` AND m.Regatta_ID = s.Regatta_ID AND m.Rennen = s.Rennen ) \
@@ -191,7 +195,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
 									WHERE s.Rennen = ? AND s.Lauf = ? AND s.Regatta_ID = ? \
-									ORDER BY ISNULL(z.Zeit), z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
+									ORDER BY m.Abgemeldet ASC, ISNULL(z.Zeit), z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {

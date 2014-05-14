@@ -74,6 +74,7 @@
 										<th>Bahn</th>
 										<th>Bug Nr.</th>
 										<th>Teamname</th>
+										<th>Zusatz</th>
 									</tr>
 									{{#each boote}}
 										{{detectRowColor this}}
@@ -86,6 +87,9 @@
 											<td>
 												<strong>{{Teamname}}</strong><br />
 												<span style="margin-left:10px;">{{ruderer this}}</span>
+											</td>
+											<td>
+												{{addition this}}
 											</td>
 										</tr>
 									{{/each}}
