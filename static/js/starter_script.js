@@ -67,16 +67,32 @@ $(document).ready(function() {
      *
      */
 
-    socket.emit("sections", " ");
+    socket.emit("sections", " "); // retrieves an array of all races that are out there.
 
     socket.on("sections", function(data) {
         updateSections(data);
     });
+
     socket.on("request", function (data) {
         displayStartlist(data);
     });
 
-    
+    socket.on("startlist", function (data) {
+        // only showing when we were in this race as well.
+        if (sections[currentSpot].general.Rennen == data.general.Rennen) {
+            displayStartlist(data);
+        }
+        else {
+
+        }
+    });
+
+
+    /**
+     *
+     * Handlebars Helpers
+     *
+     */
 
     Handlebars.registerHelper("momentFormat", function (timestamp) {
         return moment(timestamp).format('LLL');
@@ -114,18 +130,18 @@ $(document).ready(function() {
     });
 
     Handlebars.registerHelper("ruderer", function (obj) {
-    var ret = "";
-    ret += obj.r1_string;
-    for (var i = 2; i <= 8; i++) {
-      if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
-        break;
-      }
-      ret += ", " + obj["r" + i + "_string"];
-    }
-    if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
-      ret += ", St. " + obj.rS_string;
-    }
-    return ret ;
+        var ret = "";
+        ret += obj.r1_string;
+        for (var i = 2; i <= 8; i++) {
+          if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
+            break;
+          }
+          ret += ", " + obj["r" + i + "_string"];
+        }
+        if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
+          ret += ", St. " + obj.rS_string;
+        }
+        return ret ;
     });
 
     Handlebars.registerHelper("addition", function(boat) {
