@@ -78,7 +78,7 @@ tr.success > td {
 
 /* PC */
 
-@media only screen and (min-device-width:1000px) {
+@media only screen and (min-device-width:768px) {
     .same_row {
         display: table;
         width: 100%;
