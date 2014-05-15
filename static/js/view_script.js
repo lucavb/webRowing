@@ -140,6 +140,24 @@ $(document).ready(function() {
 	    else
 	        return opts.inverse(this);
 	});
+	// calculates the time distance to the first boat
+	Handlebars.registerHelper("distanceFirst", function(boats, boatTime, point) {
+		if (boats[0][point] == null || boatTime == null) {
+			return "";
+		}
+        var time_first = moment(boats[0][point], "m:ss,SS");
+        var time_this = moment(boatTime, "m:ss,SS");
+        if (time_first > time_this) {
+        	var diff = moment(time_first).diff(time_this);
+        	return "-" + moment(diff).format("m:ss,SS");
+        }
+        else if (time_first < time_this) {
+        	var diff = moment(time_this).diff(time_first);
+        	return "+" + moment(diff).format("m:ss,SS");
+        }
+        return "0:00,00";
+        
+    });
 	// register both partials for either startlists or results
 	Handlebars.registerPartial("panel_startlist", $("#panel_startlist").html());
 	Handlebars.registerPartial("panel_result", $("#panel_result").html());

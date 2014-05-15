@@ -293,20 +293,36 @@
 									<span style="margin-left:5px;">{{ruderer this}}</span>
 								</td>
 								{{#if_eq ../general.Distanz "2000"}}
-									<td>{{zeit_1}}</td>
-									<td>{{zeit_2}}</td>
-									<td>{{zeit_3}}</td>
+									<td>
+										{{zeit_1}} <br />
+										{{distanceFirst ../../boote zeit_1 "zeit_1"}}
+									</td>
+									<td>
+										{{zeit_2}} <br />
+										{{distanceFirst ../../boote zeit_2 "zeit_2"}}
+									</td>
+									<td>
+										{{zeit_3}}<br />
+										{{distanceFirst ../../boote zeit_3 "zeit_3"}}
+									</td>
 								{{else}}
 									{{#if_eq ../general.Distanz "1500"}}
-										<td>{{zeit_2}}</td>
-										<td>{{zeit_3}}</td>
+										<td>
+											{{zeit_2}} <br />
+											{{distanceFirst ../../boote zeit_2 "zeit_2"}}
+										</td>
+										<td>
+											{{zeit_3}}<br />
+											{{distanceFirst ../../boote zeit_3 "zeit_3"}}
+										</td>
 									{{/if_eq}}
 								{{/if_eq}}
 								<td>
 									{{#if Ausgeschieden}}
 										{{Kommentar}}
 									{{else}}
-										{{endTime this}}
+										{{endTime this}}<br />
+										{{distanceFirst ../../boote ZielZeit "ZielZeit"}}
 									{{/if}}
 								</td>
 							</tr>
