@@ -22,6 +22,27 @@ app.get('/', function(req, res) {
     res.render('static/index.html');
 });
 
+/*
+ *
+ * REST API
+ *
+ */
+
+app.get("/startlists", function(req, res) {
+	console.log("    info    - REST sections");
+	perp.getAllSections(function(callback) {
+		res.send({"startlists" : callback });
+	});
+});
+
+app.get("/startlists/:id", function(req, res) {
+	console.log("    info    - REST startlist " + req.params.id);
+	perp.getRaceByID("startlist", req.params.id, function(callback) {
+		callback.id = callback.general.Rennen;
+		res.send({"startlist" : callback});
+	});
+});
+
 console.log('    info    - Express listening on port 8000');
 
 // actual stuff

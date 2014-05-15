@@ -247,7 +247,7 @@ function createError(header, msg) {
 
 // returns an array of all the sections that will be done.
 function getAllSections(callback) {
-	var query = "SELECT ab.Rennen, ab.Lauf, l.SollStartZeit, IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
+	var query = "SELECT CONCAT(ab.Rennen, '-', ab.Lauf) as id, ab.Rennen, ab.Lauf, l.SollStartZeit, IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
 				 FROM ablauf ab \
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
 				 INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
