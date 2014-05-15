@@ -1,230 +1,54 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Kölner Regatta-Verband e.V.</title>
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
-	<script src="js/jquery-1.11.0.min.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/handlebars-v1.3.0.js"></script>
-	<script src="js/moment-with-langs.min.js"></script>
-	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
-	<script src="js/script.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>KRV e.V.</title>
+    <link href="bootstrap3.1.1/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/index_style.css" rel="stylesheet" />
 </head>
+
 <body>
-	<!-- Fixed navbar -->
-	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	  <div class="container">
-	    <div class="navbar-header">
-	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-	        <span class="sr-only">Toggle navigation</span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	      </button>
-	      <a class="navbar-brand krg_rot fake" href="#">Kölner Regatta-Verband e.V.</a>
-	    </div>
-	    <div class="navbar-collapse collapse">
-	      <ul class="nav navbar-nav">
-	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
-	        <li><a class='switch_page' data-page='result' href="#result">Ergebnisse</a></li>
-	        <li><a class='switch_page' data-page='news' href="#news">Nachrichten</a></li>
-	        <form class="navbar-form navbar-left" id='request_race' role="search">
-	            <div class="form-group">
-	                <input type="number" class="form-control" placeholder="Nummer des Rennens">
-	            </div>
-	            <button type="submit" class="btn btn-default">Anfordern</button>
-	        </form>
-	      </ul>
-	      <ul class="nav navbar-nav navbar-right">
-	        <li><button id="toggleUpdate" class="btn btn-success navbar-btn">Automatische Aktualisierung</button></li>
-	      </ul>
-	    </div><!--/.nav-collapse -->
-	  </div>
-	</div>
+    <div class="site-wrapper">
 
-	<div class="container">
-		<span id="pre-container">
-		</span>
-		<div id="container">
-		</div>
-	</div>
-	<script id="template-general-race" type="text/x-handlebars-template">
-		<div class="background-complementairy">
-			<div class="row">
-				<div class="col-md-11">
-					<div class="page-header">
-				  		<h1>{{general.NameD}} <small id='rennen_nummer_alternativ'>Rennen {{general.Rennen}}</small></h1>
-				  	</div>
-				</div>
-				<div class="col-md-1" id="rennen_nummer">{{general.Rennen}}</div>
-			</div>
-		</div>
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">Allgemein</h3>
-			</div>
-			<div class="panel-body">
-			    <div class="row">
-				    <div class="col-md-3">{{general.anzahl_boote}} Boote</div>
-				    <div class="col-md-3">{{general.anzahl_abteilungen}} Abteilung(en)</div>
-				    <div class="col-md-3">{{general.NameK}}</div>
-				    <div class="col-md-3">{{general.Distanz}} m</div>
-			    </div>
-			</div>
-		</div>
-		<div class="background-complementairy">
-			<h2>Abteilungen</h2>
-		</div>
-		<div class="row">
+        <div class="site-wrapper-inner">
 
-			{{#each abteilungen}}
-				{{#everyOther @index 2}}
-				{{else}}
-					<div class="same_row">
-				{{/everyOther}}
-					<div class="col-md-6">
-						{{#interimTimes this}}
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<h4>{{general.lauf_pretty}}
-										{{#detectType ../general.typ}}
-										{{else}}
-											{{#unless general.ErgebnisEndgueltig}}
-												(vorläufig!)
-											{{/unless}}
-										{{/detectType}}
-									</h4>
-								{{#detectType ../general.typ}}{{else}}
-									{{#if general.ErgebnisKorrigiert}}
-										<small>Ergebnis korrigiert</small>
-									{{/if}}
-								{{/detectType}}</div>
-								<div class="panel-body">
-									<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
-									<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+            <div class="cover-container">
 
-								</div>
-								<div class="table-responsive">
-									<table class="table table-striped">
-										<tr>
-											<th>Bahn</th>
-											<th>Bug Nr.</th>
-											<th>Teamname</th>
-										{{#detectType ../general.typ}}
-										{{else}}
-											<th>Zeit</th>
-										{{/detectType}}
-										</tr>
-										{{#each boote}}
-											{{detectRowColor this}}
-												{{! true means startlist; false result}}
-												{{#detectType ../../general.typ}}
-													{{> table_type_startlist this}}
-												{{else}}
-													{{> table_type_result this}}
-												{{/detectType}}
-											</tr>
-										{{/each}}
-									</table>
-								</div>
-							</div>
-						{{else}}
-							{{> table_type_interim this}}
-						{{/interimTimes}}
-					</div>
-				{{#everyOther @index 2}}
-					</div>
-				{{/everyOther}}
-			{{/each}}
-		</div>
-	</script>
+                <div class="masthead clearfix">
+                    <div class="inner">
+                        <h3 class="masthead-brand">Kölner Regatta Verband e.V.</h3>
+                        <ul class="nav masthead-nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#">Features</a></li>
+                            <li><a href="#">Kontakt</a></li>
+                        </ul>
+                    </div>
+                </div>
 
-	<script id="table-template-result" type="text/x-handlebars-template">
-		<td>
-			{{#if Ausgeschieden}}
-				-
-			{{else}}
-				{{#if ZielZeit}}
-					{{Bahn}}
-				{{else}}
-					-
-				{{/if}}
-			{{/if}}
-		</td>
-		<td>{{BugNr}}</td>
-		<td>
-			<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-			data-content='{{ruderer this}}' >
-				{{Teamname}}
-			</a>
-		</td>
-		<td>
-			{{#if Ausgeschieden}}
-				{{Kommentar}}
-			{{else}}
-				<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-				data-content='{{interimTimesToggle this}}' >
-					{{endTime this}}
-				</a>
-			{{/if}}
-		</td>
-	</script>
+                <div class="inner cover">
+                    <h1 class="cover-heading">Herzlich Willkommen</h1>
+                    <p class="lead">Der Kölner Regatta Verband bietet ab sofort eine neue Seite zur Anzeige von Startlisten, Ergebnissen sowie Informationen.</p>
+                    <p class="lead">
+                        <a href="view.html" class="btn btn-lg btn-primary">Startlisten und Ergebnisse</a>
+                        <a href="starter.html" class="btn btn-lg btn-default">Startlisten in Einzelansicht</a>
+                    </p>
+                </div>
 
-	<script id="table-template-startlist" type="text/x-handlebars-template">
-		<td>{{this.Bahn}}</td><td>{{BugNr}}</td>
-		<td>
-			<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-			data-content='{{ruderer this}}' >
-				{{Teamname}}
-			</a>
-		</td>
-	</script>
+                <div class="mastfoot">
+                    <div class="inner">
+                    </div>
+                </div>
 
-	<script id="table-template-interim" type="text/x-handlebars-template">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
-			</div>
-			<div class="panel-body">
-				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
-			</div>
-			<div class="table-responsive">
-				<table class="table table-striped">
-					<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
-					{{#each boote}}
-						<tr><td>{{Bahn}}</td><td>{{BugNr}}</td><td>
-							<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-							data-content='{{ruderer this}}' >
-							{{Teamname}}
-							</a>
-						</td>
-						<td>{{latestInterim this}}</td></tr>
-					{{/each}}
-				</table>
-			</div>
-		</div>
-	</script>
+            </div>
 
-	<script id="template-news" type="text/x-handlebars-template">
-		{{#each this}}
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">
-						{{header}}
-					</h3>
-					{{momentCalendar timestamp}}
-				</div>
-				<div class="panel-body">
-					{{safeString msg}}
-				</div>
-			</div>
-		{{/each}}
-	</script>
-</body>
+        </div>
+
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="bootstrap3.1.1/js/bootstrap.min.js"></script>
+  </body>
 </html>

@@ -6,7 +6,7 @@ body {
 }
 
 body { 
-  background: url(../images/Wallpaper.jpg) no-repeat center center fixed; 
+  background: url(../images/Wallpaper.png) no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -49,6 +49,7 @@ a.popoverToggle{
 
 /* I disagree on the colors bootstrap sets for the rows */
 
+/*
 tr.danger > td{
     background-color: #e38d8b !important;
 }
@@ -56,10 +57,28 @@ tr.danger > td{
 tr.success > td {
     background-color: #93cf90 !important;
 }
+*/
+
+.height20 {
+    height: 20px;
+    line-height: 20px;
+}
+
+.right {
+    float: right;
+}
+
+.red {
+    color: #D9534F;
+}
+
+.green {
+    color: #5CB85C;
+}
 
 /* PC */
 
-@media only screen and (min-device-width:1025px) {
+@media only screen and (min-device-width:768px) {
     .same_row {
         display: table;
         width: 100%;
@@ -69,93 +88,5 @@ tr.success > td {
         float: none;
         display: table-cell;
         vertical-align: top;
-    }
-}
-
-@media only screen and (max-device-width: 480px) and (orientation : landscape) {
-    /* iPhone Normal Landscape*/ 
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
-    }
-}
-
-@media only screen and (max-device-width: 480px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio: 2) {
-    /* iPhone Landscape Retina */
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
-    }
-}
-
-@media only screen and (max-device-width: 480px) and (orientation : portrait) {
-    /* iPhone Normal Portrait*/ 
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
-    }
-}
-
-@media only screen and (max-device-width: 480px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio: 2) {
-    /* iPhone Portrait Retina */
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
-    }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) {
-    /* iPad Normal Landscape */
-    .same_row {
-        display: table;
-        width: 100%;
-    }
-
-    .col-* {
-        float: none;
-        display: table-cell;
-        vertical-align: top;
-    }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) {
-    /* iPad Normal Portrait */
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
-    }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : landscape) and (-webkit-min-device-pixel-ratio: 2) {
-    /* iPad Normal Landscape Retina */
-    .same_row {
-        display: table;
-        width: 100%;
-    }
-
-    .col-* {
-        float: none;
-        display: table-cell;
-        vertical-align: top;
-    }
-}
-
-@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation : portrait) and (-webkit-min-device-pixel-ratio: 2) {
-    /* iPad Normal Portrait Retina */
-    #rennen_nummer {
-        display:none;
-    }
-    #rennen_nummer_alternativ {
-        display:block;
     }
 }

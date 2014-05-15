@@ -64,10 +64,19 @@ io.sockets.on('connection', function(socket) {
 		admin.setState(data);
 	});
 
+	socket.on("sections", function (data) {
+		perp.getAllSections(function(callback) {
+			socket.emit("sections", callback);
+		});
+	});
+
 	// on requests this code will be executed and either return
 	// a requested race or the next one
 	socket.on("request", function(data) {
 		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
+		if (data.type == "resultDetail") {
+			data.type = "result";
+		}
 		if (data.type == "result") {
 			if (data.race_id == 0) {
 				perp.getCurrentRace("result", function(value) {

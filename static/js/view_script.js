@@ -21,6 +21,9 @@ $(document).ready(function() {
 	Handlebars.registerHelper("momentCalendar", function (timestamp) {
 	    return moment(timestamp).calendar();
 	});
+	Handlebars.registerHelper("momentNow", function (timestamp) {
+    	return moment(timestamp).fromNow();
+  	});
 	// generates a string containing all the rowers based on the obj handed over
 	Handlebars.registerHelper("ruderer", function (obj) {
 		var ret = "";
@@ -64,6 +67,15 @@ $(document).ready(function() {
 		}
 		else {
 			return options.inverse(this);
+		}
+	});
+	// result compact or detail
+	Handlebars.registerHelper("resultDetail", function (options) {
+		if (currentType == "result") {
+			return options.inverse(this);
+		}
+		else if (currentType == "resultDetail") {
+			return options.fn(this);
 		}
 	});
 	// determines the output for the finish time column(did not start, finish time, ...)
@@ -121,10 +133,37 @@ $(document).ready(function() {
 			return "-";
 		}
 	});
+	// if equals helper
+	Handlebars.registerHelper('if_eq', function(a, b, opts) {
+	    if(a == b) // Or === depending on your needs
+	        return opts.fn(this);
+	    else
+	        return opts.inverse(this);
+	});
+	// calculates the time distance to the first boat
+	Handlebars.registerHelper("distanceFirst", function(boats, boatTime, point) {
+		if (boats[0][point] == null || boatTime == null) {
+			return "";
+		}
+        var time_first = moment(boats[0][point], "m:ss,SS");
+        var time_this = moment(boatTime, "m:ss,SS");
+        if (time_first > time_this) {
+        	var diff = moment(time_first).diff(time_this);
+        	return "-" + moment(diff).format("m:ss,SS");
+        }
+        else if (time_first < time_this) {
+        	var diff = moment(time_this).diff(time_first);
+        	return "+" + moment(diff).format("m:ss,SS");
+        }
+        return "0:00,00";
+        
+    });
 	// register both partials for either startlists or results
-	Handlebars.registerPartial("table_type_startlist", $("#table-template-startlist").html());
-	Handlebars.registerPartial("table_type_result", $("#table-template-result").html());
-	Handlebars.registerPartial("table_type_interim", $("#table-template-interim").html());
+	Handlebars.registerPartial("panel_startlist", $("#panel_startlist").html());
+	Handlebars.registerPartial("panel_result", $("#panel_result").html());
+	Handlebars.registerPartial("panel_interim", $("#panel_interim").html());
+	Handlebars.registerPartial("panel_interim_detail", $("#panel_interim_detail").html());
+	Handlebars.registerPartial("panel_result_detail", $("#panel_result_detail").html());
 
 	/**
 	 *
@@ -162,7 +201,7 @@ $(document).ready(function() {
 			requested_id = value;
 			setAutoMode(false);
 			// in case we are in the news section we are going to switch to startlist
-			if (currentType != "startlist" && currentType != "result") {
+			if (currentType != "startlist" && currentType != "result" && currentType != "resultDetail") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
@@ -210,7 +249,7 @@ $(document).ready(function() {
 	});
 
 	socket.on("result", function (data) {
-		if (autoUpdate && currentType == "result") {
+		if (autoUpdate && (currentType == "result" || currentType == "resultDetail")) {
 			handleResponse(data);
 		}
 	});
@@ -257,9 +296,12 @@ $(document).ready(function() {
 			else if (hash == "news") {
 				currentType = "news";
 			}
-			$(".switch_page").removeClass("active");
-			$(".switch_page[data-page=" + currentType + "]").addClass("active");
+			else if (hash == "resultDetail") {
+				currentType = "resultDetail";
+			}
 		}
+		$(".switch_page").removeClass("active");
+		$(".switch_page[data-page=" + currentType + "]").addClass("active");
 	}
 
 	// sets the mode for auto updates
@@ -273,7 +315,7 @@ $(document).ready(function() {
 			$("#toggleUpdate").removeClass("btn-danger");
 			$("#toggleUpdate").addClass("btn-success");
 			requested_id = 0;
-			if (currentType != "startlist" && currentType != "result") {
+			if (currentType != "startlist" && currentType != "result" && currentType != "resultDetail") {
 				forceSwitch("startlist");
 			}
 			socket.emit("request", { "type" : currentType, "race_id" : requested_id});
@@ -296,13 +338,11 @@ $(document).ready(function() {
 		clearErrorMsg();
 		$("a.popoverToggle").popover("destroy");
 		var source = $("#template-general-race").html();
-		var counter = 0;
 		var boote = 0;
 		$.each(data.abteilungen, function(key, abteilung ) {
-			counter++;
-			boote = boote + countElementObject(abteilung.boote);
+			boote = boote + abteilung.boote.length;
 		});
-		data.general.anzahl_abteilungen = counter;
+		data.general.anzahl_abteilungen = data.abteilungen.length;
 		data.general.anzahl_boote = boote;
 		requested_id = data.general.Rennen;
 		var template = Handlebars.compile(source);

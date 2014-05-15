@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Kölner Regatta-Verband e.V.</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="js/libs/jquery-1.11.0.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/libs/handlebars-v1.3.0.js"></script>
+	<script src="js/libs/moment-with-langs.min.js"></script>
+	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
+	<script src="js/starter_script.js"></script>
+</head>
+<body>
+
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand krg_rot visible-md visible-lg visible-xs"  href="/">Kölner Regatta-Verband e.V.</a>
+	      <a class="navbar-brand krg_rot visible-sm"  href="/">KRV e.V.</a>
+	    </div>
+	    <div class="navbar-collapse collapse">
+	      <ul class="nav navbar-nav">
+	        <li><p class="navbar-text">Aktuelle Zeit: <span class="now" data-time=""></span></p></li>
+	      </ul>
+	      <ul class="nav navbar-nav navbar-right">
+	        <li>
+	        	<button id="goNext" class="btn btn-success navbar-btn">
+	        		<span class="visible-md visible-lg visible-xs" >Aktueller Lauf</span>
+	        	</button>
+	        </li>
+	      </ul>
+	    </div><!--/.nav-collapse -->
+	  </div>
+	</div>
+	<div id="container" class="container">
+
+	</div>
+
+	<script id="general_startlist" type="text/x-handlebars-template">
+
+		<div class="row">
+			{{#each abteilungen}}
+				{{#isCurrent this}}
+					<div class="col-md-12">
+						<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+							<div class="panel-heading">
+								<div class="row">
+									<div class="col-md-4 col-xs-4">
+										<h4>{{general.Rennen}} | {{../../general.NameK}} | {{general.lauf_pretty}}</h4>
+									</div>
+									<div class="col-md-4 col-xs-4">
+										<h4 class="text-center"><span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentNow general.SollStartZeit}}</span></h4>
+									</div>
+									<div class="col-md-4 col-xs-4">
+										<h4 class="text-right">{{momentCalendar general.SollStartZeit}}</h4>
+									</div>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<th>Bahn</th>
+										<th>Bug Nr.</th>
+										<th>Teamname</th>
+										<th>Zusatz</th>
+									</tr>
+									{{#each boote}}
+										{{detectRowColor this}}
+											<td>
+												{{this.Bahn}}
+											</td>
+											<td>
+												{{BugNr}}
+											</td>
+											<td>
+												<strong>{{Teamname}}</strong><br />
+												<span style="margin-left:10px;">{{ruderer this}}</span>
+											</td>
+											<td>
+												{{addition this}}
+											</td>
+										</tr>
+									{{/each}}
+								</table>
+							</div>
+							<div class="panel-footer">
+								<div class="row">
+									<div class="col-md-3 col-xs-3">
+										<button data-move="-1" type="button" class="btn btn-primary mover">&larr; Vorheriges</button>
+									</div>
+									<div class="col-md-6 col-xs-6">
+										<h4 class="text-center">{{general.Distanz}} m</h4>
+									</div>
+									<div class="col-md-3 col-xs-3">
+										<button data-move="1" type="button" class="btn btn-primary right mover">Nächstes &rarr;</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{{else}}
+				{{/isCurrent}}
+			{{/each}}
+		</div>
+	</script>
+</body>
+</html>
