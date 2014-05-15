@@ -78,7 +78,7 @@ function getRaceByID(type, id, callback) {
 // gathers information on the section and finds all boats that where set for the section
 function getSections(type, regatta_id, rennen_id, callback) {
 	var ret = [];
-	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, \
+	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, rennen.NameK, \
 				 CONCAT(p.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
 				 CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge, \
 				 IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted, \
