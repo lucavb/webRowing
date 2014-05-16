@@ -28,8 +28,18 @@ app.get('/', function(req, res) {
  *
  */
 
+app.get("/races", function(req, res) {
+	console.log("    info    - REST races");
+	perp.getAllRaces(function(callback) {
+		var back = {
+			"races" : callback
+		}
+		res.send(back);
+	});
+});
+
 app.get("/startlists", function(req, res) {
-	console.log("    info    - REST sections");
+	console.log("    info    - REST startlists");
 	perp.getAllSections(function(callback) {
 		res.send({"startlists" : callback });
 	});
@@ -39,11 +49,25 @@ app.get("/startlists/:id", function(req, res) {
 	console.log("    info    - REST startlist " + req.params.id);
 	perp.getRaceByID("startlist", req.params.id, function(callback) {
 		callback.id = callback.general.Rennen;
-		res.send({"startlist" : callback});
+		res.send({"startlists" : callback});
+	});
+});
+
+app.get("/results/:id", function(req, res) {
+	console.log("    info    - REST result " + req.params.id);
+	perp.getRaceByID("result", req.params.id, function(callback) {
+		callback.id = callback.general.Rennen;
+		res.send({ "results" : callback});
 	});
 });
 
 console.log('    info    - Express listening on port 8000');
+
+/**
+ *
+ * Socket.io
+ *
+ */
 
 // actual stuff
 io.sockets.on('connection', function(socket) {

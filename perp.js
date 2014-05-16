@@ -151,7 +151,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									ORDER BY m.Abgemeldet ASC, s.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as zielZeit, e.`Ausgeschieden` AS ausgeschieden, e.`Kommentar`, \
 									m0.Position AS position_1, \
 									m1.Position AS position_2, \
 									m2.Position AS position_3, \
@@ -258,6 +258,17 @@ function getAllSections(callback) {
 	});			 
 }
 
+function getAllRaces(callback) {
+	var query = "SELECT r.Rennen as id, r.Rennen as rennen, r.NameK as bootsklasse, r.NameD as nameGerman, r.NameE as nameEnglish \
+				 FROM rennen r \
+				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = r.Regatta_ID \
+				 ORDER BY r.Rennen ASC";
+	connection.query(query, function(err, rows) {
+		callback(rows);
+	});
+}
+
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;
 module.exports.getAllSections = getAllSections;
+module.exports.getAllRaces = getAllRaces;
