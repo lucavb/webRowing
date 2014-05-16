@@ -24,10 +24,13 @@ App.ApplicationController = Ember.Controller.extend({
 App.IndexRoute = Ember.Route.extend({
 	actions: {
 		switch_page : function() {
+		},
+		getRace : function() {
+			alert("submit");
 		}
 	},
 	beforeModel: function() {
-		store = this.store;
+		store = this.store; // allows me access to the store
 		this.transitionTo('races');
 	}
 });
@@ -41,9 +44,12 @@ App.RacesRoute = Ember.Route.extend({
 App.StartlistRoute = Ember.Route.extend({
 	beforeModel : function (obj) {
 		var lastRace = this.controllerFor('application').get('lastRace');
-		console.log("lastRace: " + lastRace);
 		if (obj.params.startlist.race_id == -1 && lastRace != undefined) {
-			obj.params.startlist.race_id = lastRace;
+			this.transitionTo("startlist", lastRace);
+			console.log("lastRace: " + lastRace);
+		}
+		else if(obj.params.startlist.race_id == -1) {
+			this.transitionTo("startlist", 1);
 		}
 	},
 	model: function(params) {
@@ -55,9 +61,12 @@ App.StartlistRoute = Ember.Route.extend({
 App.ResultRoute = Ember.Route.extend({
 	beforeModel : function (obj) {
 		var lastRace = this.controllerFor('application').get('lastRace');
-		console.log("lastRace: " + lastRace);
 		if (obj.params.result.race_id == -1 && lastRace != undefined) {
-			obj.params.result.race_id = lastRace;
+			this.transitionTo("result", lastRace);
+			console.log("lastRace: " + lastRace);
+		}
+		else if(obj.params.result.race_id == -1) {
+			this.transitionTo("result", 1);
 		}
 	},
 	model: function(params) {
@@ -83,15 +92,15 @@ App.Startlist = DS.Model.extend({
 	}.property("abteilungen")
 });
 
-App.Result = App.Startlist;
+App.Result = DS.Model.extend({
+	general : attr(),
+	abteilungen : attr(),
+	result : null
+});
 
 App.Race = DS.Model.extend({
 	rennen : attr(),
 	bootsklasse : attr(),
 	nameGerman : attr(),
-	nameEnglish : attr(),
-	amount : function() {
-		console.log(length);
-		return this.length;
-	}
+	nameEnglish : attr()
 });
