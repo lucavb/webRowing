@@ -16,7 +16,8 @@
 	<script src="js/libs/ember-1.5.1.js"></script>
 	<script src="js/libs/ember-data.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
-	<script src="js/view_app.js"></script>
+	<script src="js/view/view_app.js"></script>
+	<script src="js/view/view_hbs.js"></script>
 </head>
 <body>
 	<script type="text/x-handlebars">
@@ -48,7 +49,7 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
-							<button id="toggleUpdate" class="btn btn-success navbar-btn">
+							<button class="btn btn-success navbar-btn" {{action "toggleUpdate"}}>
 								<span class="visible-lg visible-xs" >Automatische Aktualisierung</span>
 								<span class="glyphicon glyphicon-refresh visible-sm visible-md height20"></span>
 							</button>
@@ -152,6 +153,10 @@
 		</div>
 		<div class="row">
 			{{#each abteilungen}}
+				{{#everyOther 2}}
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
 				<div class="col-md-6">
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -165,7 +170,7 @@
 							</div>
 						</div>
 						<div class="panel-body">
-							
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 						</div>
 						<div class="table-responsive">
 							<table class="table table-striped">
@@ -192,7 +197,10 @@
 							</table>
 						</div>
 					</div>
-				</div>		
+				</div>
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}	
 			{{/each}}
 		</div>
 	</script>
@@ -226,8 +234,16 @@
 		</div>
 		<div class="row">
 			{{#each abteilungen}}
+				{{#everyOther 2}}
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
 				<div class="col-md-6">
-					<div class="panel panel-default">
+					{{#if general.hasStarted}}
+						<div class="panel panel-default panel-success">
+					{{else}}
+						<div class="panel panel-default">
+					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6 col-xs-6">
@@ -237,9 +253,6 @@
 									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
 								</div>
 							</div>
-						</div>
-						<div class="panel-body">
-							
 						</div>
 						<div class="table-responsive">
 							<table class="table table-striped">
@@ -282,9 +295,16 @@
 									</tr>
 								{{/each}}
 							</table>
+							<div class="panel-footer">
+								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+							</div>
 						</div>
 					</div>
-				</div>		
+				</div>
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}	
 			{{/each}}
 		</div>
 	</script>

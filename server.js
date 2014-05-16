@@ -47,18 +47,36 @@ app.get("/startlists", function(req, res) {
 
 app.get("/startlists/:id", function(req, res) {
 	console.log("    info    - REST startlist " + req.params.id);
-	perp.getRaceByID("startlist", req.params.id, function(callback) {
-		callback.id = callback.general.Rennen;
-		res.send({"startlists" : callback});
-	});
+	switch (req.params.id) {
+		case "0":
+			perp.getCurrentRace("startlist", function(callback) {
+				callback.id = callback.general.Rennen;
+				res.send({ "startlists" : callback});
+			});
+			break;
+		default :
+			perp.getRaceByID("startlist", req.params.id, function(callback) {
+				callback.id = callback.general.Rennen;
+				res.send({ "startlists" : callback});
+			});
+	}
 });
 
 app.get("/results/:id", function(req, res) {
 	console.log("    info    - REST result " + req.params.id);
-	perp.getRaceByID("result", req.params.id, function(callback) {
-		callback.id = callback.general.Rennen;
-		res.send({ "results" : callback});
-	});
+	switch (req.params.id) {
+		case "0":
+			perp.getCurrentRace("result", function(callback) {
+				callback.id = callback.general.Rennen;
+				res.send({ "results" : callback});
+			});
+			break;
+		default :
+			perp.getRaceByID("result", req.params.id, function(callback) {
+				callback.id = callback.general.Rennen;
+				res.send({ "results" : callback});
+			});
+	}
 });
 
 console.log('    info    - Express listening on port 8000');
