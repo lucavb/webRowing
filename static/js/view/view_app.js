@@ -162,3 +162,10 @@ App.Race = DS.Model.extend({
 	nameGerman : attr(),
 	nameEnglish : attr()
 });
+
+
+// socket.io stuff
+
+socket.on("update", function(data) {
+	store.push(data.model, data.payload);
+});

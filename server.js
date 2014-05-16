@@ -96,20 +96,19 @@ io.sockets.on('connection', function(socket) {
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
 		console.log("    info    - broadcasting " + data.type);
-		if (data.type == "startlist") {
-			perp.getCurrentRace("startlist", function(value) {
-				socket.broadcast.emit(data.type, value);
-			});
-			
-		}
-		else if (data.type == "result") {
-			perp.getCurrentRace("result", function(value) {
-				socket.broadcast.emit(data.type, value);
-			});
-		}
-		else if (data.type == "news") {
+		if (data.type == "news") {
 			socket.broadcast.emit("news", news.getAllNews());
+			return;
 		}
+		perp.getCurrentRace(data.type, function(value) {
+			value.id = value.general.Rennen;
+			var back = {
+				"model" : data.type,
+				"payload" : value
+			}
+			socket.broadcast.emit("update", back);
+		});
+		
 	});
 
 	// news stuff. new one comes in -> add it -> broadcast all
