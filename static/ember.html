@@ -419,7 +419,7 @@
 											</td>
 											<td>{{boot.BugNr}}</td>
 											<td>
-												{{boot.Teamname}}<br />
+												<strong>{{boot.Teamname}}</strong><br />
 												<span style="margin-left:5px;">{{ruderer boot}}</span>
 											</td>
 											{{#if_eq general.Distanz 2000}}
@@ -437,8 +437,14 @@
 												</td>
 											{{else}}
 												{{#if_eq general.Distanz 1500}}
-													<td>{{boot.zeit_2}}</td>
-													<td>{{boot.zeit_3}}</td>
+													<td>
+														<strong>{{boot.zeit_2}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+													</td>
+													<td>
+														<strong>{{boot.zeit_3}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+													</td>
 												{{/if_eq}}
 											{{/if_eq}}
 											<td>
@@ -463,6 +469,80 @@
 					{{/interimTimes}}
 				</div>
 			{{/each}}
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name='_panel_interim_detail' id="panel_interim_detail">
+		<div class="panel panel-default panel-danger">
+			<div class="panel-heading">
+				<div class="row">
+					<div class="col-md-8 col-xs-8">
+						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
+					</div>
+					<div class="col-md-4 col-xs-4">
+						<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<tr>
+						<th>Bahn</th>
+						<th>Bug Nr.</th>
+						<th>Teamname</th>
+						{{#if_eq general.Distanz "2000"}}
+							<th>500m</th>
+							<th>1000m</th>
+							<th>1500m</th>
+						{{else}}
+							{{#if_eq general.Distanz "1500"}}
+								<th>1000m</th>
+								<th>1500m</th>
+							{{/if_eq}}
+						{{/if_eq}}
+						<th>Zeit</th>
+					</tr>
+					{{#each boot in boote}}
+						<tr>
+							<td>{{boot.Bahn}}</td>
+							<td>{{boot.BugNr}}</td>
+							<td>
+								{{boot.Teamname}}<br />
+								<span style="margin-left:5px;">{{ruderer boot}}</span>
+							</td>
+							{{#if_eq ../general.Distanz "2000"}}
+								<td>
+									<strong>{{boot.zeit_1}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+								</td>
+								<td>
+									<strong>{{boot.zeit_2}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+								</td>
+								<td>
+									<strong>{{boot.zeit_3}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+								</td>
+							{{else}}
+								{{#if_eq ../general.Distanz "1500"}}
+									<td>
+										<strong>{{boot.zeit_2}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+									</td>
+									<td>
+										<strong>{{boot.zeit_3}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+									</td>
+								{{/if_eq}}
+							{{/if_eq}}
+							<td>-</td>
+						</tr>
+					{{/each}}
+				</table>
+			</div>
+			<div class="panel-footer">
+				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+			</div>
 		</div>
 	</script>
 </body>
