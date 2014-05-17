@@ -195,10 +195,10 @@
 							</table>
 						</div>
 					</div>
-				</div>
+				</div>	
 				{{#everyOther 2}}
-					</div>
-				{{/everyOther}}	
+				</div>
+				{{/everyOther}}
 			{{/each}}
 		</div>
 	</script>
@@ -232,10 +232,6 @@
 		</div>
 		<div class="row">
 			{{#each abteilungen}}
-				{{#everyOther 2}}
-				{{else}}
-					<div class="same_row">
-				{{/everyOther}}
 				<div class="col-md-6">
 					{{#if general.hasStarted}}
 						<div class="panel panel-default panel-success">
@@ -300,9 +296,6 @@
 						</div>
 					</div>
 				</div>
-				{{#everyOther 2}}
-					</div>
-				{{/everyOther}}	
 			{{/each}}
 		</div>
 	</script>

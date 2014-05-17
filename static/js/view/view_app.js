@@ -26,12 +26,10 @@ App.ApplicationController = Ember.Controller.extend({
 	actions: {
 		getRace : function() {
 			var race = this.get("wishRace");
-			var controller = this.controllerFor('application');
-			this.transitionTo(controller.get("lastRoute"), race);
+			this.transitionToRoute(this.get("lastRoute"), race);
 		},
 		toggleUpdate : function() {
-			var controller = this.controllerFor("application");
-			var autoMode = controller.get("autoMode");
+			var autoMode = this.get("autoMode");
 			autoMode = !autoMode;
 			controller.set("autoMode", autoMode);
 			if (autoMode) {
