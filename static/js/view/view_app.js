@@ -12,6 +12,8 @@ App.Router.map(function() {
 	this.resource("races");
 	this.resource("startlist", {path : 'startlists/:race_id'});
 	this.resource("result", {path : 'results/:race_id'});
+	this.resource("resultDetails", {path : 'resultDetails/:race_id'});
+	this.resource("news");
 });
 
 
@@ -112,7 +114,24 @@ App.ResultRoute = Ember.Route.extend({
 	}
 });
 
+App.ResultDetailsRoute = Ember.Route.extend({
+	beforeModel : function (obj) {
+		var controller = this.controllerFor('application');
+		controller.set("lastRoute", "resultDetails");
 
+		var lastRace = controller.get('lastRace');
+		if (obj.params.resultDetails.race_id == -1 && lastRace != undefined) {
+			this.transitionTo("result", lastRace);
+		}
+		else if(obj.params.resultDetails.race_id == -1) {
+			this.transitionTo("resultDetails", 1); // request 1 if there has been no race requested before
+		}
+	},
+	model: function(params) {
+		this.controllerFor("application").set("lastRace", params.race_id); // write last race 
+		return this.store.find("result", params.race_id);
+	}
+});
 
 
 // Models
