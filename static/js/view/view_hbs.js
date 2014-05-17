@@ -92,3 +92,54 @@ Ember.Handlebars.helper("ruderer", function (obj) {
 	}
 	return new Handlebars.SafeString(ret);
 });
+
+var test;
+
+Ember.Handlebars.registerBoundHelper("distanceFirst", function(boats, boatTime, point) {
+	if (boats[0][point] == null || boatTime == null) {
+		return "";
+	}
+    var time_first = moment(boats[0][point], "m:ss,SS");
+    var time_this = moment(boatTime, "m:ss,SS");
+    if (time_first > time_this) {
+    	var diff = moment(time_first).diff(time_this);
+    	return "-" + moment(diff).format("m:ss,SS");
+    }
+    else if (time_first < time_this) {
+    	var diff = moment(time_this).diff(time_first);
+    	return "+" + moment(diff).format("m:ss,SS");
+    }
+    return "0:00,00";
+    
+});
+
+/*
+// calculates the time distance to the first boat
+Ember.Handlebars.helper("distanceFirst", function(boats, boat, point) {
+	var project = Ember.get(this, boat);
+	console.log(project);
+	return;
+    var info = project.get("zeit_1");
+    alert(info);
+    return;
+	alert(boatTime);
+	if (boatTime == undefined) {
+		return "undefined";
+	}
+	if (boats[0][point] == null || boatTime == null) {
+		return "";
+	}
+    var time_first = moment(boats[0][point], "m:ss,SS");
+    var time_this = moment(boatTime, "m:ss,SS");
+    if (time_first > time_this) {
+    	var diff = moment(time_first).diff(time_this);
+    	return "-" + moment(diff).format("m:ss,SS");
+    }
+    else if (time_first < time_this) {
+    	var diff = moment(time_this).diff(time_first);
+    	return "+" + moment(diff).format("m:ss,SS");
+    }
+    return "0:00,00";
+    
+});
+*/

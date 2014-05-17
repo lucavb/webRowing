@@ -42,7 +42,7 @@
 								<li>{{#link-to 'startlist' -1}}Startlisten{{/link-to}}</li>
 								<li class="divider"></li>
 								<li>{{#link-to 'result' -1}}Ergebnisse{{/link-to}}</li>
-								<li>{{#link-to 'resultDetails' -1}}Ergebnisse detailiert{{/link-to}}</li>
+								<li>{{#link-to 'resultDetail' -1}}Ergebnisse detailiert{{/link-to}}</li>
 								<li class="divider"></li>
 								<li>{{#link-to 'news'}}Neuigkeiten{{/link-to}}</li>
 							</ul>
@@ -339,7 +339,7 @@
 		</div>
 	</script>
 
-	<script type="text/x-handlebars" id="resultDetails">
+	<script type="text/x-handlebars" id="resultDetail">
 		<div class="background-complementairy">
 			<div class="row">
 				<div class="col-md-11">
@@ -381,7 +381,7 @@
 										<h4>{{general.lauf_pretty}}</h4>
 									</div>
 									<div class="col-md-6">
-										<h4 class="text-right">Rennen {{general.Rennen}}</h4>
+										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
 									</div>
 								</div>
 							</div>
@@ -419,13 +419,22 @@
 											</td>
 											<td>{{boot.BugNr}}</td>
 											<td>
-												<p>{{boot.Teamname}}<br />
-												<span style="margin-left:5px;">{{ruderer boot}}</span></p>
+												{{boot.Teamname}}<br />
+												<span style="margin-left:5px;">{{ruderer boot}}</span>
 											</td>
 											{{#if_eq general.Distanz 2000}}
-												<td>{{boot.zeit_1}}</td>
-												<td>{{boot.zeit_2}}</td>
-												<td>{{boot.zeit_3}}</td>
+												<td>
+													<strong>{{boot.zeit_1}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+												</td>
+												<td>
+													<strong>{{boot.zeit_2}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+												</td>
+												<td>
+													<strong>{{boot.zeit_3}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+												</td>
 											{{else}}
 												{{#if_eq general.Distanz 1500}}
 													<td>{{boot.zeit_2}}</td>
@@ -436,7 +445,8 @@
 												{{#if boot.ausgeschieden}}
 													{{boot.Kommentar}}
 												{{else}}
-													{{endTime boot}}
+													<strong>{{endTime boot}}</strong><br />
+													{{distanceFirst ../../boote boot.zielZeit "zielZeit"}}
 												{{/if}}
 											</td>
 										</tr>
