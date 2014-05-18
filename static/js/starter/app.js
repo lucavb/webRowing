@@ -55,10 +55,23 @@ App.SectionsIndexRoute = Ember.Route.extend({
 	}
 });
 
+var test;
+
 App.SingleSectionRoute = Ember.Route.extend({
 	model : function(params) {
-		alert(params.race_id + " " + params.section_id);
-		return this.store.find("section", params.race_id + "/" + params.section_id);
+		return this.store.find("startlist", params.race_id).then(function(model) {
+			var sections = model.getProperties("abteilungen").abteilungen;
+			for (var i = 0; i < sections.length; i++) {
+				if (sections[i].general.Lauf == params.section_id) {
+					var back = {
+						"general" : model.getProperties("general").general,
+						"section" : sections[i]
+					}
+					console.log(back);
+					return back;
+				}
+			}
+		});
 	}
 });
 
@@ -77,8 +90,22 @@ App.Section = DS.Model.extend({
 	lauf_pretty : attr()
 });
 
-App.SingleSection = DS.Model.extend({
-
+App.Startlist = DS.Model.extend({
+	general : attr(),
+	abteilungen : attr(),
+	section : attr(),
+	amountSections : function () {
+		var abteilungen = this.get("abteilungen");
+		return abteilungen.length;
+	}.property('abteilungen'),
+	amountBoats : function() {
+		var abteilungen = this.get("abteilungen");
+		var back = 0;
+		$.each(abteilungen, function(key, abteilung ) {
+			back = back + abteilung.boote.length;
+		});
+		return back;
+	}.property("abteilungen")
 });
 
 // socket.io stuff
