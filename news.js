@@ -29,6 +29,7 @@ function addNews (new_news) {
 		delete new_news.secret;
 	}
 	new_news.timestamp = moment().format();
+	new_news.id = news.length + 1;
 	news.push(new_news);
 	write2File();
 }

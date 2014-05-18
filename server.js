@@ -28,6 +28,15 @@ app.get('/', function(req, res) {
  *
  */
 
+app.get("/news", function(req, res) {
+	console.log("    info    - REST news");
+	// json parse is necessary since it will not be recognized by ember otherwise
+	var back = {
+		"news" : JSON.parse(news.getAllNews())
+	}
+	res.send(back);
+});
+
 app.get("/races", function(req, res) {
 	console.log("    info    - REST races");
 	perp.getAllRaces(function(callback) {
@@ -38,10 +47,17 @@ app.get("/races", function(req, res) {
 	});
 });
 
-app.get("/startlists", function(req, res) {
-	console.log("    info    - REST startlists");
+app.get("/sections", function(req, res) {
+	console.log("    info    - REST sections");
 	perp.getAllSections(function(callback) {
-		res.send({"startlists" : callback });
+		res.send({"sections" : callback });
+	});
+});
+
+app.get("/sections/:race_id/:section_id", function(req, res) {
+	console.log("    info    - REST sections " + req.params.race_id + "-" + req.params.section_id);
+	perp.getSections("startlist", req.params.race_id, function(value) {
+		res.send({"section" : value});
 	});
 });
 

@@ -4,7 +4,6 @@ var App = Ember.Application.create({
 var attr = DS.attr;
 var socket = io.connect();
 var store;
-moment.lang("de");
 
 // Router
 
@@ -133,6 +132,12 @@ App.ResultDetailRoute = Ember.Route.extend({
 	}
 });
 
+App.NewsRoute = Ember.Route.extend({
+	model : function() {
+		return this.store.find("news");		
+	}
+});
+
 
 // Models
 
@@ -178,6 +183,12 @@ App.Race = DS.Model.extend({
 	bootsklasse : attr(),
 	nameGerman : attr(),
 	nameEnglish : attr()
+});
+
+App.News = DS.Model.extend({
+	header : attr(),
+	msg : attr(),
+	timestamp : attr()
 });
 
 

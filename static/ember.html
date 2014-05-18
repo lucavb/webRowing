@@ -16,8 +16,9 @@
 	<script src="js/libs/ember-1.5.1.js"></script>
 	<script src="js/libs/ember-data.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
-	<script src="js/view/view_app.js"></script>
-	<script src="js/view/view_hbs.js"></script>
+	<script src="js/view/app.js"></script>
+	<script src="js/view/hbs.js"></script>
+	<script src="js/view/script.js"></script>
 </head>
 <body>
 	<script type="text/x-handlebars" id="">
@@ -188,9 +189,7 @@
 											{{BugNr}}
 										</td>
 										<td>
-											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content=''>
-												{{Teamname}}
-											</a>
+											{{Teamname}}
 										</td>
 									</tr>
 								{{/each}}
@@ -271,19 +270,13 @@
 										</td>
 										<td>{{BugNr}}</td>
 										<td>
-											<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-											data-content='' >
-												{{Teamname}}
-											</a>
+											{{Teamname}}
 										</td>
 										<td>
 											{{#if ausgeschieden}}
 												{{Kommentar}}
 											{{else}}
-												<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-												data-content='' >
-													{{endTime this}}
-												</a>
+												{{endTime this}}
 											{{/if}}
 										</td>
 									</tr>
@@ -323,10 +316,7 @@
 							<td>{{Bahn}}</td>
 							<td>{{BugNr}}</td>
 							<td>
-								<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-								data-content='' >
 								{{Teamname}}
-								</a>
 							</td>
 							<td>{{latestInterim this}}</td>
 						</tr>
@@ -544,6 +534,23 @@
 				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 			</div>
 		</div>
+	</script>
+	
+	<script id="news" type="text/x-handlebars">
+		{{#each}}
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">{{header}}</h4>
+				</div>
+				<div class="panel-body">
+					{{msg}}
+				</div>
+				<div class="panel-footer">
+					{{momentNow timestamp}}
+				</div>
+			</div>
+		{{else}}
+		{{/each}}
 	</script>
 </body>
 </html>

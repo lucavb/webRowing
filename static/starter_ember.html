@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Kölner Regatta-Verband e.V.</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="js/libs/jquery-1.11.0.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/libs/handlebars-v1.3.0.js"></script>
+	<script src="js/libs/moment-with-langs.min.js"></script>
+	<script src="js/libs/ember-1.5.1.js"></script>
+	<script src="js/libs/ember-data.js"></script>
+	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
+	<script src="js/starter/app.js"></script>
+	<script src="js/starter/hbs.js"></script>
+	<script src="js/starter/script.js"></script>
+</head>
+<body>
+	<script type="text/x-handlebars">
+		<h1>Index Route</h1>
+		<div class="container">
+			{{outlet}}
+		</div>
+	</script>
+
+	<script id="sections/index" type="text/x-handlebars">
+		<h1>SectionsRoute</h1>
+		<div class="panel panel-default">
+		<table class="table">
+			<tr>
+				<th>Rennen</th>
+				<th>Lauf</th>
+				<th>Bootsklasse</th>
+				<th>Startzeit</th>
+				<th>Gestartet</th>
+				<th>GoTo</th>
+			</tr>
+			{{#each}}
+				<tr>
+					<td>{{Rennen}}</td>
+					<td>{{lauf_pretty}}</td>
+					<td>{{NameK}}</td>
+					<td>{{SollStartZeit}}</td>
+					<td>{{hasStarted}}</th>
+					<td>{{#link-to 'singleSection' Rennen Lauf}}Goto{{/link-to}}</td>
+				</tr>
+			{{/each}}
+		</table>
+		</div>
+	</script>
+</body>
+</html>
