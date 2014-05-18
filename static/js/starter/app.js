@@ -67,7 +67,6 @@ App.SingleSectionRoute = Ember.Route.extend({
 						"general" : model.getProperties("general").general,
 						"section" : sections[i]
 					}
-					console.log(back);
 					return back;
 				}
 			}

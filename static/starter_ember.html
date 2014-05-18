@@ -22,7 +22,32 @@
 </head>
 <body>
 	<script type="text/x-handlebars">
-		<h1>Index Route</h1>
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand krg_rot visible-md visible-lg visible-xs"  href="/">Kölner Regatta-Verband e.V.</a>
+		      <a class="navbar-brand krg_rot visible-sm"  href="/">KRV e.V.</a>
+		    </div>
+		    <div class="navbar-collapse collapse">
+		      <ul class="nav navbar-nav">
+		        <li><p class="navbar-text">Aktuelle Zeit: <span class="now" data-time=""></span></p></li>
+		      </ul>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li>
+		        	<button id="goNext" class="btn btn-success navbar-btn">
+		        		<span class="visible-md visible-lg visible-xs" >Aktueller Lauf</span>
+		        	</button>
+		        </li>
+		      </ul>
+		    </div><!--/.nav-collapse -->
+		  </div>
+		</div>
 		<div class="container">
 			{{outlet}}
 		</div>
@@ -55,67 +80,64 @@
 	</script>
 
 	<script id="singleSection" type="text/x-handlebars">
-		<h1>sup</h1>
-		{{log abteilungen}}
-		<div class="panel panel-default">
-			{{#with section}}
-				<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
-					<div class="panel-heading">
-						<div class="row">
-							<div class="col-md-4 col-xs-4">
-								<h4>{{general.Rennen}} | {{general.NameK}} | {{general.lauf_pretty}}</h4>
-							</div>
-							<div class="col-md-4 col-xs-4">
-								<h4 class="text-center"><span class="countdown" data-time='{{general.SollStartZeit}}'>{{momentNow general.SollStartZeit}}</span></h4>
-							</div>
-							<div class="col-md-4 col-xs-4">
-								<h4 class="text-right">{{momentCalendar general.SollStartZeit}}</h4>
-							</div>
+		{{log section.boote}}
+		{{#with section}}
+			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-md-4 col-xs-4">
+							<h4>{{general.Rennen}} | {{general.NameK}} | {{general.lauf_pretty}}</h4>
 						</div>
-					</div>
-					<div class="table-responsive">
-						<table class="table table-striped">
-							<tr>
-								<th>Bahn</th>
-								<th>Bug Nr.</th>
-								<th>Teamname</th>
-								<th>Zusatz</th>
-							</tr>
-							{{#each boote}}
-								<tr>
-									<td>
-										{{this.Bahn}}
-									</td>
-									<td>
-										{{BugNr}}
-									</td>
-									<td>
-										<strong>{{Teamname}}</strong><br />
-										<span style="margin-left:10px;">{{ruderer this}}</span>
-									</td>
-									<td>
-										{{addition this}}
-									</td>
-								</tr>
-							{{/each}}
-						</table>
-					</div>
-					<div class="panel-footer">
-						<div class="row">
-							<div class="col-md-3 col-xs-3">
-								<button data-move="-1" type="button" class="btn btn-primary mover">&larr; Vorheriges</button>
-							</div>
-							<div class="col-md-6 col-xs-6">
-								<h4 class="text-center">{{general.Distanz}} m</h4>
-							</div>
-							<div class="col-md-3 col-xs-3">
-								<button data-move="1" type="button" class="btn btn-primary right mover">Nächstes &rarr;</button>
-							</div>
+						<div class="col-md-4 col-xs-4">
+							<h4 class="text-center"><span class="countdown" {{bind-attr data-time=general.SollStartZeit}} >{{momentNow general.SollStartZeit}}</span></h4>
+						</div>
+						<div class="col-md-4 col-xs-4">
+							<h4 class="text-right">{{momentCalendar general.SollStartZeit}}</h4>
 						</div>
 					</div>
 				</div>
-			{{/with}}
-		</div>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<th>Bahn</th>
+							<th>Bug Nr.</th>
+							<th>Teamname</th>
+							<th>Zusatz</th>
+						</tr>
+						{{#each boote}}
+							<tr>
+								<td>
+									{{this.Bahn}}
+								</td>
+								<td>
+									{{BugNr}}
+								</td>
+								<td>
+									<strong>{{Teamname}}</strong><br />
+									<span style="margin-left:10px;">{{ruderer this}}</span>
+								</td>
+								<td>
+									{{addition this}}
+								</td>
+							</tr>
+						{{/each}}
+					</table>
+				</div>
+				<div class="panel-footer">
+					<div class="row">
+						<div class="col-md-3 col-xs-3">
+							<button data-move="-1" type="button" class="btn btn-primary mover">&larr; Vorheriges</button>
+						</div>
+						<div class="col-md-6 col-xs-6">
+							<h4 class="text-center">{{general.Distanz}} m</h4>
+						</div>
+						<div class="col-md-3 col-xs-3">
+							<button data-move="1" type="button" class="btn btn-primary right mover">Nächstes &rarr;</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{/with}}
 	</script>
 </body>
 </html>
