@@ -13,60 +13,120 @@
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/libs/handlebars-v1.3.0.js"></script>
 	<script src="js/libs/moment-with-langs.min.js"></script>
+	<script src="js/libs/ember-1.5.1.js"></script>
+	<script src="js/libs/ember-data.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
-	<script src="js/view/view_script.js"></script>
+	<script src="js/view/app.js"></script>
+	<script src="js/view/hbs.js"></script>
+	<script src="js/view/script.js"></script>
 </head>
 <body>
-	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	  <div class="container">
-	    <div class="navbar-header">
-	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-	        <span class="sr-only">Toggle navigation</span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	        <span class="icon-bar"></span>
-	      </button>
-	      <a class="navbar-brand krg_rot visible-md visible-lg visible-xs"  href="/">Kölner Regatta-Verband e.V.</a>
-	      <a class="navbar-brand krg_rot visible-sm"  href="/">KRV e.V.</a>
-	    </div>
-	    <div class="navbar-collapse collapse">
-	      <ul class="nav navbar-nav">
-	        <li><a class='switch_page' data-page='startlist' href="#startlist">Startlisten</a></li>
-	        <li class="dropdown">
-	            <a href="#" class="dropdown-toggle fake" data-toggle="dropdown">Ergebnisse <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                	<li><a class="switch_page" data-page='result' href="#result">Ergebnisse kompakt</a></li>
-                	<li><a class="switch_page" data-page='resultDetail' href="#resultDetail">Ergebnisse detailliert</a></li>
-            	</ul>
-	        </li>
-	        <li><a class='switch_page' data-page='news' href="#news">News</a></li>
-	        <form class="navbar-form navbar-left" id='request_race' role="search">
-	            <div class="form-group">
-	                <input type="number" class="form-control" placeholder="Nummer des Rennens">
-	            </div>
-	            <button type="submit" class="btn btn-default">Anfordern</button>
-	        </form>
-	      </ul>
-	      <ul class="nav navbar-nav navbar-right">
-	        <li>
-	        	<button id="toggleUpdate" class="btn btn-success navbar-btn">
-	        		<span class="visible-lg visible-xs" >Automatische Aktualisierung</span>
-	        		<span class="glyphicon glyphicon-refresh visible-sm visible-md height20"></span>
-	        	</button>
-	        </li>
-	      </ul>
-	    </div>
-	  </div>
-	</div>
-
-	<div class="container">
-		<span id="pre-container">
-		</span>
-		<div id="container">
+	<script type="text/x-handlebars" id="">
+		<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand krg_rot visible-md visible-lg visible-xs"  href="/">Kölner Regatta-Verband e.V.</a>
+					<a class="navbar-brand krg_rot visible-sm"  href="/">KRV e.V.</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li>{{#link-to 'races'}}Übersicht{{/link-to}}</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Ansichten <b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li>{{#link-to 'startlist' -1}}Startlisten{{/link-to}}</li>
+								<li class="divider"></li>
+								<li>{{#link-to 'result' -1}}Ergebnisse{{/link-to}}</li>
+								<li>{{#link-to 'resultDetail' -1}}Ergebnisse detailiert{{/link-to}}</li>
+								<li class="divider"></li>
+								<li>{{#link-to 'news'}}Neuigkeiten{{/link-to}}</li>
+							</ul>
+				        </li>
+						<form class="navbar-form navbar-left" role="search" {{action "getRace" on="submit"}}>
+							<div class="form-group">
+								{{input value=wishRace type="number" class="form-control" placeholder="Nummer des Rennens"}}
+							</div>
+							<button class="btn btn-default" type="submit">Anfordern</button>
+						</form>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<button class="btn btn-success navbar-btn" {{action "toggleUpdate"}}>
+								<span class="visible-lg visible-xs" >Automatische Aktualisierung</span>
+								<span class="glyphicon glyphicon-refresh visible-sm visible-md height20"></span>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
-	</div>
 
-	<script id="template-general-race" type="text/x-handlebars-template">
+		<div class="container">
+			{{outlet}}
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" id="races">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Übersicht</h3>
+			</div>
+			<div class="panel-body">
+				<p>Übersicht über alle Rennen</p>
+			</div>
+
+			<!-- Table -->
+			<table class="table">
+				<tr>
+					<th>
+						Rennen
+					</th>
+					<th>
+						Bootsklasse
+					</th>
+					<th>
+						Name
+					</th>
+					<th>
+						Startlisten
+					</th>
+					<th>
+						Ergebnisse
+					</th>
+				</tr>
+			
+				{{#each}}
+					<tr>
+						<td>
+							{{rennen}}
+						</td>
+						<td>
+							{{bootsklasse}}
+						</td>
+						<td>
+							{{nameGerman}}
+						</td>
+						<td>
+							{{#link-to 'startlist' id}}A{{/link-to}}
+						</td>
+						<td>
+							{{#link-to 'result' id}}B{{/link-to}}
+						</td>
+					</tr>
+				{{else}}
+					sorry there is no race
+				{{/each}}
+			</table>
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" id="startlist">
 		<div class="background-complementairy">
 			<div class="row">
 				<div class="col-md-11">
@@ -83,8 +143,8 @@
 			</div>
 			<div class="panel-body">
 			    <div class="row">
-				    <div class="col-md-3 col-xs-6">{{general.anzahl_boote}} Boote</div>
-				    <div class="col-md-3 col-xs-6">{{general.anzahl_abteilungen}} Abteilung(en)</div>
+				    <div class="col-md-3 col-xs-6">{{amountBoats}} Boote</div>
+				    <div class="col-md-3 col-xs-6">{{amountSections}} Abteilung(en)</div>
 				    <div class="col-md-3 col-xs-6">{{general.NameK}}</div>
 				    <div class="col-md-3 col-xs-6">{{general.Distanz}} m</div>
 			    </div>
@@ -94,275 +154,172 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-
 			{{#each abteilungen}}
-				{{#detectType general.typ}}
-					{{> panel_startlist this}}
-				{{else}}
-					{{#resultDetail}}
-						{{> panel_result_detail ../this}}
+				<div class="col-md-6">
+					{{#if general.hasStarted}}
+					<div class="panel panel-default panel-success">
 					{{else}}
-						{{> panel_result this}}
-					{{/resultDetail}}
-					
-				{{/detectType}}				
+					<div class="panel panel-default panel-warning">
+					{{/if}}
+						<div class="panel-heading">
+							<div class="row">
+								<div class="col-md-6 col-xs-6">
+									<h4>{{general.lauf_pretty}}</h4>
+								</div>
+								<div class="col-md-6 col-xs-6">
+									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+								</div>
+							</div>
+						</div>
+						<div class="panel-body">
+							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+						</div>
+						<div class="table-responsive">
+							<table class="table">
+									<th>Bahn</th>
+									<th>Bug Nr.</th>
+									<th>Teamname</th>
+								</tr>
+								{{#each boote}}
+									{{detectRowColor this}}
+										<td>
+											{{this.Bahn}}
+										</td>
+										<td>
+											{{BugNr}}
+										</td>
+										<td>
+											{{Teamname}}
+										</td>
+									</tr>
+								{{/each}}
+							</table>
+						</div>
+					</div>
+				</div>
 			{{/each}}
 		</div>
 	</script>
 
-	<script id="panel_startlist" type="text/x-handlebars-template">
-		{{#everyOther @index 2}}
-		{{else}}
-			<div class="same_row">
-		{{/everyOther}}
-
-		<div class="col-md-6">
-			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
-				<div class="panel-heading">
-					<div class="row">
-						<div class="col-md-6 col-xs-6">
-							<h4>{{general.lauf_pretty}}</h4>
-						</div>
-						<div class="col-md-6 col-xs-6">
-							<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
-						</div>
-					</div>
+	<script type="text/x-handlebars" id="result">
+		<div class="background-complementairy">
+			<div class="row">
+				<div class="col-md-11">
+					<div class="page-header">
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
+				  	</div>
 				</div>
-				<div class="panel-body">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
-				</div>
-				<div class="table-responsive">
-					<table class="table table-striped">
-						<tr>
-							<th>Bahn</th>
-							<th>Bug Nr.</th>
-							<th>Teamname</th>
-						</tr>
-						{{#each boote}}
-							{{detectRowColor this}}
-								<td>
-									{{this.Bahn}}
-								</td>
-								<td>
-									{{BugNr}}
-								</td>
-								<td>
-									<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content='{{ruderer this}}'>
-										{{Teamname}}
-									</a>
-								</td>
-							</tr>
-						{{/each}}
-					</table>
-				</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
 			</div>
 		</div>
-
-		{{#everyOther @index 2}}
+		<div class="panel panel-default panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Allgemein</h3>
 			</div>
-		{{/everyOther}}
-	</script>
-
-	<script id="panel_result" type="text/x-handlebars-template">
-		{{#everyOther @index 2}}
-		{{else}}
-			<div class="same_row">
-		{{/everyOther}}
-		
-		<div class="col-md-6">
-			{{#interimTimes this}}
-			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
-				<div class="panel-heading">
-					<div class="row">
-						<div class="col-md-6 col-xs-6">
-							<h4>{{general.lauf_pretty}}</h4>
-						</div>
-						<div class="col-md-6 col-xs-6">
-							<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
-						</div>
-					</div>
-				</div>
-
-				<div class="table-responsive">
-					<table class="table table-striped">
-						<tr>
-							<th>Bahn</th>
-							<th>Bug Nr.</th>
-							<th>Teamname</th>
-							<th>Zeit</th>
-						</tr>
-						{{#each boote}}
-							{{detectRowColor this}}
-								<td>
-									{{#if Ausgeschieden}}
-										-
-									{{else}}
-										{{#if ZielZeit}}
-											{{Bahn}}
-										{{else}}
-											-
-										{{/if}}
-									{{/if}}
-								</td>
-								<td>{{BugNr}}</td>
-								<td>
-									<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-									data-content='{{ruderer this}}' >
-										{{Teamname}}
-									</a>
-								</td>
-								<td>
-									{{#if Ausgeschieden}}
-										{{Kommentar}}
-									{{else}}
-										<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-										data-content='{{interimTimesToggle this}}' >
-											{{endTime this}}
-										</a>
-									{{/if}}
-								</td>
-							</tr>
-						{{/each}}
-					</table>
-				</div>
-				<div class="panel-footer">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
-					<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
-				</div>
+			<div class="panel-body">
+			    <div class="row">
+				    <div class="col-md-3 col-xs-6">{{amountBoats}} Boote</div>
+				    <div class="col-md-3 col-xs-6">{{amountSections}} Abteilung(en)</div>
+				    <div class="col-md-3 col-xs-6">{{general.NameK}}</div>
+				    <div class="col-md-3 col-xs-6">{{general.Distanz}} m</div>
+			    </div>
 			</div>
-			{{else}}
-				{{> panel_interim}}
-			{{/interimTimes}}
 		</div>
-
-
-		{{#everyOther @index 2}}
-			</div>
-		{{/everyOther}}
-	</script>
-
-	<script id="panel_result_detail" type="text/x-handlebars-template">
-		<div class="col-md-12">
-			{{#interimTimes this}}
-			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{/if}}">
-				<div class="panel-heading">
-					<div class="row">
-						<div class="col-md-6 col-xs-6">
-							<h4>{{general.lauf_pretty}}</h4>
+		<div class="background-complementairy">
+			<h2>Abteilungen</h2>
+		</div>
+		<div class="row">
+			{{#each abteilungen}}
+				<div class="col-md-6">
+					{{#interimTimes general}}
+					{{#if general.hasStarted}}
+						<div class="panel panel-default panel-success">
+					{{else}}
+						<div class="panel panel-default">
+					{{/if}}
+						<div class="panel-heading">
+							<div class="row">
+								<div class="col-md-6 col-xs-6">
+									<h4>{{general.lauf_pretty}}</h4>
+								</div>
+								<div class="col-md-6 col-xs-6">
+									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-6 col-xs-6">
-							<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
-						</div>
-					</div>
-				</div>
-
-				<div class="table-responsive">
-					<table class="table table-striped">
-						<tr>
-							<th>Bahn</th>
-							<th>Bug Nr.</th>
-							<th>Teamname</th>
-							{{#if_eq general.Distanz "2000"}}
-								<th>500m</th>
-								<th>1000m</th>
-								<th>1500m</th>
-							{{else}}
-								{{#if_eq general.Distanz "1500"}}
-									<th>1000m</th>
-									<th>1500m</th>
-								{{/if_eq}}
-							{{/if_eq}}
-							<th>Zeit</th>
-						</tr>
-						{{#each boote}}
-							{{detectRowColor this}}
-								<td>
-									{{#if Ausgeschieden}}
-										-
-									{{else}}
-										{{#if ZielZeit}}
-											{{Bahn}}
-										{{else}}
-											-
-										{{/if}}
-									{{/if}}
-								</td>
-								<td>{{BugNr}}</td>
-								<td>
-									<strong>{{Teamname}}</strong><br />
-									<span style="margin-left:5px;">{{ruderer this}}</span>
-								</td>
-								{{#if_eq ../general.Distanz "2000"}}
-									<td>
-										{{zeit_1}} <br />
-										{{distanceFirst ../../boote zeit_1 "zeit_1"}}
-									</td>
-									<td>
-										{{zeit_2}} <br />
-										{{distanceFirst ../../boote zeit_2 "zeit_2"}}
-									</td>
-									<td>
-										{{zeit_3}}<br />
-										{{distanceFirst ../../boote zeit_3 "zeit_3"}}
-									</td>
-								{{else}}
-									{{#if_eq ../general.Distanz "1500"}}
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>Bahn</th>
+									<th>Bug Nr.</th>
+									<th>Teamname</th>
+									<th>Zeit</th>
+								</tr>
+								{{#each boote}}
+									{{detectRowColor this}}
 										<td>
-											{{zeit_2}} <br />
-											{{distanceFirst ../../boote zeit_2 "zeit_2"}}
+											{{#if ausgeschieden}}
+												-
+											{{else}}
+												{{#if zielZeit}}
+													{{Bahn}}
+												{{else}}
+													-
+												{{/if}}
+											{{/if}}
+										</td>
+										<td>{{BugNr}}</td>
+										<td>
+											{{Teamname}}
 										</td>
 										<td>
-											{{zeit_3}}<br />
-											{{distanceFirst ../../boote zeit_3 "zeit_3"}}
+											{{#if ausgeschieden}}
+												{{Kommentar}}
+											{{else}}
+												{{endTime this}}
+											{{/if}}
 										</td>
-									{{/if_eq}}
-								{{/if_eq}}
-								<td>
-									{{#if Ausgeschieden}}
-										{{Kommentar}}
-									{{else}}
-										<strong>{{endTime this}}</strong><br />
-										{{distanceFirst ../../boote ZielZeit "ZielZeit"}}
-									{{/if}}
-								</td>
-							</tr>
-						{{/each}}
-					</table>
+									</tr>
+								{{/each}}
+							</table>
+							<div class="panel-footer">
+								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+							</div>
+						</div>
+					</div>
+					{{else}}
+						{{partial "panel_interim"}}
+					{{/interimTimes}}
 				</div>
-				<div class="panel-footer">
-					<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
-					<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
-				</div>
-			</div>
-			{{else}}
-				{{> panel_interim_detail}}
-			{{/interimTimes}}
+			{{/each}}
 		</div>
 	</script>
 
-	<script id="panel_interim" type="text/x-handlebars-template">
+	<script type="text/x-handlebars" data-template-name='_panel_interim' id="panel_interim">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
 				<div class="row">
-					<div class="col-md-8 col-xs-8">
+					<div class="col-md-7 col-xs-7">
 						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
 					</div>
-					<div class="col-md-4 col-xs-4">
+					<div class="col-md-5 col-xs-5">
 						<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
 					</div>
 				</div>
 			</div>
 			<div class="table-responsive">
-				<table class="table table-striped">
+				<table class="table">
 					<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
 					{{#each boote}}
-						<tr><td>{{Bahn}}</td><td>{{BugNr}}</td><td>
-							<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom"
-							data-content='{{ruderer this}}' >
-							{{Teamname}}
-							</a>
-						</td>
-						<td>{{latestInterim this}}</td></tr>
+						<tr>
+							<td>{{Bahn}}</td>
+							<td>{{BugNr}}</td>
+							<td>
+								{{Teamname}}
+							</td>
+							<td>{{latestInterim this}}</td>
+						</tr>
 					{{/each}}
 				</table>
 			</div>
@@ -372,7 +329,140 @@
 		</div>
 	</script>
 
-	<script id="panel_interim_detail" type="text/x-handlebars-template">
+	<script type="text/x-handlebars" id="resultDetail">
+		<div class="background-complementairy">
+			<div class="row">
+				<div class="col-md-11">
+					<div class="page-header">
+				  		<h1>{{general.NameD}} <small class='visible-sm visible-xs background-complementairy'>Rennen {{general.Rennen}}</small></h1>
+				  	</div>
+				</div>
+				<div class="col-md-1 visible-md visible-lg" id="rennen_nummer">{{general.Rennen}}</div>
+			</div>
+		</div>
+		<div class="panel panel-default panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Allgemein</h3>
+			</div>
+			<div class="panel-body">
+			    <div class="row">
+				    <div class="col-md-3 col-xs-6">{{amountBoats}} Boote</div>
+				    <div class="col-md-3 col-xs-6">{{amountSections}} Abteilung(en)</div>
+				    <div class="col-md-3">{{general.NameK}}</div>
+				    <div class="col-md-3">{{general.Distanz}} m</div>
+			    </div>
+			</div>
+		</div>
+		<div class="background-complementairy">
+			<h2>Abteilungen</h2>
+		</div>
+		<div class="row">
+			{{#each abteilungen}}
+				<div class="col-md-12">
+					{{#interimTimes general}}
+						{{#if general.hasStarted}}
+							<div class="panel panel-default panel-success">
+						{{else}}
+							<div class="panel panel-default panel-warning">
+						{{/if}}
+							<div class="panel-heading">
+								<div class="row">
+									<div class="col-md-6">
+										<h4>{{general.lauf_pretty}}</h4>
+									</div>
+									<div class="col-md-6">
+										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+									</div>
+								</div>
+							</div>
+
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<th>Bahn</th>
+										<th>Bug Nr.</th>
+										<th>Teamname</th>
+										{{#if_eq general.Distanz "2000"}}
+											<th>500m</th>
+											<th>1000m</th>
+											<th>1500m</th>
+										{{else}}
+											{{#if_eq general.Distanz "1500"}}
+												<th>1000m</th>
+												<th>1500m</th>
+											{{/if_eq}}
+										{{/if_eq}}
+										<th>Zeit</th>
+									</tr>
+									{{#each boot in boote}}
+										{{detectRowColor boot}}
+											<td>
+												{{#if boot.ausgeschieden}}
+													-
+												{{else}}
+													{{#if boot.zielZeit}}
+														{{boot.Bahn}}
+													{{else}}
+														-
+													{{/if}}
+												{{/if}}
+											</td>
+											<td>{{boot.BugNr}}</td>
+											<td>
+												<strong>{{boot.Teamname}}</strong><br />
+												<span style="margin-left:5px;">{{ruderer boot}}</span>
+											</td>
+											{{#if_eq general.Distanz 2000}}
+												<td>
+													<strong>{{boot.zeit_1}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+												</td>
+												<td>
+													<strong>{{boot.zeit_2}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+												</td>
+												<td>
+													<strong>{{boot.zeit_3}}</strong> <br />
+													{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+												</td>
+											{{else}}
+												{{#if_eq general.Distanz 1500}}
+													<td>
+														<strong>{{boot.zeit_2}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+													</td>
+													<td>
+														<strong>{{boot.zeit_3}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+													</td>
+												{{/if_eq}}
+											{{/if_eq}}
+											<td>
+												{{#if boot.ausgeschieden}}
+													{{boot.Kommentar}}
+												{{else}}
+													<strong>{{endTime boot}}</strong><br />
+													{{distanceFirst ../../boote boot.zielZeit "zielZeit"}}
+												{{/if}}
+											</td>
+										</tr>
+									{{/each}}
+								</table>
+							</div>
+							<div class="panel-footer">
+								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+							</div>
+						</div>
+					{{else}}
+						{{partial "panel_interim_detail"}}
+					{{/interimTimes}}
+				</div>
+			{{/each}}
+		</div>
+	</script>
+
+	<script type="text/x-handlebars" data-template-name='_panel_interim_detail' id="panel_interim_detail">
 		<div class="panel panel-default panel-danger">
 			<div class="panel-heading">
 				<div class="row">
@@ -402,22 +492,37 @@
 						{{/if_eq}}
 						<th>Zeit</th>
 					</tr>
-					{{#each boote}}
+					{{#each boot in boote}}
 						<tr>
-							<td>{{Bahn}}</td>
-							<td>{{BugNr}}</td>
+							<td>{{boot.Bahn}}</td>
+							<td>{{boot.BugNr}}</td>
 							<td>
-								{{Teamname}}<br />
-								<span style="margin-left:5px;">{{ruderer this}}</span>
+								{{boot.Teamname}}<br />
+								<span style="margin-left:5px;">{{ruderer boot}}</span>
 							</td>
 							{{#if_eq ../general.Distanz "2000"}}
-								<td>{{zeit_1}}</td>
-								<td>{{zeit_2}}</td>
-								<td>{{zeit_3}}</td>
+								<td>
+									<strong>{{boot.zeit_1}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+								</td>
+								<td>
+									<strong>{{boot.zeit_2}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+								</td>
+								<td>
+									<strong>{{boot.zeit_3}}</strong> <br />
+									{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+								</td>
 							{{else}}
 								{{#if_eq ../general.Distanz "1500"}}
-									<td>{{zeit_2}}</td>
-									<td>{{zeit_3}}</td>
+									<td>
+										<strong>{{boot.zeit_2}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+									</td>
+									<td>
+										<strong>{{boot.zeit_3}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+									</td>
 								{{/if_eq}}
 							{{/if_eq}}
 							<td>-</td>
@@ -430,20 +535,21 @@
 			</div>
 		</div>
 	</script>
-
-	<script id="template-news" type="text/x-handlebars-template">
-		{{#each this}}
+	
+	<script id="news" type="text/x-handlebars">
+		{{#each}}
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h3 class="panel-title">
-						{{header}}
-					</h3>
-					{{momentNow timestamp}}
+					<h4 class="panel-title">{{header}}</h4>
 				</div>
 				<div class="panel-body">
-					{{safeString msg}}
+					{{msg}}
+				</div>
+				<div class="panel-footer">
+					{{momentNow timestamp}}
 				</div>
 			</div>
+		{{else}}
 		{{/each}}
 	</script>
 </body>

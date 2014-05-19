@@ -23,9 +23,35 @@ App.Router.map(function() {
 
 App.ApplicationController = Ember.Controller.extend({
 	actions: {
-		
+		test : function() {
+			alert("application controller");
+		}
  	}
 });
+
+App.SingleSectionController = Ember.Controller.extend({
+	needs : ["sectionsIndex"],
+	actions : {
+		test : function () {
+			var controller = this.get("controllers.sectionsIndex");
+			this.store.find("section").then(function(model) {
+				var section = this.store.getById("section", "201-FA");
+				console.log(section);
+			});
+			/*
+			
+			var controller = this.get('controllers.sectionsIndex');
+			console.log(controller.get(2));
+			*/
+		}
+	}
+});
+
+var controller;
+
+App.SectionsIndexController = Ember.ArrayController.extend({
+
+})
 
 // Routes
 
@@ -47,7 +73,9 @@ App.IndexRoute = Ember.Route.extend({
 
 App.SectionsIndexRoute = Ember.Route.extend({
 	model : function() {
-		return this.store.find("section");
+		var model = this.store.find("section");
+		var controller = this.controllerFor("sectionsIndex");
+		controller.set("length", model.get("length"));
 	}
 });
 
@@ -65,6 +93,14 @@ App.SingleSectionRoute = Ember.Route.extend({
 				}
 			}
 		});
+	},
+	setupController : function(controller, model) {
+		controller.set('model', model);
+	},
+	actions : {
+		test : function () {
+			alert("section route");
+		}
 	}
 });
 
