@@ -76,6 +76,10 @@ tr.success > td {
     color: #5CB85C;
 }
 
+.ember-navbar-button a {
+    color : #fff !important;
+}
+
 /* PC */
 
 @media only screen and (min-device-width:768px) {

@@ -28,4 +28,17 @@ $(document).ready(function() {
 	    e.preventDefault();
 	    return false;
 	});
+
+	$(document).on('keypress', function(e) {
+	    var tag = e.target.tagName.toLowerCase();
+	    // left arrow a
+	    if ((e.which === 97 || e.keyCode === 37) && tag != 'input' && tag != 'textarea') {
+	        moveSection(-1);
+	    }
+	    // right arrow d
+	    else if ((e.which === 100 || e.keyCode === 39) && tag != 'input' && tag != 'textarea') {
+	        moveSection(1);
+	    }
+
+	});
 });

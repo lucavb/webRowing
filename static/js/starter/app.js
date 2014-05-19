@@ -32,20 +32,26 @@ App.ApplicationController = Ember.Controller.extend({
 App.SingleSectionController = Ember.Controller.extend({
 	needs : ["sectionsIndex"],
 	actions : {
-		test : function () {
-			var controller = this.get("controllers.sectionsIndex");
-			var currentModel = this.get("model");
-			var currentSectionId = currentModel.section.general.Rennen + "-" + currentModel.section.general.Lauf;
-			var self = this;
-			this.store.find("section").then(function(model) {
-				var section = this.store.getById("section", currentSectionId);
-				var index = model.indexOf(section);
-				var new_model = model.objectAt(index + 1);
-				if (new_model != undefined) {
-					self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
-				}
-			});
+		nextSection : function () {
+			this.advanceSection(1);
+		},
+		previousSection : function () {
+			this.advanceSection(-1);
 		}
+	},
+	advanceSection : function (delta) {
+		var controller = this.get("controllers.sectionsIndex");
+		var currentModel = this.get("model");
+		var currentSectionId = currentModel.section.general.Rennen + "-" + currentModel.section.general.Lauf;
+		var self = this;
+		this.store.find("section").then(function(model) {
+			var section = this.store.getById("section", currentSectionId);
+			var index = model.indexOf(section);
+			var new_model = model.objectAt(index + delta);
+			if (new_model != undefined) {
+				self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
+			}
+		});
 	}
 });
 

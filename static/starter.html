@@ -36,16 +36,16 @@
 		    </div>
 		    <div class="navbar-collapse collapse">
 		      <ul class="nav navbar-nav">
-		        <li><p class="navbar-text">Aktuelle Zeit: <span class="now" data-time=""></span></p></li>
+		      	<li>{{#link-to 'sections'}}
+	        			Übersicht
+	        		{{/link-to}}
+		        </li>
+		        
 		      </ul>
 		      <ul class="nav navbar-nav navbar-right">
-		        <li>
-		        	<button id="goNext" class="btn btn-success navbar-btn">
-		        		<span class="visible-md visible-lg visible-xs" >Aktueller Lauf</span>
-		        	</button>
-		        </li>
+		    	<li><p class="navbar-text">Aktuelle Zeit: <span class="now" data-time=""></span></p></li>
 		      </ul>
-		    </div><!--/.nav-collapse -->
+		    </div>
 		  </div>
 		</div>
 		<div class="container">
@@ -134,13 +134,13 @@
 				<div class="panel-footer">
 					<div class="row">
 						<div class="col-md-3 col-xs-3">
-							<button data-move="-1" type="button" class="btn btn-primary mover">&larr; Vorheriges</button>
+							<button {{action 'previousSection'}} data-move="-1" type="button" class="btn btn-primary mover">&larr; Vorheriges</button>
 						</div>
 						<div class="col-md-6 col-xs-6">
 							<h4 class="text-center">{{general.Distanz}} m</h4>
 						</div>
 						<div class="col-md-3 col-xs-3">
-							<button data-move="1" type="button" class="btn btn-primary right mover">Nächstes &rarr;</button>
+							<button {{action 'nextSection'}} data-move="1" type="button" class="btn btn-primary right mover">Nächstes &rarr;</button>
 						</div>
 					</div>
 				</div>
