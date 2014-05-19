@@ -54,7 +54,6 @@
 	</script>
 
 	<script id="sections/index" type="text/x-handlebars">
-		<h1>SectionsRoute</h1>
 		<div class="panel panel-default">
 			<table class="table">
 				<tr>
@@ -86,7 +85,7 @@
 	</script>
 
 	<script id="singleSection" type="text/x-handlebars">
-		{{#with section}}
+		{{#with model.section}}
 			{{#if general.hasStarted}}
 				<div class="panel panel-default panel-success">
 			{{else}}
@@ -108,7 +107,7 @@
 				<div class="table-responsive">
 					<table class="table table-striped">
 						<tr>
-							<th>Bahn</th>
+							<th {{action 'test'}}>Bahn</th>
 							<th>Bug Nr.</th>
 							<th>Teamname</th>
 							<th>Zusatz</th>

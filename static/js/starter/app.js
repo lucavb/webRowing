@@ -34,24 +34,26 @@ App.SingleSectionController = Ember.Controller.extend({
 	actions : {
 		test : function () {
 			var controller = this.get("controllers.sectionsIndex");
+			var currentModel = this.get("model");
+			var currentSectionId = currentModel.section.general.Rennen + "-" + currentModel.section.general.Lauf;
+			var self = this;
 			this.store.find("section").then(function(model) {
-				var section = this.store.getById("section", "201-FA");
-				console.log(section);
+				var section = this.store.getById("section", currentSectionId);
+				var index = model.indexOf(section);
+				var new_model = model.objectAt(index + 1);
+				if (new_model != undefined) {
+					self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
+				}
 			});
-			/*
-			
-			var controller = this.get('controllers.sectionsIndex');
-			console.log(controller.get(2));
-			*/
 		}
 	}
 });
 
-var controller;
+var test;
 
 App.SectionsIndexController = Ember.ArrayController.extend({
 
-})
+});
 
 // Routes
 
@@ -74,8 +76,7 @@ App.IndexRoute = Ember.Route.extend({
 App.SectionsIndexRoute = Ember.Route.extend({
 	model : function() {
 		var model = this.store.find("section");
-		var controller = this.controllerFor("sectionsIndex");
-		controller.set("length", model.get("length"));
+		return model;
 	}
 });
 
