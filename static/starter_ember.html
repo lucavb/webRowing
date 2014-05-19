@@ -70,8 +70,14 @@
 						<td>{{Rennen}}</td>
 						<td>{{lauf_pretty}}</td>
 						<td>{{NameK}}</td>
-						<td>{{SollStartZeit}}</td>
-						<td>{{hasStarted}}</th>
+						<td>{{momentNow SollStartZeit}}</td>
+						<td>
+							{{#if hasStarted}}
+								Ja
+							{{else}}
+								Nein
+							{{/if}}
+						</td>
 						<td>{{#link-to 'singleSection' Rennen Lauf}}Goto{{/link-to}}</td>
 					</tr>
 				{{/each}}
@@ -80,9 +86,12 @@
 	</script>
 
 	<script id="singleSection" type="text/x-handlebars">
-		{{log section.boote}}
 		{{#with section}}
-			<div class="panel panel-default {{#if general.hasStarted}}panel-success{{else}}panel-warning{{/if}}">
+			{{#if general.hasStarted}}
+				<div class="panel panel-default panel-success">
+			{{else}}
+				<div class="panel panel-default panel-warning">
+			{{/if}}
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-md-4 col-xs-4">

@@ -27,11 +27,7 @@ App.ApplicationController = Ember.Controller.extend({
  	}
 });
 
-
-
-
 // Routes
-
 
 
 
@@ -54,8 +50,6 @@ App.SectionsIndexRoute = Ember.Route.extend({
 		return this.store.find("section");
 	}
 });
-
-var test;
 
 App.SingleSectionRoute = Ember.Route.extend({
 	model : function(params) {
