@@ -33,11 +33,12 @@ $(document).ready(function() {
 	    var tag = e.target.tagName.toLowerCase();
 	    // left arrow a
 	    if ((e.which === 97 || e.keyCode === 37) && tag != 'input' && tag != 'textarea') {
-	        moveSection(-1);
+	        $("#leftMover").click(); // emulates the click so ember will do the job
+	        
 	    }
 	    // right arrow d
 	    else if ((e.which === 100 || e.keyCode === 39) && tag != 'input' && tag != 'textarea') {
-	        moveSection(1);
+	        $("#rightMover").click();
 	    }
 
 	});

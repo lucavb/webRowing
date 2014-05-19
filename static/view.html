@@ -80,55 +80,55 @@
 			<div class="panel-body">
 				<p>Übersicht über alle Rennen</p>
 			</div>
-
-			<!-- Table -->
-			<table class="table">
-				<tr>
-					<th>
-						Rennen
-					</th>
-					<th>
-						Bootsklasse
-					</th>
-					<th>
-						Name
-					</th>
-					<th>
-						Startlisten
-					</th>
-					<th>
-						Ergebnisse
-					</th>
-					<th>
-						Ergebnisse detailiert
-					</th>
-				</tr>
-			
-				{{#each}}
+			<div class="table-responsive">
+				<table class="table">
 					<tr>
-						<td>
-							{{rennen}}
-						</td>
-						<td>
-							{{bootsklasse}}
-						</td>
-						<td>
-							{{nameGerman}}
-						</td>
-						<td>
-							{{#link-to 'startlist' id}}A{{/link-to}}
-						</td>
-						<td>
-							{{#link-to 'result' id}}B{{/link-to}}
-						</td>
-						<td>
-							{{#link-to 'resultDetail' id}}C{{/link-to}}
-						</td>
+						<th>
+							Rennen
+						</th>
+						<th>
+							Bootsklasse
+						</th>
+						<th>
+							Name
+						</th>
+						<th>
+							Startlisten
+						</th>
+						<th>
+							Ergebnisse
+						</th>
+						<th>
+							Ergebnisse detailiert
+						</th>
 					</tr>
-				{{else}}
-					sorry there is no race
-				{{/each}}
-			</table>
+				
+					{{#each}}
+						<tr>
+							<td>
+								{{rennen}}
+							</td>
+							<td>
+								{{bootsklasse}}
+							</td>
+							<td>
+								{{nameGerman}}
+							</td>
+							<td>
+								{{#link-to 'startlist' id}}A{{/link-to}}
+							</td>
+							<td>
+								{{#link-to 'result' id}}B{{/link-to}}
+							</td>
+							<td>
+								{{#link-to 'resultDetail' id}}C{{/link-to}}
+							</td>
+						</tr>
+					{{else}}
+						sorry there is no race
+					{{/each}}
+				</table>
+			</div>
 		</div>
 	</script>
 
@@ -354,8 +354,8 @@
 			    <div class="row">
 				    <div class="col-md-3 col-xs-6">{{amountBoats}} Boote</div>
 				    <div class="col-md-3 col-xs-6">{{amountSections}} Abteilung(en)</div>
-				    <div class="col-md-3">{{general.NameK}}</div>
-				    <div class="col-md-3">{{general.Distanz}} m</div>
+				    <div class="col-md-3 col-xs-6">{{general.NameK}}</div>
+				    <div class="col-md-3 col-xs-6">{{general.Distanz}} m</div>
 			    </div>
 			</div>
 		</div>
@@ -373,10 +373,10 @@
 						{{/if}}
 							<div class="panel-heading">
 								<div class="row">
-									<div class="col-md-6">
+									<div class="col-md-6 col-xs-6">
 										<h4>{{general.lauf_pretty}}</h4>
 									</div>
-									<div class="col-md-6">
+									<div class="col-md-6 col-xs-6">
 										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
 									</div>
 								</div>
@@ -394,8 +394,8 @@
 											<th>1500m</th>
 										{{else}}
 											{{#if_eq general.Distanz "1500"}}
+												<th>500m</th>
 												<th>1000m</th>
-												<th>1500m</th>
 											{{/if_eq}}
 										{{/if_eq}}
 										<th>Zeit</th>
@@ -492,8 +492,8 @@
 							<th>1500m</th>
 						{{else}}
 							{{#if_eq general.Distanz "1500"}}
+								<th>500m</th>
 								<th>1000m</th>
-								<th>1500m</th>
 							{{/if_eq}}
 						{{/if_eq}}
 						<th>Zeit</th>
