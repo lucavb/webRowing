@@ -99,6 +99,9 @@
 					<th>
 						Ergebnisse
 					</th>
+					<th>
+						Ergebnisse detailiert
+					</th>
 				</tr>
 			
 				{{#each}}
@@ -117,6 +120,9 @@
 						</td>
 						<td>
 							{{#link-to 'result' id}}B{{/link-to}}
+						</td>
+						<td>
+							{{#link-to 'resultDetail' id}}C{{/link-to}}
 						</td>
 					</tr>
 				{{else}}
@@ -429,11 +435,11 @@
 												{{#if_eq general.Distanz 1500}}
 													<td>
 														<strong>{{boot.zeit_2}}</strong> <br />
-														{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+														{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
 													</td>
 													<td>
 														<strong>{{boot.zeit_3}}</strong> <br />
-														{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+														{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
 													</td>
 												{{/if_eq}}
 											{{/if_eq}}

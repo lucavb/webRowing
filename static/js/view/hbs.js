@@ -94,7 +94,7 @@ Ember.Handlebars.helper("ruderer", function (obj) {
 });
 
 Ember.Handlebars.registerBoundHelper("distanceFirst", function(boats, boatTime, point) {
-	if (boats[0][point] == null || boatTime == null) {
+	if (boats == undefined || ( boats[0][point] == null || boatTime == null)) {
 		return "";
 	}
     var time_first = moment(boats[0][point], "m:ss,SS");
@@ -109,6 +109,10 @@ Ember.Handlebars.registerBoundHelper("distanceFirst", function(boats, boatTime, 
     }
     return "0:00,00";
     
+});
+
+Ember.Handlebars.registerBoundHelper("console", function(obj){
+	console.log(obj);
 });
 
 Handlebars.registerHelper("interimTimesToggle", function (boat) {

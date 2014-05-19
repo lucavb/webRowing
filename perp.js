@@ -93,7 +93,7 @@ function getSections(type, rennen_id, callback) {
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = l.Regatta_ID \
 				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 INNER JOIN rennen r ON (r.Rennen = l.Rennen AND r.Regatta_ID = l.Regatta_ID) \
-				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.ZielMesspunktNr = m.MesspunktNr) \
+				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.StartMesspunktNr = m.MesspunktNr) \
 				 WHERE l.Rennen = ? \
 				 ORDER BY ab.Order ASC, l.`SollStartZeit` ASC";
 
@@ -117,6 +117,7 @@ function getSections(type, rennen_id, callback) {
 		async.each(rows,
 			function(row, callback) {
 				var section = { "general" : "", "boote" : {}};
+				row.Distanz = track_length - row.Distanz;
 				section.general = row;
 				section.general.typ = type;
 				if (type == "startlist") {
