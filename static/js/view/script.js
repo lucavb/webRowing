@@ -49,3 +49,7 @@ $(document).ready(function() {
 		$("#pre-container").html("");
 	}
  });
+
+function isOdd(num) { 
+	return num % 2;
+}

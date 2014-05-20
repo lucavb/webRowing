@@ -129,3 +129,11 @@ Handlebars.registerHelper("interimTimesToggle", function (boat) {
 	ret = '<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="' + ret + "' >";
 	return new Handlebars.SafeString(ret);
 });
+
+// this helper will close the everyother in case of an odd number to prevent
+// ember from bitching about it
+Ember.Handlebars.registerBoundHelper("closure", function(sections, index) {
+	if (isOdd(sections.length) && (sections.length - 1 == index)) {
+		return new Handlebars.SafeString("</div>");
+	}
+});

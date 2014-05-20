@@ -161,6 +161,11 @@
 		</div>
 		<div class="row">
 			{{#each abteilungen}}
+				{{#everyOther 2}}
+					
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
 				<div class="col-md-6">
 					{{#if general.hasStarted}}
 					<div class="panel panel-default panel-success">
@@ -203,7 +208,12 @@
 						</div>
 					</div>
 				</div>
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}
+				{{closure ../abteilungen _view.contentIndex}}
 			{{/each}}
+			</div>
 		</div>
 	</script>
 
@@ -236,6 +246,11 @@
 		</div>
 		<div class="row">
 			{{#each abteilungen}}
+				{{#everyOther 2}}
+					
+				{{else}}
+					<div class="same_row">
+				{{/everyOther}}
 				<div class="col-md-6">
 					{{#interimTimes general}}
 					{{#if general.hasStarted}}
@@ -298,6 +313,10 @@
 						{{partial "panel_interim"}}
 					{{/interimTimes}}
 				</div>
+				{{#everyOther 2}}
+					</div>
+				{{/everyOther}}
+				{{closure ../abteilungen _view.contentIndex}}
 			{{/each}}
 		</div>
 	</script>
