@@ -47,9 +47,7 @@ depeneding on your node.js installation.
 
 ## REST
 
-### races
-
-
+See this [file] (REST.md) for further information on this topic.
 
 ## Deployment
 

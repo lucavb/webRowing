@@ -54,13 +54,6 @@ app.get("/sections", function(req, res) {
 	});
 });
 
-app.get("/sections/:race_id/:section_id", function(req, res) {
-	console.log("    info    - REST sections " + req.params.race_id + "-" + req.params.section_id);
-	perp.getSections("startlist", req.params.race_id, function(value) {
-		res.send({"section" : value});
-	});
-});
-
 app.get("/startlists/:id", function(req, res) {
 	console.log("    info    - REST startlist " + req.params.id);
 	switch (req.params.id) {
