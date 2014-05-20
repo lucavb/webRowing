@@ -140,41 +140,4 @@ io.sockets.on('connection', function(socket) {
 			socket.emit("sections", callback);
 		});
 	});
-
-	// on requests this code will be executed and either return
-	// a requested race or the next one
-	socket.on("request", function(data) {
-		console.log("    info    - Request: " + data.type + " for the ID " + data.race_id);
-		if (data.type == "resultDetail") {
-			data.type = "result";
-		}
-		if (data.type == "result") {
-			if (data.race_id == 0) {
-				perp.getCurrentRace("result", function(value) {
-					socket.emit("request", value);
-				});
-			}
-			else {
-				perp.getRaceByID("result", data.race_id, function(value) {
-					socket.emit("request", value);
-				})
-			}
-		}
-		else if (data.type == "startlist") {
-			if (data.race_id == 0) {
-				perp.getCurrentRace("startlist", function(value) {
-					socket.emit("request", value);
-				});
-				
-			}
-			else {
-				perp.getRaceByID("startlist", data.race_id, function(value) {
-					socket.emit("request", value);
-				})
-			}
-		}
-		else if (data.type == "news") {
-			socket.emit("news", news.getAllNews());
-		}
-	});
 });

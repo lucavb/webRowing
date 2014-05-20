@@ -93,13 +93,7 @@
 							Name
 						</th>
 						<th>
-							Startlisten
-						</th>
-						<th>
-							Ergebnisse
-						</th>
-						<th>
-							Ergebnisse detailiert
+							Ansichten
 						</th>
 					</tr>
 				
@@ -115,13 +109,9 @@
 								{{nameGerman}}
 							</td>
 							<td>
-								{{#link-to 'startlist' id}}A{{/link-to}}
-							</td>
-							<td>
-								{{#link-to 'result' id}}B{{/link-to}}
-							</td>
-							<td>
-								{{#link-to 'resultDetail' id}}C{{/link-to}}
+								{{#link-to 'startlist' id}}Startliste{{/link-to}}
+								- {{#link-to 'result' id}}Ergebniss{{/link-to}}
+								- {{#link-to 'resultDetail' id}}Ergebniss detailiert{{/link-to}}
 							</td>
 						</tr>
 					{{else}}
@@ -481,7 +471,7 @@
 								</table>
 							</div>
 							<div class="panel-footer">
-								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentCalendar general.SollStartZeit}})</p>
+								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
 								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
 							</div>
 						</div>

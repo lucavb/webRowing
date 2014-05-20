@@ -44,14 +44,28 @@ App.SingleSectionController = Ember.Controller.extend({
 		var currentModel = this.get("model");
 		var currentSectionId = currentModel.section.general.Rennen + "-" + currentModel.section.general.Lauf;
 		var self = this;
-		this.store.find("section").then(function(model) {
+		var currentlyInStore = this.store.all("section");
+		// sections is empty -> load it!
+		if (currentlyInStore.objectAt(0) == undefined) {
+			this.store.find("section").then(function(model) {
+				var section = this.store.getById("section", currentSectionId);
+				var index = model.indexOf(section);
+				var new_model = model.objectAt(index + delta);
+				if (new_model != undefined) {
+					self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
+				}
+			});
+		}
+		// there is already something in the store. no need to bother the server
+		else {
 			var section = this.store.getById("section", currentSectionId);
-			var index = model.indexOf(section);
-			var new_model = model.objectAt(index + delta);
+			var index = currentlyInStore.indexOf(section);
+			var new_model = currentlyInStore.objectAt(index + delta);
 			if (new_model != undefined) {
 				self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
 			}
-		});
+		}
+		
 	}
 });
 
