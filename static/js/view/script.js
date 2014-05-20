@@ -53,3 +53,18 @@ $(document).ready(function() {
 function isOdd(num) { 
 	return num % 2;
 }
+
+function getRowers(boat) {
+	var ret = "";
+	ret += boat.r1_string;
+	for (var i = 2; i <= 8; i++) {
+		if (!boat.hasOwnProperty("r" + i + "_string") || boat["r" + i + "_string"] == null) {
+			break;
+		}
+		ret += ", " + boat["r" + i + "_string"];
+	}
+	if (boat.hasOwnProperty("rS_string") && boat.rS_string != null) {
+		ret += ", St. " + boat.rS_string;
+	}
+	return ret;
+}

@@ -200,7 +200,9 @@
 											{{BugNr}}
 										</td>
 										<td>
-											{{Teamname}}
+											{{rudererToggle this}}
+												{{Teamname}}
+											</a>
 										</td>
 									</tr>
 								{{/each}}
@@ -291,13 +293,17 @@
 										</td>
 										<td>{{BugNr}}</td>
 										<td>
-											{{Teamname}}
+											{{rudererToggle this}}
+												{{Teamname}}
+											</a>
 										</td>
 										<td>
 											{{#if ausgeschieden}}
 												{{Kommentar}}
 											{{else}}
-												{{endTime this}}
+												{{interimTimesToggle this}}
+													{{endTime this}}
+												</a>
 											{{/if}}
 										</td>
 									</tr>

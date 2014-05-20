@@ -79,17 +79,13 @@ Ember.Handlebars.helper("endTime", function (boat) {
 });
 
 Ember.Handlebars.helper("ruderer", function (obj) {
-	var ret = "";
-	ret += obj.r1_string;
-	for (var i = 2; i <= 8; i++) {
-		if (!obj.hasOwnProperty("r" + i + "_string") || obj["r" + i + "_string"] == null) {
-			break;
-		}
-		ret += ", " + obj["r" + i + "_string"];
-	}
-	if (obj.hasOwnProperty("rS_string") && obj.rS_string != null) {
-		ret += ", St. " + obj.rS_string;
-	}
+	var ret = getRowers(obj);
+	return new Handlebars.SafeString(ret);
+});
+
+Ember.Handlebars.registerBoundHelper("rudererToggle", function(boat) {
+	var rowers = getRowers(boat);
+	var ret = '<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="' + rowers + '">';
 	return new Handlebars.SafeString(ret);
 });
 
@@ -115,7 +111,7 @@ Ember.Handlebars.registerBoundHelper("console", function(obj){
 	console.log(obj);
 });
 
-Handlebars.registerHelper("interimTimesToggle", function (boat) {
+Ember.Handlebars.registerBoundHelper("interimTimesToggle", function (boat) {
 	var ret = "";
 	if (boat.position_1 != null) {
 		ret += boat.position_1 + "m: " + boat.zeit_1 + "<br />";
@@ -126,7 +122,8 @@ Handlebars.registerHelper("interimTimesToggle", function (boat) {
 	if (boat.position_3 != null) {
 		ret += boat.position_3 + "m: " + boat.zeit_3;
 	}
-	ret = '<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="' + ret + "' >";
+
+	ret = '<a class="fake popoverToggle" href="#" data-container="body" data-toggle="popover" data-placement="bottom" data-content="' + ret + '" >';
 	return new Handlebars.SafeString(ret);
 });
 
