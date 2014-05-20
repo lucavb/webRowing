@@ -109,15 +109,27 @@ io.sockets.on('connection', function(socket) {
 			socket.broadcast.emit("news", news.getAllNews());
 			return;
 		}
-		perp.getCurrentRace(data.type, function(value) {
-			value.id = value.general.Rennen;
-			var back = {
-				"model" : data.type,
-				"payload" : value
-			}
-			socket.broadcast.emit("update", back);
-		});
-		
+		switch(data.race) {
+			case "0" : 
+				perp.getCurrentRace(data.type, function(value) {
+					value.id = value.general.Rennen;
+					var back = {
+						"model" : data.type,
+						"payload" : value
+					}
+					socket.broadcast.emit("update", back);
+				});
+				break;
+			default: 
+				perp.getRaceByID(data.type, data.race, function(value) {
+					value.id = value.general.Rennen;
+					var back = {
+						"model" : data.type,
+						"payload" : value
+					}
+					socket.broadcast.emit("update", back);
+				});
+		}
 	});
 
 	// news stuff. new one comes in -> add it -> broadcast all

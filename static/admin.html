@@ -16,10 +16,24 @@
 		  	var socket = io.connect();
 
 		  	$("#push_result").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  		var back = {
+		  			"type" : "result",
+		  			"race" : $("#push_race").val()
+		  		}
+		  		if (back.race == "") {
+		  			back.race = "0";
+		  		}
+		  		socket.emit('push', back);
 		  	});
 		  	$("#push_startlist").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+		  		var back = {
+		  			"type" : "startlist",
+		  			"race" : $("#push_race").val()
+		  		}
+		  		if (back.race == "") {
+		  			back.race = "0";
+		  		}
+		  		socket.emit('push', back);
 		  	});
 		  	$("#push_news").click(function() {
 		  		socket.emit('push', JSON.parse('{"type" : "news"}'));
@@ -75,6 +89,8 @@
 				<button class="btn" id="push_startlist">Push Startlist</button>
 				<button class="btn" id="push_result">Push Result</button>
 				<button class="btn" id="push_news">Push News</button>
+				<br /><br />
+				<input type="number" id="push_race" class="form-control" />
 
 				<h3>Auto Modus</h3>
 				<button id="auto" class="btn btn-danger">Auto Modus</button>
