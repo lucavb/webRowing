@@ -25,17 +25,9 @@ App.Router.map(function() {
 
 App.ApplicationController = Ember.Controller.extend({
 	actions: {
-		getRace : function() {
+		getRace : function() { // form that allows you to jump to a specific race
 			var race = this.get("wishRace");
 			this.transitionToRoute(this.get("lastRoute"), race);
-		},
-		toggleUpdate : function() {
-			var autoMode = this.get("autoMode");
-			autoMode = !autoMode;
-			controller.set("autoMode", autoMode);
-			if (autoMode) {
-
-			}
 		}
  	}
 });
@@ -53,13 +45,13 @@ App.ApplicationController = Ember.Controller.extend({
 App.ApplicationRoute = Ember.Route.extend({
 	afterModel : function() {
 		store = this.store; // gives me access to the store from the outside for socket.io
-		this.controllerFor("application").set("autoMode", true); // set automode value
 	}
 });
 
 App.IndexRoute = Ember.Route.extend({
 	beforeModel: function() {
 		this.transitionTo('races'); // reroute stuff
+		// there shall be no such thing as a index page
 	}
 });
 

@@ -22,11 +22,6 @@ App.Router.map(function() {
 
 
 App.ApplicationController = Ember.Controller.extend({
-	actions: {
-		test : function() {
-			alert("application controller");
-		}
- 	}
 });
 
 App.SingleSectionController = Ember.Controller.extend({
@@ -69,8 +64,6 @@ App.SingleSectionController = Ember.Controller.extend({
 	}
 });
 
-var test;
-
 App.SectionsIndexController = Ember.ArrayController.extend({
 
 });
@@ -103,7 +96,7 @@ App.SectionsIndexRoute = Ember.Route.extend({
 App.SingleSectionRoute = Ember.Route.extend({
 	model : function(params) {
 		return this.store.find("startlist", params.race_id).then(function(model) {
-			var sections = model.getProperties("abteilungen").abteilungen;
+			var sections = model.getProperties("abteilungen").abteilungen; // let's chop this
 			for (var i = 0; i < sections.length; i++) {
 				if (sections[i].general.Lauf == params.section_id) {
 					var back = {
@@ -117,11 +110,6 @@ App.SingleSectionRoute = Ember.Route.extend({
 	},
 	setupController : function(controller, model) {
 		controller.set('model', model);
-	},
-	actions : {
-		test : function () {
-			alert("section route");
-		}
 	}
 });
 
@@ -161,5 +149,5 @@ App.Startlist = DS.Model.extend({
 // socket.io stuff
 
 socket.on("update", function(data) {
-	store.push(data.model, data.payload);
+	store.push(data.model, data.payload); // this allows me to push data live into the store
 });

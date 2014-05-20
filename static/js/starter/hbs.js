@@ -9,6 +9,7 @@ Ember.Handlebars.helper("momentNow", function (timestamp) {
 	return moment(timestamp).fromNow();
 });
 
+// generates a string containing the names of all rowers
 Ember.Handlebars.helper("ruderer", function (obj) {
 	var ret = "";
 	ret += obj.r1_string;
@@ -24,6 +25,9 @@ Ember.Handlebars.helper("ruderer", function (obj) {
 	return new Handlebars.SafeString(ret);
 });
 
+// if there are any further information as to a boat this helper
+// will find and generate the right string
+// though one might do it within the template
 Ember.Handlebars.registerBoundHelper("addition", function(boat) {
     if (boat.Abgemeldet == 1) {
         return "Abgemeldet";
