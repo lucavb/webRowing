@@ -62,32 +62,34 @@
 			<div class="panel-heading">
 				<h3 class="panel-title">Übersicht</h3>
 			</div>
-			<table class="table">
-				<tr>
-					<th>Rennen</th>
-					<th>Lauf</th>
-					<th>Bootsklasse</th>
-					<th>Startzeit</th>
-					<th>Gestartet</th>
-					<th>GoTo</th>
-				</tr>
-				{{#each}}
+			<div class="table-responsive">
+				<table class="table">
 					<tr>
-						<td>{{Rennen}}</td>
-						<td>{{lauf_pretty}}</td>
-						<td>{{NameK}}</td>
-						<td>{{momentNow SollStartZeit}}</td>
-						<td>
-							{{#if hasStarted}}
-								Ja
-							{{else}}
-								Nein
-							{{/if}}
-						</td>
-						<td>{{#link-to 'singleSection' Rennen Lauf}}Goto{{/link-to}}</td>
+						<th>Rennen</th>
+						<th>Lauf</th>
+						<th>Bootsklasse</th>
+						<th>Startzeit</th>
+						<th>Gestartet</th>
+						<th>GoTo</th>
 					</tr>
-				{{/each}}
-			</table>
+					{{#each}}
+						<tr>
+							<td>{{Rennen}}</td>
+							<td>{{lauf_pretty}}</td>
+							<td>{{NameK}}</td>
+							<td>{{momentNow SollStartZeit}}</td>
+							<td>
+								{{#if hasStarted}}
+									Ja
+								{{else}}
+									Nein
+								{{/if}}
+							</td>
+							<td>{{#link-to 'singleSection' Rennen Lauf}}Goto{{/link-to}}</td>
+						</tr>
+					{{/each}}
+				</table>
+			</div>
 		</div>
 	</script>
 
