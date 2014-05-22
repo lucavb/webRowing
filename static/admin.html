@@ -39,10 +39,11 @@
 		  		socket.emit('push', JSON.parse('{"type" : "news"}'));
 		  	});
 		  	$("#broadtcastNews").submit(function() {
-		  		var obj = new Object();
-		  		obj.header = $("#inputHeader").val();
-		  		obj.msg = $("#inputMsg").val();
-		  		obj.secret = $("#inputSecret").val();
+		  		var obj = {
+		  			"header" : $("#inputHeader").val(),
+		  			"msg" : $("#inputMsg").val(),
+		  			"secret" : $("#inputSecret").val()
+		  		}
 		  		socket.emit("broadtcastNews", obj);
 		  		return false;
 		  	});
