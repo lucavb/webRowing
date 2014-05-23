@@ -209,6 +209,17 @@
 					</div>
 				{{/everyOther}}
 				{{closure ../abteilungen _view.contentIndex}}
+			{{else}}
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Entschuldigung</h3>
+						</div>
+						<div class="panel-body">
+							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+						</div>
+					</div>
+				</div>
 			{{/each}}
 			</div>
 		</div>
@@ -333,6 +344,17 @@
 					</div>
 				{{/everyOther}}
 				{{closure ../abteilungen _view.contentIndex}}
+			{{else}}
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Entschuldigung</h3>
+						</div>
+						<div class="panel-body">
+							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+						</div>
+					</div>
+				</div>
 			{{/each}}
 		</div>
 	</script>
@@ -509,6 +531,17 @@
 					{{else}}
 						{{partial "panel_interim_detail"}}
 					{{/interimTimes}}
+				</div>
+			{{else}}
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Entschuldigung</h3>
+						</div>
+						<div class="panel-body">
+							<p>Für das Rennen liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+						</div>
+					</div>
 				</div>
 			{{/each}}
 		</div>

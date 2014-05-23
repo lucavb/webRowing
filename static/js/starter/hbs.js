@@ -39,3 +39,21 @@ Ember.Handlebars.registerBoundHelper("addition", function(boat) {
         return "-";
     }
 });
+
+Ember.Handlebars.registerBoundHelper("rows", function(sections) {
+	var arr = sections.content;
+	var back = "";
+	for (var i = 0; i < arr.length; i++) {
+		back += "<tr><td>" + arr[i].get("Rennen") + "</td><td>" + arr[i].get("lauf_pretty") + "</td><td>" +
+		 arr[i].get("NameK") + "</td><td>" + moment(arr[i].get("SollStartZeit")).fromNow() +
+		 "</td><td>";
+		if (arr[i].get("hasStarted") == 1) {
+			back += "Ja";
+		}
+		else {
+			back += "Nein";
+		} 
+		back += "</td><td><a href='starter.html#/sections/" + arr[i].get("Rennen") + "/" + arr[i].get("Lauf") + "'>GoTo</a></td></tr>";
+	}
+	return new Handlebars.SafeString(back);
+});

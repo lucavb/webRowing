@@ -72,22 +72,7 @@
 						<th>Gestartet</th>
 						<th>GoTo</th>
 					</tr>
-					{{#each}}
-						<tr>
-							<td>{{Rennen}}</td>
-							<td>{{lauf_pretty}}</td>
-							<td>{{NameK}}</td>
-							<td>{{momentNow SollStartZeit}}</td>
-							<td>
-								{{#if hasStarted}}
-									Ja
-								{{else}}
-									Nein
-								{{/if}}
-							</td>
-							<td>{{#link-to 'singleSection' Rennen Lauf}}Goto{{/link-to}}</td>
-						</tr>
-					{{/each}}
+					{{rows model}}
 				</table>
 			</div>
 		</div>
