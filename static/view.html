@@ -163,9 +163,9 @@
 				{{/everyOther}}
 				<div class="col-md-6">
 					{{#if general.hasStarted}}
-					<div class="panel panel-default panel-success">
+						<div class="panel panel-default panel-success">
 					{{else}}
-					<div class="panel panel-default panel-warning">
+						<div class="panel panel-default panel-warning">
 					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
@@ -216,7 +216,7 @@
 							<h3 class="panel-title">Entschuldigung</h3>
 						</div>
 						<div class="panel-body">
-							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen vor. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
 						</div>
 					</div>
 				</div>
@@ -268,14 +268,14 @@
 				{{/everyOther}}
 				<div class="col-md-6">
 					{{#interimTimes general}}
-					{{#if general.hasStarted}}
-						{{#if general.ErgebnisEndgueltig}}
+					{{#if general.ErgebnisEndgueltig}}
+						{{#if general.hasStarted}}
 							<div class="panel panel-default panel-success">
 						{{else}}
-							<div class="panel panel-default panel-error">
+							<div class="panel panel-default panel-warning">
 						{{/if}}
 					{{else}}
-						<div class="panel panel-default">
+						<div class="panel panel-default panel-error">
 					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
@@ -285,6 +285,9 @@
 											(vorläufig!)
 										{{/unless}}
 									</h4>
+									{{#if general.ErgebnisKorrigiert}}
+										<small>Ergebnis korrigiert</small>
+									{{/if}}
 								</div>
 								<div class="col-md-6 col-xs-6">
 									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
@@ -351,7 +354,7 @@
 							<h3 class="panel-title">Entschuldigung</h3>
 						</div>
 						<div class="panel-body">
-							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+							<p>Für das Rennen {{general.Rennen}} liegen noch keine Informationen vor. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
 						</div>
 					</div>
 				</div>
@@ -430,10 +433,14 @@
 			{{#each abteilungen}}
 				<div class="col-md-12">
 					{{#interimTimes general}}
-						{{#if general.hasStarted}}
-							<div class="panel panel-default panel-success">
+						{{#if general.ErgebnisEndgueltig}}
+							{{#if general.hasStarted}}
+								<div class="panel panel-default panel-success">
+							{{else}}
+								<div class="panel panel-default panel-warning">
+							{{/if}}
 						{{else}}
-							<div class="panel panel-default panel-warning">
+							<div class="panel panel-default panel-error">
 						{{/if}}
 							<div class="panel-heading">
 								<div class="row">
@@ -442,7 +449,11 @@
 											{{#unless general.ErgebnisEndgueltig}}
 												(vorläufig!)
 											{{/unless}}
+
 										</h4>
+										{{#if general.ErgebnisKorrigiert}}
+											<small>Ergebnis korrigiert</small>
+										{{/if}}
 									</div>
 									<div class="col-md-6 col-xs-6">
 										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
@@ -539,7 +550,7 @@
 							<h3 class="panel-title">Entschuldigung</h3>
 						</div>
 						<div class="panel-body">
-							<p>Für das Rennen liegen noch keine Informationen. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
+							<p>Für das Rennen liegen noch keine Informationen vor. Bitte versuchen Sie es zu einem späteren Zeitpunkt noch einmal.</p>
 						</div>
 					</div>
 				</div>
@@ -582,7 +593,7 @@
 							<td>{{boot.Bahn}}</td>
 							<td>{{boot.BugNr}}</td>
 							<td>
-								{{boot.Teamname}}<br />
+								<strong>{{boot.Teamname}}</strong><br />
 								<span style="margin-left:5px;">{{ruderer boot}}</span>
 							</td>
 							{{#if_eq ../general.Distanz "2000"}}
