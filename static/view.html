@@ -258,14 +258,22 @@
 				<div class="col-md-6">
 					{{#interimTimes general}}
 					{{#if general.hasStarted}}
-						<div class="panel panel-default panel-success">
+						{{#if general.ErgebnisEndgueltig}}
+							<div class="panel panel-default panel-success">
+						{{else}}
+							<div class="panel panel-default panel-error">
+						{{/if}}
 					{{else}}
 						<div class="panel panel-default">
 					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6 col-xs-6">
-									<h4>{{general.lauf_pretty}}</h4>
+									<h4>{{general.lauf_pretty}} 
+										{{#unless general.ErgebnisEndgueltig}}
+											(vorläufig!)
+										{{/unless}}
+									</h4>
 								</div>
 								<div class="col-md-6 col-xs-6">
 									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
@@ -408,7 +416,11 @@
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-md-6 col-xs-6">
-										<h4>{{general.lauf_pretty}}</h4>
+										<h4>{{general.lauf_pretty}}
+											{{#unless general.ErgebnisEndgueltig}}
+												(vorläufig!)
+											{{/unless}}
+										</h4>
 									</div>
 									<div class="col-md-6 col-xs-6">
 										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>

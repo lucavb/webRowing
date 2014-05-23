@@ -28,6 +28,7 @@ App.SingleSectionController = Ember.Controller.extend({
 	needs : ["sectionsIndex"],
 	actions : {
 		nextSection : function () {
+
 			this.advanceSection(1);
 		},
 		previousSection : function () {
@@ -53,9 +54,11 @@ App.SingleSectionController = Ember.Controller.extend({
 		}
 		// there is already something in the store. no need to bother the server
 		else {
+
 			var section = this.store.getById("section", currentSectionId);
 			var index = currentlyInStore.indexOf(section);
 			var new_model = currentlyInStore.objectAt(index + delta);
+			
 			if (new_model != undefined) {
 				self.transitionToRoute("singleSection", new_model.get("Rennen"), new_model.get("Lauf"));
 			}
@@ -88,8 +91,15 @@ App.IndexRoute = Ember.Route.extend({
 
 App.SectionsIndexRoute = Ember.Route.extend({
 	model : function() {
-		var model = this.store.find("section");
-		return model;
+		var currentlyInStore = this.store.all("section");
+		// sections is empty -> load it!
+		if (currentlyInStore.objectAt(0) == undefined) {
+			return this.store.find("section");
+		}
+		// there is already something in the store. no need to bother the server
+		else {
+			return currentlyInStore;
+		}
 	}
 });
 
@@ -149,5 +159,7 @@ App.Startlist = DS.Model.extend({
 // socket.io stuff
 
 socket.on("update", function(data) {
-	store.push(data.model, data.payload); // this allows me to push data live into the store
+	if (data.model = "startlist") {
+		store.push(data.model, data.payload); // this allows me to push data live into the store
+	}
 });

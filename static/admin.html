@@ -65,8 +65,8 @@
 		  	$("#auto").click(function() {
 		  		if (timer == null) {
 		  			timer = setInterval(function() {
-		  				socket.emit('push', JSON.parse('{"type" : "startlist"}'));
-		  				socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  				$("#push_result").click();
+		  				$("#push_startlist").click();
 		  			}, 15000);
 		  			$(this).removeClass("btn-danger");
 		  			$(this).addClass("btn-success");

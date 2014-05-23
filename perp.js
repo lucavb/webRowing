@@ -251,7 +251,7 @@ function createError(header, msg) {
 
 // returns an array of all the sections that will be done.
 function getAllSections(callback) {
-	var query = "SELECT CONCAT(ab.Rennen, '-', ab.Lauf) as id, ab.Rennen, ab.Lauf, l.SollStartZeit, \
+	var query = "SELECT CONVERT(CONCAT(ab.Rennen, '-', ab.Lauf), CHAR) as id, ab.Rennen, ab.Lauf, l.SollStartZeit, \
 				 CONCAT(pL.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
 				 r.NameK, r.NameD, \
 				 IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
