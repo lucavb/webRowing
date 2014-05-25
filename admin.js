@@ -12,7 +12,7 @@ function setState (string) {
 	}
 	// gather information
 	var arr = string.split(";");
-	var query = "UPDATE ablauf SET publish = ? WHERE Regatta_ID = 37 AND Rennen = ? AND LOWER(Lauf) = ? ";
+	var query = "UPDATE ablauf SET publish = ? WHERE Regatta_ID = 38 AND Rennen = ? AND LOWER(Lauf) = ? ";
 	connection.query(query, [arr[2], arr[0], arr[1]], function(err, rows) {
 		if (err) {
 			console.log("    error   - The query returned the following error.");

@@ -8,7 +8,18 @@ var connection = require("./mysql_conn.js").connection;
 // please use the sortRaces project to fill the table.
 // the table ablauf is not included in perp!
 function getCurrentRace(type, callback) {
-	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
+	if (type == "result") {
+		var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
+					FROM ablauf ab \
+					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
+					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
+					INNER JOIN startlisten s ON s.Regatta_ID = ab.Regatta_ID AND s.Lauf = ab.Lauf AND s.Rennen = ab.Rennen \
+					WHERE l.IstStartZeit IS NOT NULL\
+					ORDER BY ab.Order DESC, l.SollStartZeit DESC, l.Rennen ASC \
+					LIMIT 1";
+	}
+	else if (type == "startlist") {
+		var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
 					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
@@ -16,6 +27,8 @@ function getCurrentRace(type, callback) {
 					WHERE l.IstStartZeit IS NULL\
 					ORDER BY ab.Order ASC, l.SollStartZeit ASC, l.Rennen ASC \
 					LIMIT 1";
+	}
+	
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
 			console.log("    warning - there was no current race found");
@@ -206,7 +219,7 @@ function getSections(type, rennen_id, callback) {
 					if (err) {
 						console.log(err);
 					}
-					else if (rows2.length == 0 || (rows2[0].hasStarted == 0 && type == "result" && rows2[0].zeit_1 == null)) {
+					else if (rows2.length == 0) {
 						//delete ret[row.Lauf];
 						callback();
 					}
@@ -214,14 +227,20 @@ function getSections(type, rennen_id, callback) {
 						async.each(rows2,
 							function(row2, callback) {
 								// race has not been finished yet but there are already times available
-								if (row2.hasStarted == 0 && row2.zeit_1 != null && type == "result") {
+								if (row2.hasStarted == 0 && (row2.zeit_1 != null || row2.zeit_2 != null || row2.zeit_3 != null) && type == "result") {
 									section.general.interim = true;
 								}
 							}
 						);
-						section.boote = rows2;
-						ret.push(section);
-						callback();
+						// either it has been started or it's a split time result
+						if (section.general.interim == true || section.hasStarted == 1) {
+							section.boote = rows2;
+							ret.push(section);
+							callback();
+						}
+						else {
+							callback();
+						}
 					}
 				});
 			},

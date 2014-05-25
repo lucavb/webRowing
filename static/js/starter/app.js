@@ -91,15 +91,7 @@ App.IndexRoute = Ember.Route.extend({
 
 App.SectionsIndexRoute = Ember.Route.extend({
 	model : function() {
-		var currentlyInStore = this.store.all("section");
-		// sections is empty -> load it!
-		if (currentlyInStore.objectAt(0) == undefined) {
-			return this.store.find("section");
-		}
-		// there is already something in the store. no need to bother the server
-		else {
-			return currentlyInStore;
-		}
+		return this.store.find("section");
 	}
 });
 
