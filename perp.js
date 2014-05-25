@@ -233,7 +233,7 @@ function getSections(type, rennen_id, callback) {
 							}
 						);
 						// either it has been started or it's a split time result
-						if (section.general.interim == true || section.general.hasStarted == 1) {
+						if (((section.general.interim == true || section.general.hasStarted == 1) && type == "result") || (type == "startlist")) {
 							section.boote = rows2;
 							ret.push(section);
 							callback();

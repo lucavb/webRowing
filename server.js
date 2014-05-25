@@ -119,7 +119,7 @@ io.sockets.on('connection', function(socket) {
 			case "0" : 
 				perp.getCurrentRace(data.type, function(value) {
 					value.id = value.general.Rennen;
-					console.log("    info    - broadcasting " + data.type + " " + value.id);
+					console.log("    info    - broadcasting " + data.type + " " + data.race + " ---> " + value.id);
 					var back = {
 						"model" : data.type,
 						"payload" : value
