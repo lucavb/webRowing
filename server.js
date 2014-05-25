@@ -109,16 +109,17 @@ io.sockets.on('connection', function(socket) {
 
 	// stuff from the admin page goes here
 	socket.on("push", function(data) {
-		console.log("    info    - broadcasting " + data.type + " " + data.race);
+		
 		if (data.type == "news") {
 			socket.broadcast.emit("news", news.getAllNews());
+			console.log("    info    - broadcasting news");
 			return;
 		}
 		switch(data.race) {
 			case "0" : 
 				perp.getCurrentRace(data.type, function(value) {
 					value.id = value.general.Rennen;
-					console.info("    info    - ---> " + value.id);
+					console.log("    info    - broadcasting " + data.type + " " + value.id);
 					var back = {
 						"model" : data.type,
 						"payload" : value
@@ -129,7 +130,7 @@ io.sockets.on('connection', function(socket) {
 			default: 
 				perp.getRaceByID(data.type, data.race, function(value) {
 					value.id = value.general.Rennen;
-					console.info("    info    - ---> " + value.id);
+					console.log("    info    - broadcasting " + data.type + " " + value.id);
 					var back = {
 						"model" : data.type,
 						"payload" : value
