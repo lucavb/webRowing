@@ -118,6 +118,7 @@ io.sockets.on('connection', function(socket) {
 			case "0" : 
 				perp.getCurrentRace(data.type, function(value) {
 					value.id = value.general.Rennen;
+					console.info("    info    - ---> " + value.id);
 					var back = {
 						"model" : data.type,
 						"payload" : value
@@ -128,6 +129,7 @@ io.sockets.on('connection', function(socket) {
 			default: 
 				perp.getRaceByID(data.type, data.race, function(value) {
 					value.id = value.general.Rennen;
+					console.info("    info    - ---> " + value.id);
 					var back = {
 						"model" : data.type,
 						"payload" : value
