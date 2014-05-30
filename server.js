@@ -5,11 +5,6 @@ var io = require('socket.io').listen(app.listen(8000), {
 	"log level" : 1
 });
 
-io.enable('browser client minification');  // send minified client
-io.enable('browser client etag');          // apply etag caching logic based on version number
-io.enable('browser client gzip');          // gzip the file
-io.set('log level', 1);                    // reduce logging
-
 // load perp module for the output
 var perp = require('./perp.js');
 

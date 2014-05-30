@@ -13,10 +13,10 @@
     <link rel="apple-touch-icon" sizes="76x76" href="images/icons/bookmark-icon.76x76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="images/icons/bookmark-icon.120x120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="images/icons/bookmark-icon.152x152.png">
-	<script src="js/libs/jquery-1.11.0.min.js"></script>
+	<script src="js/libs/jquery-1.11.1.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/libs/handlebars-v1.3.0.js"></script>
-	<script src="js/libs/moment-with-langs.min.js"></script>
+	<script src="js/libs/moment-with-langs.js"></script>
 	<script src="js/libs/ember-1.5.1.js"></script>
 	<script src="js/libs/ember-data.js"></script>
 	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
@@ -274,7 +274,7 @@
 							<div class="panel panel-default panel-warning">
 						{{/if}}
 					{{else}}
-						<div class="panel panel-default panel-error">
+						<div class="panel panel-default panel-danger">
 					{{/if}}
 						<div class="panel-heading">
 							<div class="row">
@@ -439,7 +439,7 @@
 								<div class="panel panel-default panel-warning">
 							{{/if}}
 						{{else}}
-							<div class="panel panel-default panel-error">
+							<div class="panel panel-default panel-danger">
 						{{/if}}
 							<div class="panel-heading">
 								<div class="row">
