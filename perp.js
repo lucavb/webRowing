@@ -279,7 +279,9 @@ function getAllSections(callback) {
 				 INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
 				 INNER JOIN parameter pL ON (pL.Sektion = 'Uebersetzer_Lauftypen' AND pL.Schluessel = SUBSTRING(l.Lauf,1,1)) \
 				 INNER JOIN rennen r ON (r.Regatta_ID = ab.Regatta_ID AND r.Rennen = ab.Rennen) \
+				 INNER JOIN startlisten s ON s.Lauf = ab.Lauf AND s.Rennen = ab.Rennen AND s.`Regatta_ID` = ab.`Regatta_ID` \
 				 WHERE ab.publish >= 1 \
+				 GROUP BY s.Lauf, s.Rennen, s.Regatta_ID \
 				 ORDER BY ab.ORDER ASC, l.SollStartZeit";
 	connection.query(query, function(err, rows) {
 		if (err) {
