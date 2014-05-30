@@ -57,3 +57,20 @@ Ember.Handlebars.registerBoundHelper("rows", function(sections) {
 	}
 	return new Handlebars.SafeString(back);
 });
+
+Ember.Handlebars.helper("detectRowColor", function (boat) {
+	// zielZeit not null so you will be able to tell when that boat was actually 
+	// withdrawn
+	if (boat.Abgemeldet == 1) {
+		return new Handlebars.SafeString("<tr class='danger'>");
+	}
+	else if (boat.Nachgemeldet == 1) {
+		return new Handlebars.SafeString('<tr class="success">');
+	}
+	else if (boat.zusatzGewicht != null) {
+		return new Handlebars.SafeString("<tr class='warning'>");
+	}
+	else {
+		return new Handlebars.SafeString("<tr>");
+	}
+});
