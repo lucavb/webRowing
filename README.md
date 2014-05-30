@@ -11,7 +11,7 @@ This project doesn't work with the regular perp database. You will have to eithe
 
 ### node.js dependencies
 
-please install [socket.io](https://www.npmjs.org/package/socket.io) (0.9.16 | for 1.0.x please see this [branch](https://github.com/lucavb/webRowing/tree/socket.io-v1-testing)), [express](https://www.npmjs.org/package/express), [async](https://www.npmjs.org/package/async), [moment](https://www.npmjs.org/package/moment) and the [mysql](https://www.npmjs.org/package/mysql) module in the main folder.
+please install [socket.io](https://www.npmjs.org/package/socket.io) (apparently it does now work also with socket.io@1.0.2), [express](https://www.npmjs.org/package/express), [async](https://www.npmjs.org/package/async), [moment](https://www.npmjs.org/package/moment) and the [mysql](https://www.npmjs.org/package/mysql) module in the main folder.
 also add a file called 'mysql_conf' with the following structure
 <pre>
 {
