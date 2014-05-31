@@ -29,11 +29,21 @@ Ember.Handlebars.helper("ruderer", function (obj) {
 // will find and generate the right string
 // though one might do it within the template
 Ember.Handlebars.registerBoundHelper("addition", function(boat) {
+	var result = "";
     if (boat.Abgemeldet == 1) {
         return "Abgemeldet";
     }
-    else if (boat.zusatzGewicht != null) {
-        return "Zusatzgewicht: " + boat.zusatzGewicht + " kg";
+    else if (boat.zusatzGewicht != null || boat.Nachgemeldet == 1) {
+        if (boat.zusatzGewicht != null) {
+        	result += "Zusatzgewicht: " + boat.zusatzGewicht + " kg";
+        }
+        if (boat.zusatzGewicht != null && boat.Nachgemeldet == 1) {
+        	result += "<br />";
+        }
+        if (boat.Nachgemeldet == 1) {
+        	result += "Nachgemeldet";
+        }
+        return new Handlebars.SafeString(result);
     }
     else {
         return "-";
