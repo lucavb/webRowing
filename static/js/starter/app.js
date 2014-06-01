@@ -4,6 +4,12 @@ var App = Ember.Application.create({
 var attr = DS.attr;
 var socket = io.connect();
 var store;
+var legitimateUpdate = {
+	"startlist" : true,
+	"result" : false,
+	"race" : false,
+	"section" : true
+}
 
 // Router
 
@@ -151,7 +157,22 @@ App.Startlist = DS.Model.extend({
 // socket.io stuff
 
 socket.on("update", function(data) {
-	if (data.model = "startlist") {
-		store.push(data.model, data.payload); // this allows me to push data live into the store
+	if (legitimateUpdate[data.model]) {
+		if (data.many && data.clear) {
+			store.unloadAll(data.model);
+			store.pushMany(data.model, data.payload);
+		}
+		else if (data.clear) {
+			store.find(data.model, data.payload.id).then(function(record) {
+				store.unloadRecord(record);
+			});
+			store.push(data.model, data.payload);
+		}
+		else if (data.many) {
+			store.pushMany(data.model, data.payload);
+		}
+		else {
+			store.push(data.model, data.payload);
+		}
 	}
 });

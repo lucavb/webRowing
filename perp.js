@@ -77,6 +77,7 @@ function getRaceByID(type, id, callback) {
 			ret.general = rows[0];
 			ret.general.typ = type;
 			ret.general.Distanz = track_length - ret.general.Distanz;	// let's find the real distance
+			ret.id = ret.general.Rennen;
 			getSections(type, id, function(value) {
 				if (value != null) {
 					ret.abteilungen = value;
@@ -297,7 +298,9 @@ function getAllRaces(callback) {
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = r.Regatta_ID \
 				 ORDER BY r.Rennen ASC";
 	connection.query(query, function(err, rows) {
-		callback(rows);
+		if (!err) {
+			callback(rows);
+		}
 	});
 }
 

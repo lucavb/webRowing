@@ -59,13 +59,11 @@ app.get("/startlists/:id", function(req, res) {
 	switch (req.params.id) {
 		case "0":
 			perp.getCurrentRace("startlist", function(callback) {
-				callback.id = callback.general.Rennen;
 				res.send({ "startlists" : callback});
 			});
 			break;
 		default :
 			perp.getRaceByID("startlist", req.params.id, function(callback) {
-				callback.id = callback.general.Rennen;
 				res.send({ "startlists" : callback});
 			});
 	}
@@ -76,13 +74,11 @@ app.get("/results/:id", function(req, res) {
 	switch (req.params.id) {
 		case "0":
 			perp.getCurrentRace("result", function(callback) {
-				callback.id = callback.general.Rennen;
 				res.send({ "results" : callback});
 			});
 			break;
 		default :
 			perp.getRaceByID("result", req.params.id, function(callback) {
-				callback.id = callback.general.Rennen;
 				res.send({ "results" : callback});
 			});
 	}
@@ -110,28 +106,53 @@ io.sockets.on('connection', function(socket) {
 			console.log("    info    - broadcasting news");
 			return;
 		}
-		switch(data.race) {
-			case "0" : 
-				perp.getCurrentRace(data.type, function(value) {
-					value.id = value.general.Rennen;
-					console.log("    info    - broadcasting " + data.type + " " + data.race + " ---> " + value.id);
-					var back = {
-						"model" : data.type,
-						"payload" : value
-					}
-					socket.broadcast.emit("update", back);
-				});
-				break;
-			default: 
-				perp.getRaceByID(data.type, data.race, function(value) {
-					value.id = value.general.Rennen;
-					console.log("    info    - broadcasting " + data.type + " " + value.id);
-					var back = {
-						"model" : data.type,
-						"payload" : value
-					}
-					socket.broadcast.emit("update", back);
-				});
+		else if (data.type == "section") {
+			perp.getAllSections(function(value) {
+				var back = {
+					"model" : data.type,
+					"payload" : value,
+					"clear" : true,
+					"many" : true
+				}
+				console.log("    info    - broadcasting " + data.type);
+				socket.broadcast.emit("update", back);
+			});
+		}
+		else if (data.type == "race") {
+			perp.getAllRaces(function(value) {
+				var back = {
+					"model" : data.type,
+					"payload" : value,
+					"clear" : true,
+					"many" : true
+				}
+				console.log("    info    - broadcasting " + data.type);
+				socket.broadcast.emit("update", back);
+			});
+
+		}
+		else {
+			switch(data.race) {
+				case "0" : 
+					perp.getCurrentRace(data.type, function(value) {
+						console.log("    info    - broadcasting " + data.type + " " + data.race + " ---> " + value.id);
+						var back = {
+							"model" : data.type,
+							"payload" : value
+						}
+						socket.broadcast.emit("update", back);
+					});
+					break;
+				default: 
+					perp.getRaceByID(data.type, data.race, function(value) {
+						console.log("    info    - broadcasting " + data.type + " " + value.id);
+						var back = {
+							"model" : data.type,
+							"payload" : value
+						}
+						socket.broadcast.emit("update", back);
+					});
+			}
 		}
 	});
 

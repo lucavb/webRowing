@@ -36,8 +36,15 @@
 		  		socket.emit('push', back);
 		  	});
 		  	$("#push_news").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "news"}'));
+		  		socket.emit('push', {"type" : "news"});
 		  	});
+		  	$("#push_race").click(function() {
+		  		socket.emit('push', {"type" : "race"});
+		  	});
+		  	$("#push_section").click(function() {
+		  		socket.emit('push', {"type" : "section"});
+		  	});
+
 		  	$("#broadtcastNews").submit(function() {
 		  		var obj = {
 		  			"header" : $("#inputHeader").val(),
@@ -87,11 +94,18 @@
 		<div class="row">
 			<div class="col-md-4">
 				<h3>Manuell</h3>
-				<button class="btn" id="push_startlist">Push Startlist</button>
-				<button class="btn" id="push_result">Push Result</button>
-				<button class="btn" id="push_news">Push News</button>
-				<br /><br />
-				<input type="number" id="push_race" class="form-control" />
+				<p>
+					<button class="btn" id="push_startlist">Push Startlist</button>
+					<button class="btn" id="push_result">Push Result</button>
+					<button class="btn" id="push_news">Push News</button>
+				</p>
+				<p>
+					<button class="btn" id="push_race">Push Races</button>
+					<button class="btn" id="push_section">Push Sections</button>
+				</p>
+				<p>
+					<input type="number" id="push_race" class="form-control" />
+				</p>
 
 				<h3>Auto Modus</h3>
 				<button id="auto" class="btn btn-danger">Auto Modus</button>
