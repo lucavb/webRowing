@@ -213,7 +213,7 @@ function getSections(type, rennen_id, callback) {
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
 									WHERE s.Rennen = ? AND s.Lauf = ? \
-									ORDER BY m.Abgemeldet ASC, ISNULL(z.Zeit), z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
+									ORDER BY m.Abgemeldet ASC, ISNULL(z.Zeit), LENGTH(z.Zeit) ASC, z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
 				}
 				
 				connection.query(query2, [rennen_id, row.Lauf], function (err, rows2) {
