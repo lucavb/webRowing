@@ -23,7 +23,7 @@ Handlebars.registerHelper("everyOther", function (amount, scope) {
 Ember.Handlebars.helper("detectRowColor", function (boat) {
 	// zielZeit not null so you will be able to tell when that boat was actually 
 	// withdrawn
-	if (boat.Abgemeldet == 1 && boat.zielZeit == null) {
+	if (boat.abgemeldet == 1 && boat.zielZeit == null) {
 		return new Handlebars.SafeString("<tr class='danger'>");
 	}
 	else if (boat.Nachgemeldet == 1) {
@@ -73,13 +73,13 @@ Ember.Handlebars.helper("endTime", function (boat) {
 	if (boat.zielZeit != null) {
 		return boat.zielZeit;
 	}
-	if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.Abgemeldet != 1) {
+	if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.abgemeldet != 1) {
 		return "Nicht am Start erschienen";
 	}
 	else if (boat.zielZeit == null && boat.ausgeschieden == 1) {
 		return boat.Kommentar;
 	}
-	else if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.Abgemeldet == 1) {
+	else if (boat.zielZeit == null && boat.ausgeschieden != 1 && boat.abgemeldet == 1) {
 		return "Abgemeldet";
 	}
 });
@@ -126,6 +126,9 @@ Ember.Handlebars.registerBoundHelper("console", function(obj){
 // same rudererToggle except this creates an "a href" for the interimTimes 
 // of a boat
 Ember.Handlebars.registerBoundHelper("interimTimesToggle", function (boat) {
+	if (boat.abgemeldet == 1) {
+		return new Handlebars.SafeString("<a class='fake popoverToggle' href='#'>");
+	}
 	var ret = "";
 	if (boat.position_1 != null) {
 		ret += boat.position_1 + "m: " + boat.zeit_1 + "<br />";

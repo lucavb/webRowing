@@ -498,26 +498,36 @@
 											</td>
 											{{#if_eq general.Distanz 2000}}
 												<td>
-													<strong>{{boot.zeit_1}}</strong> <br />
-													{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+													{{#unless boot.abgemeldet}}
+														<strong>{{boot.zeit_1}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+													{{/unless}}
 												</td>
 												<td>
-													<strong>{{boot.zeit_2}}</strong> <br />
-													{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+													{{#unless boot.abgemeldet}}
+														<strong>{{boot.zeit_2}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+													{{/unless}}
 												</td>
 												<td>
-													<strong>{{boot.zeit_3}}</strong> <br />
-													{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+													{{#unless boot.abgemeldet}}
+														<strong>{{boot.zeit_3}}</strong> <br />
+														{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+													{{/unless}}
 												</td>
 											{{else}}
 												{{#if_eq general.Distanz 1500}}
 													<td>
-														<strong>{{boot.zeit_2}}</strong> <br />
-														{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+														{{#unless boot.abgemeldet}}
+															<strong>{{boot.zeit_2}}</strong> <br />
+															{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+														{{/unless}}
 													</td>
 													<td>
-														<strong>{{boot.zeit_3}}</strong> <br />
-														{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+														{{#unless boot.abgemeldet}}
+															<strong>{{boot.zeit_3}}</strong> <br />
+															{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+														{{/unless}}
 													</td>
 												{{/if_eq}}
 											{{/if_eq}}
@@ -597,26 +607,36 @@
 							</td>
 							{{#if_eq ../general.Distanz "2000"}}
 								<td>
-									<strong>{{boot.zeit_1}}</strong> <br />
-									{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+									{{#unless boot.abgemeldet}}
+										<strong>{{boot.zeit_1}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+									{{/unless}}
 								</td>
 								<td>
-									<strong>{{boot.zeit_2}}</strong> <br />
-									{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+									{{#unless boot.abgemeldet}}
+										<strong>{{boot.zeit_2}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
+									{{/unless}}
 								</td>
 								<td>
-									<strong>{{boot.zeit_3}}</strong> <br />
-									{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+									{{#unless boot.abgemeldet}}
+										<strong>{{boot.zeit_3}}</strong> <br />
+										{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
+									{{/unless}}
 								</td>
 							{{else}}
 								{{#if_eq ../general.Distanz "1500"}}
 									<td>
-										<strong>{{boot.zeit_2}}</strong> <br />
-										{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+										{{#unless boot.abgemeldet}}
+											<strong>{{boot.zeit_2}}</strong> <br />
+											{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+										{{/unless}}
 									</td>
 									<td>
-										<strong>{{boot.zeit_3}}</strong> <br />
-										{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+										{{#unless boot.abgemeldet}}
+											<strong>{{boot.zeit_3}}</strong> <br />
+											{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+										{{/unless}}
 									</td>
 								{{/if_eq}}
 							{{/if_eq}}

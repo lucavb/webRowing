@@ -136,7 +136,7 @@ function getSections(type, rennen_id, callback) {
 				section.general.typ = type;
 				if (type == "startlist") {
 					// i'd like to mention that the datastructure has not been made by me and has been made around 2000 i think.
-					var query2 = "	SELECT s.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, \
+					var query2 = "	SELECT s.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet AS abgemeldet, m.Nachgemeldet, \
 									CONCAT(r1.`VName`, ' ', r1.`NName`, ' (', r1.`JahrG`, ')') as r1_string, \
 									CONCAT(r2.`VName`, ' ', r2.`NName`, ' (', r2.`JahrG`, ')') as r2_string, \
 									CONCAT(r3.`VName`, ' ', r3.`NName`, ' (', r3.`JahrG`, ')') as r3_string, \
@@ -168,7 +168,7 @@ function getSections(type, rennen_id, callback) {
 									ORDER BY m.Abgemeldet ASC, s.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as zielZeit, e.`Ausgeschieden` AS ausgeschieden, e.`Kommentar`, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet as abgemeldet, m.Nachgemeldet, z.Zeit as zielZeit, e.`Ausgeschieden` AS ausgeschieden, e.`Kommentar`, \
 									m0.Position AS position_1, \
 									m1.Position AS position_2, \
 									m2.Position AS position_3, \

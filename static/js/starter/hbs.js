@@ -30,7 +30,7 @@ Ember.Handlebars.helper("ruderer", function (obj) {
 // though one might do it within the template
 Ember.Handlebars.registerBoundHelper("addition", function(boat) {
 	var result = "";
-    if (boat.Abgemeldet == 1) {
+    if (boat.abgemeldet == 1) {
         return "Abgemeldet";
     }
     else if (boat.zusatzGewicht != null || boat.Nachgemeldet == 1) {
@@ -63,7 +63,7 @@ Ember.Handlebars.registerBoundHelper("rows", function(sections) {
 		else {
 			back += "Nein";
 		} 
-		back += "</td><td><a href='starter.html#/sections/" + arr[i].get("Rennen") + "/" + arr[i].get("Lauf") + "'>GoTo</a></td></tr>";
+		back += "</td><td><a class='btn btn-primary' href='starter.html#/sections/" + arr[i].get("Rennen") + "/" + arr[i].get("Lauf") + "'>GoTo</a></td></tr>";
 	}
 	return new Handlebars.SafeString(back);
 });
@@ -71,7 +71,7 @@ Ember.Handlebars.registerBoundHelper("rows", function(sections) {
 Ember.Handlebars.helper("detectRowColor", function (boat) {
 	// zielZeit not null so you will be able to tell when that boat was actually 
 	// withdrawn
-	if (boat.Abgemeldet == 1) {
+	if (boat.abgemeldet == 1) {
 		return new Handlebars.SafeString("<tr class='danger'>");
 	}
 	else if (boat.Nachgemeldet == 1) {
