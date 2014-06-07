@@ -4,14 +4,14 @@
 
 This project generates a web page containing results and startlists based on the database of the [perp](http://perp.de/) regatta software. In addition it does also provide a way to broadcast information.
 
-This project doesn't work with the perp database alone. You will have to either modify the getCurrentRace method (check some older versions, startlist.js or result.js might still have the query) or run the [sortRaces]( https://github.com/lucavb/sortRaces ) project. sortRaces allows you to hide certain sections and sort them in case one section is squezzed in somewhere and what not. The second solution is recommended.
+This project doesn't work with the regular perp database. You will have to either modify the getCurrentRace method (check some older versions, startlist.js or result.js might still have the query) or run the [sortRaces]( https://github.com/lucavb/sortRaces ) project. sortRaces allows you to hide certain sections and sort them in case one section is squezzed in somewhere and what not. The second solution is recommended.
 
 
 ## Preparation
 
 ### node.js dependencies
 
-please install [socket.io](https://www.npmjs.org/package/socket.io) (0.9.16 | for 1.0.x please see this [branch](https://github.com/lucavb/webRowing/tree/socket.io-v1-testing)), [express](https://www.npmjs.org/package/express), [async](https://www.npmjs.org/package/async), [moment](https://www.npmjs.org/package/moment) and the [mysql](https://www.npmjs.org/package/mysql) module in the main folder.
+please install [socket.io](https://www.npmjs.org/package/socket.io) (apparently it does now work also with socket.io@1.0.2), [express](https://www.npmjs.org/package/express), [async](https://www.npmjs.org/package/async), [moment](https://www.npmjs.org/package/moment) and the [mysql](https://www.npmjs.org/package/mysql) module in the main folder.
 also add a file called 'mysql_conf' with the following structure
 <pre>
 {
@@ -24,14 +24,14 @@ also add a file called 'mysql_conf' with the following structure
 
 ### html dependencies
 
-Please place [Bootstrap 3](http://getbootstrap.com/) into the static folder; [jQuery]( https://jquery.com/ ), [handlebars]( http://handlebarsjs.com/ ) and [moment]( http://momentjs.com/ ) are also required for the project to work.
+Please place [Bootstrap 3](http://getbootstrap.com/) into the static folder; [jQuery]( https://jquery.com/ ), [handlebars]( http://handlebarsjs.com/ ) and [moment]( http://momentjs.com/ ), [emberjs]( http://emberjs.com/ ) and [emberdata] ( https://github.com/emberjs/data/releases ) are also required for the project to work.
 The concrete paths can be seen from the index.html file in the static folder.
 
 ### Further stuff
 
 Also you might wanna replace the string for the organizer of the regatta.
 
-There is no translation currently. But since i used handlebars all that needs to be done is to replace the strings. 
+There is no translation currently. But since this project uses handlebars all that needs to be done is to replace the strings. 
 
 ## Starting (development)
 
@@ -45,15 +45,32 @@ nodejs server.js
 </pre>
 depeneding on your node.js installation.
 
+## REST
+
+See this [file] (REST.md) for further information on this topic.
+
 ## Deployment
 
-Socket.IO is powered by .
-First of all you might wanna move the admin.html file. I can not cause that much harm but you never know.
+First of all you might wanna move the admin.html file. It can not cause that much harm but you never know.
+
+### socket.io
 
 As to socket.io I recommend using the suggestion made on this [here](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO#recommended-production-settings).
 
-I recommend [forever](https://github.com/nodejitsu/forever) to keep the server up running. If you want to use express you are done. 
+### ember.js
 
-Most people do use apache as their webserver. However this is no problem. Edit the script.js under static/js so it connects to the right server. Also you will have to copy the static folder to your Webroot. Then you should be good to go.
+Of course you want to include the production copies of ember and ember data. this will also keep ember from showing debug information in the console
 
-As to other Webservers I haven't tried it yet. But I don't see any reasons why i shouldn't be the same procedure as with apache.
+### Webserver
+
+This branch provides a REST API. If you want to use express as your webserver you will not have read any further.
+
+However if you want to use apache (for instance) you will either have to tell it to have express answer certain requests. Do not forgot to fix certain things like (paths, the url for ember's restadapter).
+
+### Running the server
+
+To keep the server up and running we recommend [forever](https://github.com/nodejitsu/forever).
+<pre>
+forever start server.js
+</pre>
+is enough to fire the server up and forever will automatically gather all the output and put it into a log file.

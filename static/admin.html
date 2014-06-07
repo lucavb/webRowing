@@ -8,7 +8,7 @@
 		}
 	</style>
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/libs/jquery-1.11.0.min.js"></script>
+	<script src="js/libs/jquery-1.11.1.js"></script>
 	<script>
 		// this file is quick and dirty. but it works :P
 		$(document).ready(function() {
@@ -16,19 +16,41 @@
 		  	var socket = io.connect();
 
 		  	$("#push_result").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  		var back = {
+		  			"type" : "result",
+		  			"race" : $("#push_race").val()
+		  		}
+		  		if (back.race == "") {
+		  			back.race = "0";
+		  		}
+		  		socket.emit('push', back);
 		  	});
 		  	$("#push_startlist").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "startlist"}'));
+		  		var back = {
+		  			"type" : "startlist",
+		  			"race" : $("#push_race").val()
+		  		}
+		  		if (back.race == "") {
+		  			back.race = "0";
+		  		}
+		  		socket.emit('push', back);
 		  	});
 		  	$("#push_news").click(function() {
-		  		socket.emit('push', JSON.parse('{"type" : "news"}'));
+		  		socket.emit('push', {"type" : "news"});
 		  	});
+		  	$("#push_race").click(function() {
+		  		socket.emit('push', {"type" : "race"});
+		  	});
+		  	$("#push_section").click(function() {
+		  		socket.emit('push', {"type" : "section"});
+		  	});
+
 		  	$("#broadtcastNews").submit(function() {
-		  		var obj = new Object();
-		  		obj.header = $("#inputHeader").val();
-		  		obj.msg = $("#inputMsg").val();
-		  		obj.secret = $("#inputSecret").val();
+		  		var obj = {
+		  			"header" : $("#inputHeader").val(),
+		  			"msg" : $("#inputMsg").val(),
+		  			"secret" : $("#inputSecret").val()
+		  		}
 		  		socket.emit("broadtcastNews", obj);
 		  		return false;
 		  	});
@@ -50,8 +72,8 @@
 		  	$("#auto").click(function() {
 		  		if (timer == null) {
 		  			timer = setInterval(function() {
-		  				socket.emit('push', JSON.parse('{"type" : "startlist"}'));
-		  				socket.emit('push', JSON.parse('{"type" : "result"}'));
+		  				$("#push_result").click();
+		  				$("#push_startlist").click();
 		  			}, 15000);
 		  			$(this).removeClass("btn-danger");
 		  			$(this).addClass("btn-success");
@@ -72,9 +94,18 @@
 		<div class="row">
 			<div class="col-md-4">
 				<h3>Manuell</h3>
-				<button class="btn" id="push_startlist">Push Startlist</button>
-				<button class="btn" id="push_result">Push Result</button>
-				<button class="btn" id="push_news">Push News</button>
+				<p>
+					<button class="btn" id="push_startlist">Push Startlist</button>
+					<button class="btn" id="push_result">Push Result</button>
+					<button class="btn" id="push_news">Push News</button>
+				</p>
+				<p>
+					<button class="btn" id="push_race">Push Races</button>
+					<button class="btn" id="push_section">Push Sections</button>
+				</p>
+				<p>
+					<input type="number" id="push_race" class="form-control" />
+				</p>
 
 				<h3>Auto Modus</h3>
 				<button id="auto" class="btn btn-danger">Auto Modus</button>

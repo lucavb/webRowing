@@ -8,7 +8,18 @@ var connection = require("./mysql_conn.js").connection;
 // please use the sortRaces project to fill the table.
 // the table ablauf is not included in perp!
 function getCurrentRace(type, callback) {
-	var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
+	if (type == "result") {
+		var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
+					FROM ablauf ab \
+					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
+					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
+					INNER JOIN startlisten s ON s.Regatta_ID = ab.Regatta_ID AND s.Lauf = ab.Lauf AND s.Rennen = ab.Rennen \
+					WHERE l.IstStartZeit IS NOT NULL\
+					ORDER BY ab.Order DESC, l.SollStartZeit DESC, l.Rennen ASC \
+					LIMIT 1";
+	}
+	else if (type == "startlist") {
+		var query = "SELECT ab.Regatta_ID, ab.Rennen, ab.Lauf \
 					FROM ablauf ab \
 					INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
 					INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
@@ -16,6 +27,8 @@ function getCurrentRace(type, callback) {
 					WHERE l.IstStartZeit IS NULL\
 					ORDER BY ab.Order ASC, l.SollStartZeit ASC, l.Rennen ASC \
 					LIMIT 1";
+	}
+	
 	connection.query(query, function(err, rows) {
 		if (err || rows.length == 0) {
 			console.log("    warning - there was no current race found");
@@ -64,7 +77,8 @@ function getRaceByID(type, id, callback) {
 			ret.general = rows[0];
 			ret.general.typ = type;
 			ret.general.Distanz = track_length - ret.general.Distanz;	// let's find the real distance
-			getSections(type, rows[0].Regatta_ID, id, function(value) {
+			ret.id = ret.general.Rennen;
+			getSections(type, id, function(value) {
 				if (value != null) {
 					ret.abteilungen = value;
 					callback(ret);
@@ -76,10 +90,10 @@ function getRaceByID(type, id, callback) {
 }
 
 // gathers information on the section and finds all boats that where set for the section
-function getSections(type, regatta_id, rennen_id, callback) {
+function getSections(type, rennen_id, callback) {
 	var ret = [];
-	var query = "SELECT l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, rennen.NameK, \
-				 CONCAT(p.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
+	var query = "SELECT CONCAT(l.Rennen, '-', l.Lauf) as id, l.Rennen, l.Lauf, l.SollStartZeit, l.ErgebnisKorrigiert, l.ErgebnisEndgueltig, rennen.NameD, rennen.NameK, \
+				 CONCAT(pL.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
 				 CONCAT(aU.`Vorname`, ' ', aU.`Name`) AS umpire, CONCAT(aJ.`Vorname`, ' ', aJ.`Name`) AS judge, \
 				 IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted, \
 				 m.Position as Distanz \
@@ -89,11 +103,12 @@ function getSections(type, regatta_id, rennen_id, callback) {
 				 LEFT JOIN schiedsrichterliste sU ON (sU.Schiedsrichter_ID = l.`Schiedsrichter_ID_Umpire` AND sU.Regatta_ID = l.Regatta_ID) \
 				 LEFT JOIN `addressen` aU ON (aU.`ID` = sU.`Schiedsrichter_ID` AND aU.`IstSchiedsrichter` = 1) \
 				 LEFT JOIN addressen aJ ON (aJ.ID = sJ.`Schiedsrichter_ID` AND aJ.`IstSchiedsrichter` = 1) \
-				 INNER JOIN parameter p ON (p.Sektion = 'Uebersetzer_Lauftypen' AND p.Schluessel = SUBSTRING(l.Lauf,1,1)) \
+				 INNER JOIN parameter pL ON (pL.Sektion = 'Uebersetzer_Lauftypen' AND pL.Schluessel = SUBSTRING(l.Lauf,1,1)) \
+				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = l.Regatta_ID \
 				 INNER JOIN ablauf ab ON (ab.Regatta_ID = l.Regatta_ID AND ab.Rennen = l.Rennen AND ab.Lauf = l.Lauf AND publish >= ?) \
 				 INNER JOIN rennen r ON (r.Rennen = l.Rennen AND r.Regatta_ID = l.Regatta_ID) \
-				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.ZielMesspunktNr = m.MesspunktNr) \
-				 WHERE l.Rennen = ? AND l.Regatta_ID = ? \
+				 INNER JOIN messpunkte m ON (m.Regatta_ID = l.Regatta_ID AND r.StartMesspunktNr = m.MesspunktNr) \
+				 WHERE l.Rennen = ? \
 				 ORDER BY ab.Order ASC, l.`SollStartZeit` ASC";
 
 	// in order to allow the ablauf table to hide races
@@ -106,7 +121,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 		param = 1;
 	}
 
-	connection.query(query, [param, rennen_id, regatta_id], function (err, rows) {
+	connection.query(query, [param, rennen_id], function (err, rows) {
 		if (err) {
 			console.log("    error   - The query, to find the sections, failed for the follwing reason.");
 			console.log(err);
@@ -116,11 +131,12 @@ function getSections(type, regatta_id, rennen_id, callback) {
 		async.each(rows,
 			function(row, callback) {
 				var section = { "general" : "", "boote" : {}};
+				row.Distanz = track_length - row.Distanz;
 				section.general = row;
 				section.general.typ = type;
 				if (type == "startlist") {
 					// i'd like to mention that the datastructure has not been made by me and has been made around 2000 i think.
-					var query2 = "	SELECT s.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, \
+					var query2 = "	SELECT s.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet AS abgemeldet, m.Nachgemeldet, \
 									CONCAT(r1.`VName`, ' ', r1.`NName`, ' (', r1.`JahrG`, ')') as r1_string, \
 									CONCAT(r2.`VName`, ' ', r2.`NName`, ' (', r2.`JahrG`, ')') as r2_string, \
 									CONCAT(r3.`VName`, ' ', r3.`NName`, ' (', r3.`JahrG`, ')') as r3_string, \
@@ -137,6 +153,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN teams ON (m.`Team_ID` = teams.`ID` AND teams.Regatta_ID = s.Regatta_ID) \
 									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
 									INNER JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
+									INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = s.Regatta_ID \
 									INNER JOIN ruderer r1 ON (m.`ruderer1_ID` = r1.`ID`) \
 									LEFT JOIN ruderer r2 ON (m.`ruderer2_ID` = r2.`ID`) \
 									LEFT JOIN ruderer r3 ON (m.`ruderer3_ID` = r3.`ID`) \
@@ -147,11 +164,11 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
 									LEFT JOIN gewichte g ON (g.`Ruderer_ID` = rS.`ID` AND DATEDIFF(g.`Datum`, l.`SollStartZeit`) = 0) \
-									WHERE s.Rennen = ? AND s.Lauf = ? AND s.Regatta_ID = ? \
+									WHERE s.Rennen = ? AND s.Lauf = ? \
 									ORDER BY m.Abgemeldet ASC, s.Bahn ASC";
 				}
 				else if (type == "result") {
-					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet, m.Nachgemeldet, z.Zeit as ZielZeit, e.`Ausgeschieden`, e.`Kommentar`, \
+					var query2 = "	SELECT e.Bahn, m.BugNr, teams.Teamname, m.Abgemeldet as abgemeldet, m.Nachgemeldet, z.Zeit as zielZeit, e.`Ausgeschieden` AS ausgeschieden, e.`Kommentar`, \
 									m0.Position AS position_1, \
 									m1.Position AS position_2, \
 									m2.Position AS position_3, \
@@ -169,6 +186,7 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									CONCAT(rS.`VName`, ' ', rS.`NName`, ' (', rS.`JahrG`, ')') as rS_string, \
 									IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
 									FROM startlisten s \
+									INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = s.Regatta_ID \
 									LEFT JOIN ergebnisse e ON (e.Lauf = s.Lauf AND e.Regatta_ID = s.Regatta_ID AND e.Rennen = s.Rennen AND e.`TNr` = s.`TNr`) \
 									LEFT JOIN laeufe l ON (l.Lauf = s.Lauf AND l.Regatta_ID = s.Regatta_ID AND l.Rennen = s.Rennen) \
 									INNER JOIN rennen r ON (r.`Regatta_ID` = s.`Regatta_ID` AND r.`Rennen` = s.`Rennen`) \
@@ -194,15 +212,15 @@ function getSections(type, regatta_id, rennen_id, callback) {
 									LEFT JOIN ruderer r7 ON (m.`ruderer7_ID` = r7.`ID`) \
 									LEFT JOIN ruderer r8 ON (m.`ruderer8_ID` = r8.`ID`) \
 									LEFT JOIN ruderer rS ON (m.`ruderers_ID` = rS.`ID`) \
-									WHERE s.Rennen = ? AND s.Lauf = ? AND s.Regatta_ID = ? \
-									ORDER BY m.Abgemeldet ASC, ISNULL(z.Zeit), z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
+									WHERE s.Rennen = ? AND s.Lauf = ? \
+									ORDER BY m.Abgemeldet ASC, ISNULL(z.Zeit), LENGTH(z.Zeit) ASC, z.`Zeit` ASC, zeit_3 ASC, zeit_2 ASC, zeit_1 ASC, e.Bahn ASC, teams.`Teamname`;";
 				}
 				
-				connection.query(query2, [rennen_id, row.Lauf, regatta_id], function (err, rows2) {
+				connection.query(query2, [rennen_id, row.Lauf], function (err, rows2) {
 					if (err) {
 						console.log(err);
 					}
-					else if (rows2.length == 0 || (rows2[0].hasStarted == 0 && type == "result" && rows2[0].zeit_1 == null)) {
+					else if (rows2.length == 0) {
 						//delete ret[row.Lauf];
 						callback();
 					}
@@ -210,14 +228,20 @@ function getSections(type, regatta_id, rennen_id, callback) {
 						async.each(rows2,
 							function(row2, callback) {
 								// race has not been finished yet but there are already times available
-								if (row2.hasStarted == 0 && row2.zeit_1 != null && type == "result") {
+								if (row2.hasStarted == 0 && (row2.zeit_1 != null || row2.zeit_2 != null || row2.zeit_3 != null) && type == "result") {
 									section.general.interim = true;
 								}
 							}
 						);
-						section.boote = rows2;
-						ret.push(section);
-						callback();
+						// either it has been started or it's a split time result
+						if (((section.general.interim == true || section.general.hasStarted == 1) && type == "result") || (type == "startlist")) {
+							section.boote = rows2;
+							ret.push(section);
+							callback();
+						}
+						else {
+							callback();
+						}
 					}
 				});
 			},
@@ -247,17 +271,41 @@ function createError(header, msg) {
 
 // returns an array of all the sections that will be done.
 function getAllSections(callback) {
-	var query = "SELECT ab.Rennen, ab.Lauf, l.SollStartZeit, IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
+	var query = "SELECT CONVERT(CONCAT(ab.Rennen, '-', ab.Lauf), CHAR) as id, ab.Rennen, ab.Lauf, l.SollStartZeit, \
+				 CONCAT(pL.Wert, ' ', SUBSTRING(l.Lauf, 2)) AS lauf_pretty, \
+				 r.NameK, r.NameD, \
+				 IF(l.`IstStartZeit` IS NULL, 0, 1) AS hasStarted \
 				 FROM ablauf ab \
 				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = ab.Regatta_ID \
 				 INNER JOIN laeufe l ON (ab.Rennen = l.Rennen AND l.Lauf = ab.Lauf AND ab.Regatta_ID = l.Regatta_ID) \
+				 INNER JOIN parameter pL ON (pL.Sektion = 'Uebersetzer_Lauftypen' AND pL.Schluessel = SUBSTRING(l.Lauf,1,1)) \
+				 INNER JOIN rennen r ON (r.Regatta_ID = ab.Regatta_ID AND r.Rennen = ab.Rennen) \
+				 INNER JOIN startlisten s ON s.Lauf = ab.Lauf AND s.Rennen = ab.Rennen AND s.`Regatta_ID` = ab.`Regatta_ID` \
 				 WHERE ab.publish >= 1 \
+				 GROUP BY s.Lauf, s.Rennen, s.Regatta_ID \
 				 ORDER BY ab.ORDER ASC, l.SollStartZeit";
 	connection.query(query, function(err, rows) {
+		if (err) {
+			console.log(err);
+		}
 		callback(rows);
 	});			 
+}
+
+function getAllRaces(callback) {
+	var query = "SELECT r.Rennen as id, r.Rennen as rennen, r.NameK as bootsklasse, r.NameD as nameGerman, r.NameE as nameEnglish \
+				 FROM rennen r \
+				 INNER JOIN parameter p ON p.Sektion = 'Global' AND p.Schluessel = 'AktRegatta' AND p.Wert = r.Regatta_ID \
+				 ORDER BY r.Rennen ASC";
+	connection.query(query, function(err, rows) {
+		if (!err) {
+			callback(rows);
+		}
+	});
 }
 
 module.exports.getRaceByID = getRaceByID;
 module.exports.getCurrentRace = getCurrentRace;
 module.exports.getAllSections = getAllSections;
+module.exports.getAllRaces = getAllRaces;
+module.exports.getSections = getSections;
