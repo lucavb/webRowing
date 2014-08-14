@@ -47,13 +47,12 @@ depeneding on your node.js installation.
 
 ## Deployment
 
-Socket.IO is powered by .
-First of all you might wanna move the admin.html file. I can not cause that much harm but you never know.
+First of all you might wanna move the admin.html file. It can not cause that much harm but you never know.
 
-As to socket.io I recommend using the suggestion made on this [here](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO#recommended-production-settings).
+As to socket.io I recommend using the suggestion made on this site [here](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO#recommended-production-settings).
 
-I recommend [forever](https://github.com/nodejitsu/forever) to keep the server up running. If you want to use express you are done. 
+I recommend [forever](https://github.com/nodejitsu/forever) to keep the server up and running. If you want to use express as your webserver you are done. 
 
-Most people do use apache as their webserver. However this is no problem. Edit the script.js under static/js so it connects to the right server. Also you will have to copy the static folder to your Webroot. Then you should be good to go.
+Most people do use apache as their webserver. However this is no problem. Edit the script.js files for both pages (view.html and starter.html) so the websocket connection is made to the correct server and port. Also you will have to copy the static folder to your Webroot, so apache can server those files. Of course you do have to start the server. Then you should be good to go.
 
 As to other Webservers I haven't tried it yet. But I don't see any reasons why i shouldn't be the same procedure as with apache.
