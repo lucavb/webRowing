@@ -7,19 +7,19 @@
 	<title>Startlisten & Ergebnisse</title>
 	<link rel="icon" href="favicon.ico" type="image/x-icon">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="bootstrap3.1.1/css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" href="bootstrap-3.3.2-dist/css/bootstrap.css" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="apple-touch-icon" href="images/icons/bookmark-icon.60x60.png">
     <link rel="apple-touch-icon" sizes="76x76" href="images/icons/bookmark-icon.76x76.png">
     <link rel="apple-touch-icon" sizes="120x120" href="images/icons/bookmark-icon.120x120.png">
     <link rel="apple-touch-icon" sizes="152x152" href="images/icons/bookmark-icon.152x152.png">
-	<script src="js/libs/jquery-1.11.1.js"></script>
+	<script src="js/libs/jquery-1.11.2.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
-	<script src="js/libs/handlebars-v1.3.0.js"></script>
-	<script src="js/libs/moment-with-langs.js"></script>
-	<script src="js/libs/ember-1.5.1.js"></script>
+	<script src="js/libs/handlebars-v2.0.0.js"></script>
+	<script src="js/libs/moment-with-locales.js"></script>
+	<script src="js/libs/ember-1.9.1.js"></script>
 	<script src="js/libs/ember-data.js"></script>
-	<script src="bootstrap3.1.1/js/bootstrap.js"></script>
+	<script src="bootstrap-3.3.2-dist/js/bootstrap.js"></script>
 	<script src="js/view/app.js"></script>
 	<script src="js/view/hbs.js"></script>
 	<script src="js/view/script.js"></script>
@@ -77,7 +77,7 @@
 			</div>
 			<div class="panel-body">
 				<p>Alle Rennen</p>
-			</div>
+			
 			<div class="table-responsive">
 				<table class="table">
 					<tr>
@@ -94,28 +94,28 @@
 							Ansichten
 						</th>
 					</tr>
-				
-					{{#each}}
+					{{#each race in model}}
 						<tr>
 							<td>
-								{{rennen}}
+								{{race.rennen}}
 							</td>
 							<td>
-								{{bootsklasse}}
+								{{race.bootsklasse}}
 							</td>
 							<td>
-								{{nameGerman}}
+								{{race.nameGerman}}
 							</td>
 							<td>
-								{{#link-to 'startlist' id}}Startliste{{/link-to}}
-								- {{#link-to 'result' id}}Ergebniss{{/link-to}}
-								- {{#link-to 'resultDetail' id}}Ergebniss detailiert{{/link-to}}
+								{{#link-to 'startlist' race.id}}Startliste{{/link-to}}
+								- {{#link-to 'result' race.id}}Ergebniss{{/link-to}}
+								- {{#link-to 'resultDetail' race.id}}Ergebniss detailiert{{/link-to}}
 							</td>
 						</tr>
 					{{else}}
 						sorry there is no race
 					{{/each}}
 				</table>
+			</div>
 			</div>
 		</div>
 	</script>
@@ -155,30 +155,25 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-			{{#each abteilungen}}
-				{{#everyOther 2}}
-					
+			{{#each abteilung in abteilungen}}
+				{{#everyOther _view.contentIndex}}
 				{{else}}
 					<div class="same_row">
 				{{/everyOther}}
 				<div class="col-md-6">
-					{{#if general.hasStarted}}
-						<div class="panel panel-default panel-success">
-					{{else}}
-						<div class="panel panel-default panel-warning">
-					{{/if}}
+					<div {{bind-attr class="abteilung.general.hasStarted:panel-success:panel-warning :panel"}}>
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6 col-xs-6">
-									<h4>{{general.lauf_pretty}}</h4>
+									<h4>{{abteilung.general.lauf_pretty}}</h4>
 								</div>
 								<div class="col-md-6 col-xs-6">
-									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+									<h4 class="text-right">Rennen {{abteilung.general.Rennen}} | {{abteilung.general.NameK}}</h4>
 								</div>
 							</div>
 						</div>
 						<div class="panel-body">
-							<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+							<p>Startzeit: {{momentFormat abteilung.general.SollStartZeit}} ({{momentNow abteilung.general.SollStartZeit}})</p>
 						</div>
 						<div class="table-responsive">
 							<table class="table">
@@ -186,17 +181,17 @@
 									<th>Bug Nr.</th>
 									<th>Teamname</th>
 								</tr>
-								{{#each boote}}
-									{{detectRowColor this}}
+								{{#each boot in abteilung.boote}}
+									{{detectRowColor boot}}
 										<td>
-											{{this.Bahn}}
+											{{boot.Bahn}}
 										</td>
 										<td>
-											{{BugNr}}
+											{{boot.BugNr}}
 										</td>
 										<td>
-											{{rudererToggle this}}
-												{{Teamname}}
+											{{rudererToggle boot}}
+												{{boot.Teamname}}
 											</a>
 										</td>
 									</tr>
@@ -205,7 +200,7 @@
 						</div>
 					</div>
 				</div>
-				{{#everyOther 2}}
+				{{#everyOther _view.contentIndex}}
 					</div>
 				{{/everyOther}}
 				{{closure ../abteilungen _view.contentIndex}}
@@ -260,36 +255,28 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-			{{#each abteilungen}}
-				{{#everyOther 2}}
+			{{#each abteilung in abteilungen}}
+				{{#everyOther _view.contentIndex}}
 				{{else}}
 					<div class="same_row">
 				{{/everyOther}}
 				<div class="col-md-6">
-					{{#interimTimes general}}
-					{{#if general.ErgebnisEndgueltig}}
-						{{#if general.hasStarted}}
-							<div class="panel panel-default panel-success">
-						{{else}}
-							<div class="panel panel-default panel-warning">
-						{{/if}}
-					{{else}}
-						<div class="panel panel-default panel-danger">
-					{{/if}}
+					{{#unless abteilung.general.interim}}
+					<div {{bind-attr class="abteilung.general.ErgebnisEndgueltig::panel-danger abteilung.general.hasStarted:panel-success:panel-warning :panel"}}>
 						<div class="panel-heading">
 							<div class="row">
 								<div class="col-md-6 col-xs-6">
-									<h4>{{general.lauf_pretty}} 
-										{{#unless general.ErgebnisEndgueltig}}
+									<h4>{{abteilung.general.lauf_pretty}} 
+										{{#unless abteilung.general.ErgebnisEndgueltig}}
 											(vorläufig!)
 										{{/unless}}
 									</h4>
-									{{#if general.ErgebnisKorrigiert}}
+									{{#if abteilung.general.ErgebnisKorrigiert}}
 										<small>Ergebnis korrigiert</small>
 									{{/if}}
 								</div>
 								<div class="col-md-6 col-xs-6">
-									<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+									<h4 class="text-right">Rennen {{abteilung.general.Rennen}} | {{abteilung.general.NameK}}</h4>
 								</div>
 							</div>
 						</div>
@@ -301,31 +288,31 @@
 									<th>Teamname</th>
 									<th>Zeit</th>
 								</tr>
-								{{#each boote}}
-									{{detectRowColor this}}
+								{{#each boot in abteilung.boote}}
+									{{detectRowColor boot}}
 										<td>
-											{{#if ausgeschieden}}
+											{{#if boot.ausgeschieden}}
 												-
 											{{else}}
-												{{#if zielZeit}}
-													{{Bahn}}
+												{{#if boot.zielZeit}}
+													{{boot.Bahn}}
 												{{else}}
 													-
 												{{/if}}
 											{{/if}}
 										</td>
-										<td>{{BugNr}}</td>
+										<td>{{boot.BugNr}}</td>
 										<td>
-											{{rudererToggle this}}
-												{{Teamname}}
+											{{rudererToggle boot}}
+												{{boot.Teamname}}
 											</a>
 										</td>
 										<td>
-											{{#if ausgeschieden}}
-												{{Kommentar}}
+											{{#if boot.ausgeschieden}}
+												{{boot.Kommentar}}
 											{{else}}
-												{{interimTimesToggle this}}
-													{{endTime this}}
+												{{interimTimesToggle boot}}
+													{{endTime boot}}
 												</a>
 											{{/if}}
 										</td>
@@ -333,16 +320,16 @@
 								{{/each}}
 							</table>
 							<div class="panel-footer">
-								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
-								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+								<p>Startzeit: {{momentFormat abteilung.general.SollStartZeit}} ({{momentNow abteilung.general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{abteilung.general.umpire}} / Zielrichter: {{abteilung.general.judge}}</p>
 							</div>
 						</div>
 					</div>
 					{{else}}
 						{{partial "panel_interim"}}
-					{{/interimTimes}}
+					{{/unless}}
 				</div>
-				{{#everyOther 2}}
+				{{#everyOther _view.contentIndex}}
 					</div>
 				{{/everyOther}}
 				{{closure ../abteilungen _view.contentIndex}}
@@ -362,7 +349,7 @@
 	</script>
 
 	<script type="text/x-handlebars" data-template-name='_panel_interim' id="panel_interim">
-		<div class="panel panel-default panel-danger">
+		<div class="panel panel-danger">
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-7 col-xs-7">
@@ -376,14 +363,14 @@
 			<div class="table-responsive">
 				<table class="table">
 					<tr><th>Bahn</th><th>Bug Nr.</th><th>Teamname</th><th>Zeit</th></tr>
-					{{#each boote}}
+					{{#each boot in boote}}
 						<tr>
-							<td>{{Bahn}}</td>
-							<td>{{BugNr}}</td>
+							<td>{{boot.Bahn}}</td>
+							<td>{{boot.BugNr}}</td>
 							<td>
-								{{Teamname}}
+								{{boot.Teamname}}
 							</td>
-							<td>{{latestInterim this}}</td>
+							<td>{{latestInterim boot}}</td>
 						</tr>
 					{{/each}}
 				</table>
@@ -429,128 +416,120 @@
 			<h2>Abteilungen</h2>
 		</div>
 		<div class="row">
-			{{#each abteilungen}}
+			{{#each abteilung in abteilungen}}
 				<div class="col-md-12">
-					{{#interimTimes general}}
-						{{#if general.ErgebnisEndgueltig}}
-							{{#if general.hasStarted}}
-								<div class="panel panel-default panel-success">
-							{{else}}
-								<div class="panel panel-default panel-warning">
-							{{/if}}
-						{{else}}
-							<div class="panel panel-default panel-danger">
-						{{/if}}
+					{{#unless abteilung.general.interim}}
+						<div {{bind-attr class="abteilung.general.ErgebnisEndgueltig::panel-danger abteilung.general.hasStarted:panel-success:panel-warning :panel"}}>
 							<div class="panel-heading">
 								<div class="row">
 									<div class="col-md-6 col-xs-6">
-										<h4>{{general.lauf_pretty}}
-											{{#unless general.ErgebnisEndgueltig}}
+										<h4>{{abteilung.general.lauf_pretty}}
+											{{#unless abteilung.general.ErgebnisEndgueltig}}
 												(vorläufig!)
 											{{/unless}}
-
 										</h4>
-										{{#if general.ErgebnisKorrigiert}}
+										{{#if abteilung.general.ErgebnisKorrigiert}}
 											<small>Ergebnis korrigiert</small>
 										{{/if}}
 									</div>
 									<div class="col-md-6 col-xs-6">
-										<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+										<h4 class="text-right">Rennen {{abteilung.general.Rennen}} | {{abteilung.general.NameK}}</h4>
 									</div>
 								</div>
 							</div>
-
-							<div class="table-responsive">
-								<table class="table table-striped">
-									<tr>
-										<th>Bahn</th>
-										<th>Bug Nr.</th>
-										<th>Teamname</th>
-										{{#if_eq general.Distanz "2000"}}
-											<th>500m</th>
-											<th>1000m</th>
-											<th>1500m</th>
-										{{else}}
-											{{#if_eq general.Distanz "1500"}}
+							<div class="panel-body">
+								<div class="table-responsive">
+									<table class="table table-striped">
+										<tr>
+											<th>Bahn</th>
+											<th>Bug Nr.</th>
+											<th>Teamname</th>
+											{{#if_eq abteilung.general.Distanz "2000"}}
 												<th>500m</th>
 												<th>1000m</th>
-											{{/if_eq}}
-										{{/if_eq}}
-										<th>Zeit</th>
-									</tr>
-									{{#each boot in boote}}
-										{{detectRowColor boot}}
-											<td>
-												{{#if boot.ausgeschieden}}
-													-
-												{{else}}
-													{{#if boot.zielZeit}}
-														{{boot.Bahn}}
-													{{else}}
-														-
-													{{/if}}
-												{{/if}}
-											</td>
-											<td>{{boot.BugNr}}</td>
-											<td>
-												<strong>{{boot.Teamname}}</strong><br />
-												<span style="margin-left:5px;">{{ruderer boot}}</span>
-											</td>
-											{{#if_eq general.Distanz 2000}}
-												<td>
-													{{#unless boot.abgemeldet}}
-														<strong>{{boot.zeit_1}}</strong> <br />
-														{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
-													{{/unless}}
-												</td>
-												<td>
-													{{#unless boot.abgemeldet}}
-														<strong>{{boot.zeit_2}}</strong> <br />
-														{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
-													{{/unless}}
-												</td>
-												<td>
-													{{#unless boot.abgemeldet}}
-														<strong>{{boot.zeit_3}}</strong> <br />
-														{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
-													{{/unless}}
-												</td>
+												<th>1500m</th>
 											{{else}}
-												{{#if_eq general.Distanz 1500}}
+												{{#if_eq abteilung.general.Distanz "1500"}}
+													<th>500m</th>
+													<th>1000m</th>
+												{{/if_eq}}
+											{{/if_eq}}
+											<th>Zeit</th>
+										</tr>
+										{{#each boot in abteilung.boote}}
+											{{detectRowColor boot}}
+												<td>
+													{{#if boot.ausgeschieden}}
+														-
+													{{else}}
+														{{#if boot.zielZeit}}
+															{{boot.Bahn}}
+														{{else}}
+															-
+														{{/if}}
+													{{/if}}
+												</td>
+												<td>{{boot.BugNr}}</td>
+												<td>
+													<strong>{{boot.Teamname}}</strong><br />
+													<span style="margin-left:5px;">{{ruderer boot}}</span>
+												</td>
+												{{#if_eq general.Distanz 2000}}
+													<td>
+														{{#unless boot.abgemeldet}}
+															<strong>{{boot.zeit_1}}</strong> <br />
+															{{distanceFirst ../../boote boot.zeit_1 "zeit_1"}}
+														{{/unless}}
+													</td>
 													<td>
 														{{#unless boot.abgemeldet}}
 															<strong>{{boot.zeit_2}}</strong> <br />
-															{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+															{{distanceFirst ../../boote boot.zeit_2 "zeit_2"}}
 														{{/unless}}
 													</td>
 													<td>
 														{{#unless boot.abgemeldet}}
 															<strong>{{boot.zeit_3}}</strong> <br />
-															{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+															{{distanceFirst ../../boote boot.zeit_3 "zeit_3"}}
 														{{/unless}}
 													</td>
-												{{/if_eq}}
-											{{/if_eq}}
-											<td>
-												{{#if boot.ausgeschieden}}
-													{{boot.Kommentar}}
 												{{else}}
-													<strong>{{endTime boot}}</strong><br />
-													{{distanceFirst ../../boote boot.zielZeit "zielZeit"}}
-												{{/if}}
-											</td>
-										</tr>
-									{{/each}}
-								</table>
+													{{#if_eq general.Distanz 1500}}
+														<td>
+															{{#unless boot.abgemeldet}}
+																<strong>{{boot.zeit_2}}</strong> <br />
+																{{distanceFirst ../../../boote boot.zeit_2 "zeit_2"}}
+															{{/unless}}
+														</td>
+														<td>
+															{{#unless boot.abgemeldet}}
+																<strong>{{boot.zeit_3}}</strong> <br />
+																{{distanceFirst ../../../boote boot.zeit_3 "zeit_3"}}
+															{{/unless}}
+														</td>
+													{{/if_eq}}
+												{{/if_eq}}
+												<td>
+													{{#if boot.ausgeschieden}}
+														{{boot.Kommentar}}
+													{{else}}
+														<strong>{{endTime boot}}</strong><br />
+														{{distanceFirst ../../boote boot.zielZeit "zielZeit"}}
+													{{/if}}
+												</td>
+											</tr>
+										{{/each}}
+									</table>
+								</div>
 							</div>
 							<div class="panel-footer">
-								<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
-								<p>Schiedsrichter: {{general.umpire}} / Zielrichter: {{general.judge}}</p>
+								<p>Startzeit: {{momentFormat abteilung.general.SollStartZeit}} ({{momentNow abteilung.general.SollStartZeit}})</p>
+								<p>Schiedsrichter: {{abteilung.general.umpire}} / Zielrichter: {{abteilung.general.judge}}</p>
 							</div>
 						</div>
 					{{else}}
 						{{partial "panel_interim_detail"}}
-					{{/interimTimes}}
+					{{/unless}}
 				</div>
 			{{else}}
 				<div class="col-md-12">

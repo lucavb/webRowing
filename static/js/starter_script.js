@@ -4,7 +4,7 @@ $(document).ready(function() {
     var currentSpot = -1; // the current spot in the array
     var raceNext = -1; // the spot of the race that should be up next
     var countdownTime = 1000;
-    moment.lang("de");
+    moment.locale("de");
     var timers = function() {
         $( ".countdown" ).each(function() {
             var target = $(this).attr("data-time");

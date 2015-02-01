@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	moment.lang("de");
+	moment.locale("de");
 	var countdownTime = 1000;
 	var timers = function() {
 	    $( ".countdown" ).each(function() {

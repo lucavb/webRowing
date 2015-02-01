@@ -6,7 +6,7 @@ $(document).ready(function() {
 	 *
 	 */
 
-	moment.lang("de");
+	moment.locale("de");
 
 	// for fake a's
 	$(document).on("click", "a.fake", function(e) {

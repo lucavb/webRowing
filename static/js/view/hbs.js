@@ -12,12 +12,13 @@ Ember.Handlebars.helper("momentNow", function (timestamp) {
 // every other please note that ember will terribly bitch if you stop at an odd
 // number due to the html actually being wrong. please use some helper
 // or the closure helper at the bottom
-Handlebars.registerHelper("everyOther", function (amount, scope) {
-	var index = scope.data.view.contentIndex;
-    if ( ++index % amount) 
+Handlebars.registerHelper("everyOther", function (index, scope) {
+    if ( ++index % 2) {
         return scope.inverse(this, scope);
-    else 
+    }
+    else {
         return scope.fn(this, scope);
+    }
 });
 // row color not that easy after all
 Ember.Handlebars.helper("detectRowColor", function (boat) {
@@ -34,7 +35,7 @@ Ember.Handlebars.helper("detectRowColor", function (boat) {
 	}
 });
 // interim times -> special displaying true -> no interim false -> interim
-Handlebars.registerHelper("interimTimes", function (general, options) {
+Ember.Handlebars.registerHelper("interimTimes", function (general, options) {
 	// this is not a bound helper. so we have to resolve this
 	var value = Ember.get(this, general);
 	if (value.interim) {
@@ -62,7 +63,8 @@ Ember.Handlebars.helper("latestInterim", function (boat) {
 });
 // if equals helper; fairly obvious
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
-	var value = Ember.get(this, a); // resolve this 
+	var value = Ember.get(this, a);
+	console.log(value);
     if(value == b) // Or === depending on your needs
         return opts.fn(this);
     else
