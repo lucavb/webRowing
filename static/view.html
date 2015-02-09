@@ -541,10 +541,10 @@
 			<div class="panel-heading">
 				<div class="row">
 					<div class="col-md-8 col-xs-8">
-						<h4>{{general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
+						<h4>{{abteilung.general.lauf_pretty}} (läuft noch & vorläufig!)</h4>
 					</div>
 					<div class="col-md-4 col-xs-4">
-						<h4 class="text-right">Rennen {{general.Rennen}} | {{general.NameK}}</h4>
+						<h4 class="text-right">Rennen {{abteilung.general.Rennen}} | {{abteilung.general.NameK}}</h4>
 					</div>
 				</div>
 			</div>
@@ -554,19 +554,12 @@
 						<th>Bahn</th>
 						<th>Bug Nr.</th>
 						<th>Teamname</th>
-						{{#if_eq general.Distanz "2000"}}
-							<th>500m</th>
-							<th>1000m</th>
-							<th>1500m</th>
-						{{else}}
-							{{#if_eq general.Distanz "1500"}}
-								<th>500m</th>
-								<th>1000m</th>
-							{{/if_eq}}
-						{{/if_eq}}
+						{{#each distance in abteilung.general.distance}}
+							<th>{{distance}} m</th>
+						{{/each}}
 						<th>Zeit</th>
 					</tr>
-					{{#each boot in boote}}
+					{{#each boot in abteilung.boote}}
 						<tr>
 							<td>{{boot.Bahn}}</td>
 							<td>{{boot.BugNr}}</td>
@@ -615,7 +608,7 @@
 				</table>
 			</div>
 			<div class="panel-footer">
-				<p>Startzeit: {{momentFormat general.SollStartZeit}} ({{momentNow general.SollStartZeit}})</p>
+				<p>Startzeit: {{momentFormat abteilung.general.SollStartZeit}} ({{momentNow abteilung.general.SollStartZeit}})</p>
 			</div>
 		</div>
 	</script>
