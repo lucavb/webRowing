@@ -1,4 +1,5 @@
 var track_length = 2000; // enter the distance of the track here
+var interim_point_distance = 500;
 
 // import stuff
 var async = require("async");
@@ -131,6 +132,11 @@ function getSections(type, rennen_id, callback) {
 		async.each(rows,
 			function(row, callback) {
 				var section = { "general" : "", "boote" : {}};
+				var distance = track_length - row.Distanz;
+				row.distance = [];
+				for (var i = interim_point_distance; i < distance; i += interim_point_distance) {
+					row.distance[i / interim_point_distance - 1] = i;
+				}
 				row.Distanz = track_length - row.Distanz;
 				section.general = row;
 				section.general.typ = type;

@@ -437,23 +437,15 @@
 									</div>
 								</div>
 							</div>
-							<div class="panel-body">
 								<div class="table-responsive">
 									<table class="table table-striped">
 										<tr>
 											<th>Bahn</th>
 											<th>Bug Nr.</th>
 											<th>Teamname</th>
-											{{#if_eq abteilung.general.Distanz "2000"}}
-												<th>500m</th>
-												<th>1000m</th>
-												<th>1500m</th>
-											{{else}}
-												{{#if_eq abteilung.general.Distanz "1500"}}
-													<th>500m</th>
-													<th>1000m</th>
-												{{/if_eq}}
-											{{/if_eq}}
+											{{#each distance in abteilung.general.distance}}
+												<th>{{distance}} m</th>
+											{{/each}}
 											<th>Zeit</th>
 										</tr>
 										{{#each boot in abteilung.boote}}
@@ -521,7 +513,6 @@
 										{{/each}}
 									</table>
 								</div>
-							</div>
 							<div class="panel-footer">
 								<p>Startzeit: {{momentFormat abteilung.general.SollStartZeit}} ({{momentNow abteilung.general.SollStartZeit}})</p>
 								<p>Schiedsrichter: {{abteilung.general.umpire}} / Zielrichter: {{abteilung.general.judge}}</p>

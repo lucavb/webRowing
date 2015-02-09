@@ -64,7 +64,6 @@ Ember.Handlebars.helper("latestInterim", function (boat) {
 // if equals helper; fairly obvious
 Handlebars.registerHelper('if_eq', function(a, b, opts) {
 	var value = Ember.get(this, a);
-	console.log(value);
     if(value == b) // Or === depending on your needs
         return opts.fn(this);
     else

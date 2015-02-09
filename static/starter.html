@@ -80,11 +80,7 @@
 
 	<script id="singleSection" type="text/x-handlebars">
 		{{#with model.section}}
-			{{#if general.hasStarted}}
-				<div class="panel panel-default panel-success">
-			{{else}}
-				<div class="panel panel-default panel-warning">
-			{{/if}}
+			<div {{bind-attr class="abteilung.general.hasStarted:panel-success:panel-warning :panel"}}>
 				<div class="panel-heading">
 					<div class="row">
 						<div class="col-md-4 col-xs-4">
@@ -106,20 +102,20 @@
 							<th>Teamname</th>
 							<th>Zusatz</th>
 						</tr>
-						{{#each boote}}
-							{{detectRowColor this}}
+						{{#each boot in boote}}
+							{{detectRowColor boot}}
 								<td>
-									{{this.Bahn}}
+									{{boot.Bahn}}
 								</td>
 								<td>
-									{{BugNr}}
+									{{boot.BugNr}}
 								</td>
 								<td>
-									<strong>{{Teamname}}</strong><br />
-									<span style="margin-left:10px;">{{ruderer this}}</span>
+									<strong>{{boot.Teamname}}</strong><br />
+									<span style="margin-left:10px;">{{ruderer boot}}</span>
 								</td>
 								<td>
-									{{addition this}}
+									{{addition boot}}
 								</td>
 							</tr>
 						{{/each}}
